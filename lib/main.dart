@@ -11,13 +11,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Categoriser categoriser = Categoriser();
     return MaterialApp(
       home: Scaffold(
         body: Center(
           child: MaterialButton(
             child: const Text('load CSV'),
             onPressed: () {
-              Categoriser.readCsv();
+              categoriser.categorise();
             },
           ),
         ),
