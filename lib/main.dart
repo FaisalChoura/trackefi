@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'services/categoriser.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -9,10 +11,16 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    Categoriser categoriser = Categoriser();
+    return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: MaterialButton(
+            child: const Text('load CSV'),
+            onPressed: () {
+              categoriser.categorise();
+            },
+          ),
         ),
       ),
     );
