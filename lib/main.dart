@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'categories.dart';
+import 'services/categoriser.dart';
 
 void main() {
   runApp(const MainApp());

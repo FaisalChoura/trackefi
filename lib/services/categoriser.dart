@@ -3,6 +3,12 @@ import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import "package:csv/csv.dart";
 
+import '../utils/enums/numbering_style.dart';
+import '../utils/models/category.dart';
+import '../utils/models/import_settings.dart';
+import '../utils/models/report.dart';
+import '../utils/models/transaction.dart';
+
 class Categoriser {
   List<Category> categories = [
     Category('Travel', ['uber', 'voi']),
@@ -89,79 +95,3 @@ class Categoriser {
     return num.parse(amount);
   }
 }
-
-class Category {
-  String name;
-  List<String> keywords;
-  Category(this.name, this.keywords);
-  // transactions
-
-  bool isPartOfCategory(String description) {
-    return _generateRegex().hasMatch(description.toLowerCase());
-  }
-
-  num matchingStrength(String description) {
-    num strength = 0;
-    String matchedKeyword = '';
-    for (var keyword in keywords) {
-      if (RegExp(keyword).hasMatch(description.toLowerCase())) {
-        matchedKeyword = keyword;
-        break; // exit of first match
-      }
-    }
-    List<String> keywordGroup = matchedKeyword.split(' ');
-    for (var subKeyword in keywordGroup) {
-      // keyword separator
-      strength = RegExp(subKeyword).hasMatch(description.toLowerCase())
-          ? strength + 1
-          : strength;
-    }
-
-    return strength;
-  }
-
-  RegExp _generateRegex() {
-    String regexString = keywords.join("|");
-    return RegExp(regexString);
-  }
-}
-
-class Transaction {
-  String name;
-  String date;
-  num amount;
-  Transaction(this.name, this.date, this.amount);
-}
-
-class ReportCategory {
-  num total = 0;
-  String name;
-  List<Transaction> transactions;
-  ReportCategory(this.name, this.transactions) {
-    for (var transaction in transactions) {
-      total = double.parse((total + transaction.amount).toStringAsFixed(2));
-    }
-  }
-}
-
-class Report {
-  num income;
-  num expenses;
-  List<ReportCategory> categories;
-  Report(this.income, this.expenses, this.categories);
-}
-
-class CsvImportSettings {
-  String fieldDelimiter = ',';
-  String endOfLine = '\n';
-  NumberingStyle numberStyle = NumberingStyle.eu; // field needs to be parsed
-  FieldIndexes fieldIndexes = FieldIndexes();
-}
-
-class FieldIndexes {
-  int dateField = 0;
-  int amountField = 1;
-  int descriptionField = 2;
-}
-
-enum NumberingStyle { eu, us }
