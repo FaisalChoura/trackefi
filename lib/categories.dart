@@ -23,12 +23,14 @@ class Categoriser {
     return [];
   }
 
-  categorise() async {
-    // group transactions by category
-    // get sum of category groups
-    // create report
-    Map<String, List<dynamic>> categorisedTransactions =
-        <String, List<dynamic>>{};
+  Future<Map<String, List<Transaction>>> categorise() async {
+    CsvImportSettings importSettings = CsvImportSettings();
+    importSettings.fieldIndexes.amountField = 2;
+    importSettings.fieldIndexes.dateField = 0;
+    importSettings.fieldIndexes.descriptionField = 1;
+
+    Map<String, List<Transaction>> categorisedTransactions =
+        <String, List<Transaction>>{};
 
     for (var category in categories) {
       categorisedTransactions.putIfAbsent(category.name, () => []);
@@ -39,11 +41,28 @@ class Categoriser {
       List<dynamic> row = data[i];
       Category? category = findCategory(row[1]);
       if (category != null) {
-        categorisedTransactions[category.name]!.add(row);
+        num transactionAmount = _parseNumberStyle(importSettings.numberStyle,
+            row[importSettings.fieldIndexes.amountField]);
+        Transaction transaction = Transaction(
+            row[importSettings.fieldIndexes.descriptionField],
+            row[importSettings.fieldIndexes.dateField],
+            transactionAmount);
+        categorisedTransactions[category.name]!.add(transaction);
       }
     }
+    Report report = generateReport(categorisedTransactions);
+    return categorisedTransactions;
+  }
 
-    print(categorisedTransactions);
+  Report generateReport(
+      Map<String, List<Transaction>> categorisedTransactions) {
+    Report report = Report(0, 0, []);
+    for (var categoryName in categorisedTransactions.keys) {
+      ReportCategory category =
+          ReportCategory(categoryName, categorisedTransactions[categoryName]!);
+      report.categories.add(category);
+    }
+    return report;
   }
 
   Category? findCategory(String description) {
@@ -59,6 +78,15 @@ class Categoriser {
       }
     }
     return matchedCategory;
+  }
+
+  num _parseNumberStyle(NumberingStyle numberingStyle, String amount) {
+    if (numberingStyle == NumberingStyle.eu) {
+      return num.parse(
+        amount.replaceAll(RegExp(','), '.'),
+      );
+    }
+    return num.parse(amount);
   }
 }
 
@@ -97,3 +125,43 @@ class Category {
     return RegExp(regexString);
   }
 }
+
+class Transaction {
+  String name;
+  String date;
+  num amount;
+  Transaction(this.name, this.date, this.amount);
+}
+
+class ReportCategory {
+  num total = 0;
+  String name;
+  List<Transaction> transactions;
+  ReportCategory(this.name, this.transactions) {
+    for (var transaction in transactions) {
+      total = double.parse((total + transaction.amount).toStringAsFixed(2));
+    }
+  }
+}
+
+class Report {
+  num income;
+  num expenses;
+  List<ReportCategory> categories;
+  Report(this.income, this.expenses, this.categories);
+}
+
+class CsvImportSettings {
+  String fieldDelimiter = ',';
+  String endOfLine = '\n';
+  NumberingStyle numberStyle = NumberingStyle.eu; // field needs to be parsed
+  FieldIndexes fieldIndexes = FieldIndexes();
+}
+
+class FieldIndexes {
+  int dateField = 0;
+  int amountField = 1;
+  int descriptionField = 2;
+}
+
+enum NumberingStyle { eu, us }
