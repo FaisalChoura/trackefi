@@ -4,18 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/constants/pages.dart';
 
 final selectedPageNameProvider = StateProvider<String>((ref) {
-  // default value
   return pages.keys.first;
 });
 
-class AppMenu extends StatelessWidget {
+class AppMenu extends ConsumerWidget {
   const AppMenu({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    List<String> menuItems = ['Categories'];
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<String> menuItems = ['Categories', 'CSV Import'];
     return Scaffold(
       appBar: AppBar(title: const Text('Categoriser')),
       body: ListView.builder(
@@ -24,6 +23,14 @@ class AppMenu extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               title: Text(menuItems[index]),
+              onTap: () => {
+                if (ref.read(selectedPageNameProvider.notifier).state !=
+                    menuItems[index])
+                  {
+                    ref.read(selectedPageNameProvider.notifier).state =
+                        menuItems[index]
+                  }
+              },
             );
           }),
     );
