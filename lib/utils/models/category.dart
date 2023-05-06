@@ -11,6 +11,9 @@ class Category {
   // transactions
 
   bool isPartOfCategory(String description) {
+    if (keywords.isEmpty) {
+      return false;
+    }
     return _generateRegex().hasMatch(description.toLowerCase());
   }
 

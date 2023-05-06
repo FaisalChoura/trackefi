@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import "package:csv/csv.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/enums/numbering_style.dart';
 import '../utils/models/category.dart';
@@ -10,11 +11,10 @@ import '../utils/models/report.dart';
 import '../utils/models/transaction.dart';
 
 class Categoriser {
-  List<Category> categories = [
-    Category('Travel', ['uber', 'voi']),
-    Category('Grocceries', ['lidl', 'rewe', 'rossman', 'dm']),
-    Category('Restaurants', ['uber eats', 'chen che'])
-  ];
+  List<Category> categories = [];
+
+  Categoriser(this.categories);
+
   Future<List<List<dynamic>>> readCsv() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
