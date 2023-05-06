@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../utils/constants/pages.dart';
+
+final selectedPageNameProvider = StateProvider<String>((ref) {
+  // default value
+  return pages.keys.first;
+});
 
 class AppMenu extends StatelessWidget {
   const AppMenu({
