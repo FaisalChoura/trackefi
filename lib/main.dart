@@ -13,7 +13,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Categoriser categoriser = Categoriser();
     return const MaterialApp(
       home: Layout(),
     );
