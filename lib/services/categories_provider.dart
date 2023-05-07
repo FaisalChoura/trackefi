@@ -26,6 +26,10 @@ class CategoriesNotifier extends StateNotifier<List<Category>> {
       state = [...state, category];
     });
   }
+
+  Future<Category?> getCategory(int id) async {
+    return await _isar!.categories.get(id);
+  }
 }
 
 final categoriesProvider =

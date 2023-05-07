@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final showNewCategoryField = StateProvider<bool>((ref) => false);
+final selectedCategoryId = StateProvider<int>((ref) => 0);
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
@@ -23,6 +24,7 @@ class CategoriesScreen extends ConsumerWidget {
           children: [
             CategoriesList(),
             Container(width: 0.5, color: Colors.grey),
+            CategoryDetails(),
           ],
         ));
   }
@@ -81,6 +83,8 @@ class CategoriesList extends ConsumerWidget {
                 itemBuilder: ((context, index) {
                   return ListTile(
                     title: Text(categories[index].name),
+                    onTap: () => ref.read(selectedCategoryId.notifier).state =
+                        categories[index].id,
                   );
                 }),
               ),
@@ -91,5 +95,22 @@ class CategoriesList extends ConsumerWidget {
 
   _closeNewCategoryInput(WidgetRef ref) {
     ref.read(showNewCategoryField.notifier).state = false;
+  }
+}
+
+class CategoryDetails extends ConsumerWidget {
+  const CategoryDetails({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(selectedCategoryId);
+    return FutureBuilder(
+        future: ref.watch(categoriesProvider.notifier).getCategory(id),
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            return Text(snapshot.data!.name);
+          }
+          return Container();
+        });
   }
 }
