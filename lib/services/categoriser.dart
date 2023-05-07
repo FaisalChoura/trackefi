@@ -2,7 +2,6 @@ import "dart:convert";
 import "dart:io";
 import 'package:file_picker/file_picker.dart';
 import "package:csv/csv.dart";
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/enums/numbering_style.dart';
 import '../utils/models/category.dart';
