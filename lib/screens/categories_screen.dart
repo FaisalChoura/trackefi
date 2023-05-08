@@ -82,7 +82,8 @@ class CategoriesList extends ConsumerWidget {
                 itemCount: categories.length,
                 itemBuilder: ((context, index) {
                   return ListTile(
-                    title: Text(categories[index].name),
+                    title: Text(
+                        "${categories[index].name} ${categories[index].keywords.length}"),
                     onTap: () => ref.read(selectedCategoryId.notifier).state =
                         categories[index].id,
                   );
@@ -108,9 +109,57 @@ class CategoryDetails extends ConsumerWidget {
         future: ref.watch(categoriesProvider.notifier).getCategory(id),
         builder: (context, snapshot) {
           if (snapshot.data != null) {
-            return Text(snapshot.data!.name);
+            return Column(
+              children: [
+                Text(snapshot.data!.name),
+                CategoryKeywordField(category: snapshot.data!),
+              ],
+            );
           }
           return Container();
         });
+  }
+}
+
+class CategoryKeywordField extends ConsumerStatefulWidget {
+  Category category;
+  CategoryKeywordField({Key? key, required this.category}) : super(key: key);
+
+  @override
+  ConsumerState<CategoryKeywordField> createState() =>
+      CategoryKeywordFieldState();
+}
+
+class CategoryKeywordFieldState extends ConsumerState<CategoryKeywordField> {
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_handleChanges);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 240,
+          child: TextField(
+            controller: controller,
+          ),
+        ),
+      ],
+    );
+  }
+
+  _handleChanges() {
+    final text = controller.text;
+    if (text.isNotEmpty && text.substring(text.length - 1) == ',') {
+      final addedCategory = text.substring(0, text.length - 1);
+      widget.category.keywords = [...widget.category.keywords, addedCategory];
+      ref.read(categoriesProvider.notifier).updateCategory(widget.category);
+      controller.clear();
+    }
   }
 }
