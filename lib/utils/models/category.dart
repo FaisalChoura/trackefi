@@ -37,6 +37,14 @@ class Category {
     return strength;
   }
 
+  void removeKeyword(String keyword) {
+    // keywords.remove(keyword);
+    // TODO fix this in the future
+    var tempKeywords = [...keywords];
+    tempKeywords.remove(keyword);
+    keywords = tempKeywords;
+  }
+
   RegExp _generateRegex() {
     String regexString = keywords.join("|");
     return RegExp(regexString);

@@ -105,14 +105,25 @@ class CategoryDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(selectedCategoryId);
+    ref.watch(categoriesProvider);
     return FutureBuilder(
         future: ref.watch(categoriesProvider.notifier).getCategory(id),
         builder: (context, snapshot) {
           if (snapshot.data != null) {
+            final category = snapshot.data!;
             return Column(
               children: [
-                Text(snapshot.data!.name),
-                CategoryKeywordField(category: snapshot.data!),
+                Text(category.name),
+                CategoryKeywordField(category: category),
+                for (var keyword in category.keywords)
+                  MaterialButton(
+                      child: Text(keyword),
+                      onPressed: () {
+                        category.removeKeyword(keyword);
+                        ref
+                            .read(categoriesProvider.notifier)
+                            .updateCategory(category);
+                      }),
               ],
             );
           }
