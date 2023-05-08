@@ -37,6 +37,13 @@ class CategoriesNotifier extends StateNotifier<List<Category>> {
     });
   }
 
+  void deleteCategory(Category category) async {
+    await _isar!.writeTxn(() async {
+      await _isar!.categories.delete(category.id);
+      state = state.where((cat) => cat.id != category.id).toList();
+    });
+  }
+
   Future<Category?> getCategory(int id) async {
     return await _isar!.categories.get(id);
   }

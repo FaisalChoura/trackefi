@@ -113,6 +113,11 @@ class CategoryDetails extends ConsumerWidget {
             final category = snapshot.data!;
             return Column(
               children: [
+                IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => ref
+                        .read(categoriesProvider.notifier)
+                        .deleteCategory(category)),
                 Text(category.name),
                 CategoryKeywordField(category: category),
                 for (var keyword in category.keywords)
