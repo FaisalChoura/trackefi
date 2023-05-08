@@ -10,11 +10,10 @@ import '../utils/models/report.dart';
 import '../utils/models/transaction.dart';
 
 class Categoriser {
-  List<Category> categories = [
-    Category('Travel', ['uber', 'voi']),
-    Category('Grocceries', ['lidl', 'rewe', 'rossman', 'dm']),
-    Category('Restaurants', ['uber eats', 'chen che'])
-  ];
+  List<Category> categories = [];
+
+  Categoriser(this.categories);
+
   Future<List<List<dynamic>>> readCsv() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {

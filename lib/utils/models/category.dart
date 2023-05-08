@@ -1,10 +1,19 @@
+import 'package:isar/isar.dart';
+
+part 'category.g.dart';
+
+@collection
 class Category {
+  Id id = Isar.autoIncrement;
   String name;
   List<String> keywords;
   Category(this.name, this.keywords);
   // transactions
 
   bool isPartOfCategory(String description) {
+    if (keywords.isEmpty) {
+      return false;
+    }
     return _generateRegex().hasMatch(description.toLowerCase());
   }
 
@@ -26,6 +35,14 @@ class Category {
     }
 
     return strength;
+  }
+
+  void removeKeyword(String keyword) {
+    // keywords.remove(keyword);
+    // TODO fix this in the future
+    var tempKeywords = [...keywords];
+    tempKeywords.remove(keyword);
+    keywords = tempKeywords;
   }
 
   RegExp _generateRegex() {
