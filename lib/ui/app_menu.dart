@@ -14,7 +14,7 @@ class AppMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<String> menuItems = ['Categories', 'CSV Import'];
+    List<String> menuItems = [ScreenRoutes.categories, ScreenRoutes.csvImport];
     return Scaffold(
       appBar: AppBar(title: const Text('Categoriser')),
       body: ListView.builder(
