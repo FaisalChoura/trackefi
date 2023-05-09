@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expense_categoriser/services/categoriser.dart';
 import 'package:expense_categoriser/services/csv_reader_service.dart';
 import 'package:expense_categoriser/services/report_service.dart';
@@ -40,7 +42,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   await categoriser.categorise(data[0]!);
 
               if (categorisedTransactions['Uncategorised']!.isNotEmpty) {
-                _handleUncategorisedTransactions(categorisedTransactions);
+                await _handleUncategorisedTransactions(categorisedTransactions);
               }
 
               setState(() {
@@ -58,37 +60,17 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  _handleUncategorisedTransactions(
+  Future<Map<String, List<Transaction>>?> _handleUncategorisedTransactions(
       Map<String, List<Transaction>> categorisedTransactions) async {
-    return showDialog<Future<Map<String, List<Transaction>>>?>(
+    return showDialog<Map<String, List<Transaction>>>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Basic dialog title'),
-          content: const Text('A dialog is a type of modal window that\n'
-              'appears in front of app content to\n'
-              'provide critical information, or prompt\n'
-              'for a decision to be made.'),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Disable'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        return Dialog(
+          child: Container(
+            child: Column(
+              children: [],
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Enable'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+          ),
         );
       },
     );
