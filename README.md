@@ -6,6 +6,8 @@
 - ~~Add file picker to import CSV~~
 - Create UI for adding/removing categories & keywords
 - Create report view
+- Graphs for report
+- Export report
 - Search and filter reports
 - Create rules
 - Create tags
