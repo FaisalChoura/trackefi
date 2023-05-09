@@ -7,14 +7,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/categories_provider.dart';
 import '../services/csv_files_provider.dart';
 import '../utils/models/category.dart';
+import '../utils/models/report.dart';
 
-class ReportScreen extends ConsumerWidget {
-  final ReportService reportService = ReportService();
-  final CsvReaderService csvReaderService = CsvReaderService();
-  ReportScreen({super.key});
+class ReportScreen extends ConsumerStatefulWidget {
+  const ReportScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends ConsumerState<ReportScreen> {
+  final ReportService reportService = ReportService();
+  final CsvReaderService csvReaderService = CsvReaderService();
+  Report? report;
+
+  @override
+  Widget build(BuildContext context) {
     List<Category> categories = ref.watch(categoriesProvider);
     final csvFiles = ref.watch(csvFilesProvider);
 
@@ -29,8 +37,17 @@ class ReportScreen extends ConsumerWidget {
               final categorisedTransactions =
                   // TODO handle multiple files
                   await categoriser.categorise(data[0]!);
-              reportService.generateReport(categorisedTransactions);
-            })
+              setState(() {
+                report = reportService.generateReport(categorisedTransactions);
+              });
+            }),
+        if (report != null)
+          Column(
+            children: [
+              for (var category in report!.categories)
+                Text("${category.name}: ${category.total}")
+            ],
+          )
       ]),
     );
   }
