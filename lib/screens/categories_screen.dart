@@ -24,7 +24,7 @@ class CategoriesScreen extends ConsumerWidget {
           children: [
             CategoriesList(),
             Container(width: 0.5, color: Colors.grey),
-            CategoryDetails(),
+            const CategoryDetails(),
           ],
         ));
   }
@@ -138,8 +138,9 @@ class CategoryDetails extends ConsumerWidget {
 }
 
 class CategoryKeywordField extends ConsumerStatefulWidget {
-  Category category;
-  CategoryKeywordField({Key? key, required this.category}) : super(key: key);
+  final Category category;
+  const CategoryKeywordField({Key? key, required this.category})
+      : super(key: key);
 
   @override
   ConsumerState<CategoryKeywordField> createState() =>

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../screens/categories_screen.dart';
 import '../../screens/csv_import_screen.dart';
+import '../../screens/report_screen.dart';
 
 final pages = <String, WidgetBuilder>{
   ScreenRoutes.categories: (_) => const CategoriesScreen(),
-  ScreenRoutes.csvImport: (_) => const CsvImportScreen(),
+  ScreenRoutes.csvImport: (_) => CsvImportScreen(),
+  ScreenRoutes.reports: (_) => ReportScreen(),
 };
 
 class ScreenRoutes {
