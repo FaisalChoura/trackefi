@@ -24,18 +24,23 @@ class Categoriser {
     for (var category in categories) {
       categorisedTransactions.putIfAbsent(category.name, () => []);
     }
+    categorisedTransactions.putIfAbsent('Uncategorised', () => []);
 
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
+      num transactionAmount = _parseNumberStyle(importSettings.numberStyle,
+          row[importSettings.fieldIndexes.amountField]);
+      Transaction transaction = Transaction(
+          row[importSettings.fieldIndexes.descriptionField],
+          row[importSettings.fieldIndexes.dateField],
+          transactionAmount);
+
       Category? category = _findCategory(row[1]);
+
       if (category != null) {
-        num transactionAmount = _parseNumberStyle(importSettings.numberStyle,
-            row[importSettings.fieldIndexes.amountField]);
-        Transaction transaction = Transaction(
-            row[importSettings.fieldIndexes.descriptionField],
-            row[importSettings.fieldIndexes.dateField],
-            transactionAmount);
         categorisedTransactions[category.name]!.add(transaction);
+      } else {
+        categorisedTransactions['Uncategorised']!.add(transaction);
       }
     }
     return categorisedTransactions;
