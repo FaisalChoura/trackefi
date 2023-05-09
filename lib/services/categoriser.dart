@@ -7,7 +7,7 @@ import '../utils/models/transaction.dart';
 
 class Categoriser {
   List<Category> categories = [];
-  CsvReaderService csvReaderService = CsvReaderService();
+  final CsvReaderService _csvReaderService = CsvReaderService();
 
   Categoriser(this.categories);
 
@@ -24,10 +24,10 @@ class Categoriser {
       categorisedTransactions.putIfAbsent(category.name, () => []);
     }
 
-    List<List<dynamic>> data = await csvReaderService.readCsv();
+    List<List<dynamic>> data = await _csvReaderService.readCsv();
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
-      Category? category = findCategory(row[1]);
+      Category? category = _findCategory(row[1]);
       if (category != null) {
         num transactionAmount = _parseNumberStyle(importSettings.numberStyle,
             row[importSettings.fieldIndexes.amountField]);
@@ -41,7 +41,7 @@ class Categoriser {
     return categorisedTransactions;
   }
 
-  Category? findCategory(String description) {
+  Category? _findCategory(String description) {
     Category? matchedCategory;
     num lastStrength = 0;
     for (var category in categories) {
