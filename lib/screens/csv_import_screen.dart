@@ -21,13 +21,15 @@ class CsvImportScreen extends ConsumerWidget {
         children: [
           for (var file in csvFiles)
             MaterialButton(
-                child: Text(file.name), onPressed: () => print(file.name)),
+                child: Text(file.name),
+                onPressed: () =>
+                    ref.read(csvFilesProvider.notifier).removeFile(file)),
           Center(
             child: MaterialButton(
               child: const Text('load CSV'),
               onPressed: () async {
                 List<PlatformFile> files = await csvReaderService.importFiles();
-                ref.watch(csvFilesProvider.notifier).addFiles(files);
+                ref.read(csvFilesProvider.notifier).addFiles(files);
               },
             ),
           ),

@@ -11,6 +11,10 @@ class CsvFilesNotifier extends StateNotifier<List<PlatformFile>> {
   addFiles(List<PlatformFile> files) {
     state = [...state, ...files];
   }
+
+  removeFile(PlatformFile file) {
+    state = state.where((f) => f.path != file.path).toList();
+  }
 }
 
 final csvFilesProvider =
