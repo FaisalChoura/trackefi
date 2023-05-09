@@ -6,12 +6,13 @@ import '../utils/models/import_settings.dart';
 import '../utils/models/transaction.dart';
 
 class Categoriser {
-  List<Category> categories = [];
+  List<Category> categories;
   final CsvReaderService _csvReaderService = CsvReaderService();
 
   Categoriser(this.categories);
 
-  Future<Map<String, List<Transaction>>> categorise() async {
+  Future<Map<String, List<Transaction>>> categorise(
+      List<List<dynamic>> data) async {
     CsvImportSettings importSettings = CsvImportSettings();
     importSettings.fieldIndexes.amountField = 2;
     importSettings.fieldIndexes.dateField = 0;
@@ -24,7 +25,6 @@ class Categoriser {
       categorisedTransactions.putIfAbsent(category.name, () => []);
     }
 
-    List<List<dynamic>> data = await _csvReaderService.readCsv();
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
       Category? category = _findCategory(row[1]);
