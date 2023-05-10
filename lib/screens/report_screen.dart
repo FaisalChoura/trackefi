@@ -71,26 +71,74 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         final uncategorisedTransactions =
             categorisedTransactions['Uncategorised'];
         return Dialog(
-          child: SizedBox(
-            height: 400,
-            child: Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                final categories = ref.watch(categoriesProvider);
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (uncategorisedTransactions != null)
-                        for (var transaction in uncategorisedTransactions)
-                          UncategorisedItemRow(
-                              transaction: transaction, categories: categories)
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+          child: UncategorisedItemsDialog(
+              uncategorisedTransactions: uncategorisedTransactions),
         );
       },
+    );
+  }
+}
+
+class UncategorisedItemsDialog extends StatefulWidget {
+  const UncategorisedItemsDialog({
+    super.key,
+    required this.uncategorisedTransactions,
+  });
+
+  final List<Transaction>? uncategorisedTransactions;
+
+  @override
+  State<UncategorisedItemsDialog> createState() =>
+      _UncategorisedItemsDialogState();
+}
+
+class _UncategorisedItemsDialogState extends State<UncategorisedItemsDialog> {
+  List<Transaction> transactions = [];
+  List<UncategorisedRowData> updatedCategoryData = [];
+
+  @override
+  void initState() {
+    transactions = widget.uncategorisedTransactions ?? [];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 400,
+      child: Consumer(
+        builder: (BuildContext context, WidgetRef ref, Widget? child) {
+          final categories = ref.watch(categoriesProvider);
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      for (var data in updatedCategoryData) {
+                        data.category.keywords = [
+                          ...data.category.keywords,
+                          ...data.keywords
+                        ];
+                        ref
+                            .read(categoriesProvider.notifier)
+                            .updateCategory(data.category);
+                      }
+                    },
+                    icon: Icon(Icons.check)),
+                for (var transaction in transactions)
+                  // add id for changed rows and a submit button to handle the change
+                  UncategorisedItemRow(
+                    transaction: transaction,
+                    categories: categories,
+                    onChanged: (categoryData) {
+                      updatedCategoryData.add(categoryData);
+                    },
+                  )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

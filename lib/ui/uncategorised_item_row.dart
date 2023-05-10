@@ -2,20 +2,20 @@ import 'package:expense_categoriser/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/categories_provider.dart';
 import '../utils/models/category.dart';
 import '../utils/models/selectable_word_item.dart';
 import '../utils/models/transaction.dart';
 
 class UncategorisedItemRow extends ConsumerStatefulWidget {
-  const UncategorisedItemRow({
-    super.key,
-    required this.transaction,
-    required this.categories,
-  });
+  const UncategorisedItemRow(
+      {super.key,
+      required this.transaction,
+      required this.categories,
+      required this.onChanged});
 
   final Transaction transaction;
   final List<Category> categories;
+  final ValueChanged<UncategorisedRowData> onChanged;
 
   @override
   ConsumerState<UncategorisedItemRow> createState() =>
@@ -43,6 +43,7 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
             setState(() {
               selectedWords = values;
             });
+            widget.onChanged(_onChangeData());
           },
         ),
         DropdownButton(
@@ -61,24 +62,25 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
                     .where((element) => element.id == val!)
                     .first;
               });
+              widget.onChanged(_onChangeData());
             }),
         Text(widget.transaction.amount.toString()),
-        IconButton(
-          onPressed: () {
-            final addedKeywords = selectedWords
-                .map((selectableWord) => selectableWord.keyword.toLowerCase())
-                .toList();
-            selectedCategory.keywords = [
-              ...selectedCategory.keywords,
-              ...addedKeywords
-            ];
-            ref
-                .read(categoriesProvider.notifier)
-                .updateCategory(selectedCategory);
-          },
-          icon: const Icon(Icons.check),
-        )
       ],
     );
   }
+
+  UncategorisedRowData _onChangeData() {
+    return UncategorisedRowData(
+        selectedCategory,
+        selectedWords
+            .map((selectableWordItem) =>
+                selectableWordItem.keyword.toLowerCase())
+            .toList());
+  }
+}
+
+class UncategorisedRowData {
+  Category category;
+  List<String> keywords;
+  UncategorisedRowData(this.category, this.keywords);
 }
