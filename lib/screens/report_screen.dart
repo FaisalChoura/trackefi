@@ -38,12 +38,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             child: const Text('Generate Report'),
             onPressed: () async {
               final data = await csvReaderService.convertFilesToCsv(csvFiles);
-              final categorisedTransactions =
+              var categorisedTransactions =
                   // TODO handle multiple files
                   await categoriser.categorise(data[0]!);
 
               if (categorisedTransactions['Uncategorised']!.isNotEmpty) {
                 await _handleUncategorisedTransactions(categorisedTransactions);
+                categorisedTransactions =
+                    await categoriser.categorise(data[0]!);
               }
 
               setState(() {
