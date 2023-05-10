@@ -120,7 +120,7 @@ class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(widget.transaction.name),
+        SelectableWords(value: widget.transaction.name),
         DropdownButton(
             value: selectedCategory!.id,
             items: widget.categories
@@ -145,5 +145,42 @@ class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
         )
       ],
     );
+  }
+}
+
+class SelectableWords extends StatefulWidget {
+  const SelectableWords({
+    super.key,
+    required this.value,
+  });
+
+  final String value;
+
+  @override
+  State<SelectableWords> createState() => _SelectableWordsState();
+}
+
+class _SelectableWordsState extends State<SelectableWords> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (var keyword in _getKeywordsFromString(widget.value, ' '))
+              MaterialButton(
+                onPressed: () => print(keyword),
+                child: Text(keyword),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<String> _getKeywordsFromString(String value, Pattern splitBy) {
+    return value.split(splitBy);
   }
 }
