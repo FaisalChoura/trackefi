@@ -92,8 +92,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   }
 }
 
-const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
-
 class UncategorisedItemRow extends StatefulWidget {
   const UncategorisedItemRow({
     super.key,
@@ -110,7 +108,6 @@ class UncategorisedItemRow extends StatefulWidget {
 
 class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
   late Category selectedCategory;
-  String dropdownValue = list.first;
 
   @override
   void initState() {
