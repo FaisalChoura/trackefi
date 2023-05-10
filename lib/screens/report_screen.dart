@@ -92,7 +92,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   }
 }
 
-class UncategorisedItemRow extends StatefulWidget {
+class UncategorisedItemRow extends ConsumerStatefulWidget {
   const UncategorisedItemRow({
     super.key,
     required this.transaction,
@@ -103,11 +103,13 @@ class UncategorisedItemRow extends StatefulWidget {
   final List<Category> categories;
 
   @override
-  State<UncategorisedItemRow> createState() => _UncategorisedItemRowState();
+  ConsumerState<UncategorisedItemRow> createState() =>
+      _UncategorisedItemRowState();
 }
 
-class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
+class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
   late Category selectedCategory;
+  List<SelectableWordItem> selectedWords = [];
 
   @override
   void initState() {
@@ -120,7 +122,14 @@ class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SelectableWords(value: widget.transaction.name),
+        SelectableWords(
+          value: widget.transaction.name,
+          onChanged: (values) {
+            setState(() {
+              selectedWords = values;
+            });
+          },
+        ),
         DropdownButton(
             value: selectedCategory!.id,
             items: widget.categories
@@ -140,7 +149,18 @@ class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
             }),
         Text(widget.transaction.amount.toString()),
         IconButton(
-          onPressed: () => print(selectedCategory.name),
+          onPressed: () {
+            final addedKeywords = selectedWords
+                .map((selectableWord) => selectableWord.keyword.toLowerCase())
+                .toList();
+            selectedCategory.keywords = [
+              ...selectedCategory.keywords,
+              ...addedKeywords
+            ];
+            ref
+                .read(categoriesProvider.notifier)
+                .updateCategory(selectedCategory);
+          },
           icon: const Icon(Icons.check),
         )
       ],
@@ -152,15 +172,18 @@ class SelectableWords extends StatefulWidget {
   const SelectableWords({
     super.key,
     required this.value,
+    required this.onChanged,
   });
 
   final String value;
+  final ValueChanged<List<SelectableWordItem>> onChanged;
 
   @override
   State<SelectableWords> createState() => _SelectableWordsState();
 }
 
 class _SelectableWordsState extends State<SelectableWords> {
+  Map<int, SelectableWordItem> selectedWordItems = {};
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -169,10 +192,13 @@ class _SelectableWordsState extends State<SelectableWords> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var keyword in _getKeywordsFromString(widget.value, ' '))
+            for (var item in _getKeywordsFromString(widget.value, ' '))
               MaterialButton(
-                onPressed: () => print(keyword),
-                child: Text(keyword),
+                onPressed: () => _toggleSelectedWordItem(item),
+                color: selectedWordItems[item.id] != null
+                    ? Colors.blue
+                    : Colors.white,
+                child: Text(item.keyword),
               )
           ],
         ),
@@ -180,7 +206,31 @@ class _SelectableWordsState extends State<SelectableWords> {
     );
   }
 
-  List<String> _getKeywordsFromString(String value, Pattern splitBy) {
-    return value.split(splitBy);
+  List<SelectableWordItem> _getKeywordsFromString(
+      String value, Pattern splitBy) {
+    final mappedValues = value.split(splitBy).asMap();
+    return mappedValues.keys.map((key) {
+      return SelectableWordItem(key, mappedValues[key] ?? '');
+    }).toList();
   }
+
+  void _toggleSelectedWordItem(SelectableWordItem item) {
+    if (selectedWordItems[item.id] != null) {
+      selectedWordItems.remove(item.id);
+    } else {
+      selectedWordItems[item.id] = item;
+    }
+
+    setState(() {
+      selectedWordItems = selectedWordItems;
+
+      widget.onChanged(selectedWordItems.values.toList());
+    });
+  }
+}
+
+class SelectableWordItem {
+  int id;
+  String keyword;
+  SelectableWordItem(this.id, this.keyword);
 }
