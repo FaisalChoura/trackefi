@@ -65,10 +65,25 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     return showDialog<Map<String, List<Transaction>>>(
       context: context,
       builder: (BuildContext context) {
+        final uncategorisedTransactions =
+            categorisedTransactions['Uncategorised'];
         return Dialog(
-          child: Container(
-            child: Column(
-              children: [],
+          child: SizedBox(
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (uncategorisedTransactions != null)
+                    for (var transaction in uncategorisedTransactions)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(transaction.name),
+                          Text(transaction.amount.toString()),
+                        ],
+                      )
+                ],
+              ),
             ),
           ),
         );
