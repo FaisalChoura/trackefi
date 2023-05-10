@@ -70,24 +70,83 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         return Dialog(
           child: SizedBox(
             height: 400,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (uncategorisedTransactions != null)
-                    for (var transaction in uncategorisedTransactions)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(transaction.name),
-                          Text(transaction.amount.toString()),
-                        ],
-                      )
-                ],
-              ),
+            child: Consumer(
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                final categories = ref.watch(categoriesProvider);
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (uncategorisedTransactions != null)
+                        for (var transaction in uncategorisedTransactions)
+                          UncategorisedItemRow(
+                              transaction: transaction, categories: categories)
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         );
       },
+    );
+  }
+}
+
+const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
+
+class UncategorisedItemRow extends StatefulWidget {
+  const UncategorisedItemRow({
+    super.key,
+    required this.transaction,
+    required this.categories,
+  });
+
+  final Transaction transaction;
+  final List<Category> categories;
+
+  @override
+  State<UncategorisedItemRow> createState() => _UncategorisedItemRowState();
+}
+
+class _UncategorisedItemRowState extends State<UncategorisedItemRow> {
+  late Category selectedCategory;
+  String dropdownValue = list.first;
+
+  @override
+  void initState() {
+    selectedCategory = widget.categories[0];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(widget.transaction.name),
+        DropdownButton(
+            value: selectedCategory!.id,
+            items: widget.categories
+                .map(
+                  (category) => DropdownMenuItem(
+                    value: category.id,
+                    child: Text(category.name),
+                  ),
+                )
+                .toList(),
+            onChanged: (val) {
+              setState(() {
+                selectedCategory = widget.categories
+                    .where((element) => element.id == val!)
+                    .first;
+              });
+            }),
+        Text(widget.transaction.amount.toString()),
+        IconButton(
+          onPressed: () => print(selectedCategory.name),
+          icon: const Icon(Icons.check),
+        )
+      ],
     );
   }
 }
