@@ -115,10 +115,10 @@ class _UncategorisedItemsDialogState extends State<UncategorisedItemsDialog> {
                 IconButton(
                     onPressed: () {
                       for (var data in updatedRowCategoryData.values) {
-                        data.category.keywords = [
+                        data.category.keywords = <String>{
                           ...data.category.keywords,
                           ...data.keywords
-                        ];
+                        }.toList();
                         ref
                             .read(categoriesProvider.notifier)
                             .updateCategory(data.category);
