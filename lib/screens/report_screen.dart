@@ -94,7 +94,7 @@ class UncategorisedItemsDialog extends StatefulWidget {
 
 class _UncategorisedItemsDialogState extends State<UncategorisedItemsDialog> {
   List<Transaction> transactions = [];
-  List<UncategorisedRowData> updatedCategoryData = [];
+  Map<int, UncategorisedRowData> updatedRowCategoryData = {};
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _UncategorisedItemsDialogState extends State<UncategorisedItemsDialog> {
               children: [
                 IconButton(
                     onPressed: () {
-                      for (var data in updatedCategoryData) {
+                      for (var data in updatedRowCategoryData.values) {
                         data.category.keywords = [
                           ...data.category.keywords,
                           ...data.keywords
@@ -125,13 +125,13 @@ class _UncategorisedItemsDialogState extends State<UncategorisedItemsDialog> {
                       }
                     },
                     icon: Icon(Icons.check)),
-                for (var transaction in transactions)
+                for (var i = 0; i < transactions.length; i++)
                   // add id for changed rows and a submit button to handle the change
                   UncategorisedItemRow(
-                    transaction: transaction,
+                    transaction: transactions[i],
                     categories: categories,
                     onChanged: (categoryData) {
-                      updatedCategoryData.add(categoryData);
+                      updatedRowCategoryData[i] = categoryData;
                     },
                   )
               ],
