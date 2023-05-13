@@ -67,7 +67,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         if (report != null)
           Column(
             children: [
-              for (var category in report!.categories)
+              for (var category in report.categories)
                 Text("${category.name}: ${category.total}")
             ],
           )
