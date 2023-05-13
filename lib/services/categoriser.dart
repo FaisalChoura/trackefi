@@ -1,5 +1,3 @@
-import 'package:expense_categoriser/services/csv_reader_service.dart';
-
 import '../utils/enums/numbering_style.dart';
 import '../utils/models/category.dart';
 import '../utils/models/import_settings.dart';
@@ -7,8 +5,6 @@ import '../utils/models/transaction.dart';
 
 class Categoriser {
   List<Category> categories;
-  final CsvReaderService _csvReaderService = CsvReaderService();
-
   Categoriser(this.categories);
 
   Future<Map<String, List<Transaction>>> categorise(

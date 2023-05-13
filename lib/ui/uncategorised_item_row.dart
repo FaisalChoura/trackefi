@@ -47,7 +47,7 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
           },
         ),
         DropdownButton(
-            value: selectedCategory!.id,
+            value: selectedCategory.id,
             items: widget.categories
                 .map(
                   (category) => DropdownMenuItem(

@@ -30,7 +30,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     List<Category> categories = ref.watch(categoriesProvider);
     final csvFiles = ref.watch(csvFilesProvider);
 
-    Categoriser categoriser = Categoriser(categories);
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
       body: Column(children: [
@@ -39,14 +38,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             onPressed: () async {
               final data = await csvReaderService.convertFilesToCsv(csvFiles);
               var categorisedTransactions =
-                  // TODO handle multiple files
-                  await categoriser.categorise(data[0]!);
-
-              if (categorisedTransactions['Uncategorised']!.isNotEmpty) {
-                await _handleUncategorisedTransactions(categorisedTransactions);
-                categorisedTransactions =
-                    await categoriser.categorise(data[0]!);
-              }
+                  await _buildCategorisedTransactions(data, categories);
 
               setState(() {
                 report = reportService.generateReport(categorisedTransactions);
@@ -63,13 +55,27 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
+  Future<Map<String, List<Transaction>>> _buildCategorisedTransactions(
+      Map<int, List<List<dynamic>>> data, List<Category> categories) async {
+    Categoriser categoriser = Categoriser(categories);
+
+    var categorisedTransactions =
+        // TODO handle multiple files
+        await categoriser.categorise(data[0]!);
+
+    if (categorisedTransactions['Uncategorised']!.isNotEmpty) {
+      await _handleUncategorisedTransactions(
+          categorisedTransactions['Uncategorised']!);
+      categorisedTransactions = await categoriser.categorise(data[0]!);
+    }
+    return categorisedTransactions;
+  }
+
   Future<Map<String, List<Transaction>>?> _handleUncategorisedTransactions(
-      Map<String, List<Transaction>> categorisedTransactions) async {
+      List<Transaction> uncategorisedTransactions) async {
     return showDialog<Map<String, List<Transaction>>>(
       context: context,
       builder: (BuildContext context) {
-        final uncategorisedTransactions =
-            categorisedTransactions['Uncategorised'];
         return Dialog(
           child: UncategorisedItemsDialog(
               uncategorisedTransactions: uncategorisedTransactions),
@@ -111,20 +117,9 @@ class _UncategorisedItemsDialogState
       child: Column(
         children: [
           IconButton(
-              onPressed: () {
-                for (var data in updatedRowCategoryData.values) {
-                  data.category.keywords = <String>{
-                    ...data.category.keywords,
-                    ...data.keywords
-                  }.toList();
-                  ref
-                      .read(categoriesProvider.notifier)
-                      .updateCategory(data.category);
-                }
-              },
-              icon: Icon(Icons.check)),
+              onPressed: () => _updateCategories(),
+              icon: const Icon(Icons.check)),
           for (var i = 0; i < transactions.length; i++)
-            // add id for changed rows and a submit button to handle the change
             UncategorisedItemRow(
               transaction: transactions[i],
               categories: categories,
@@ -135,5 +130,14 @@ class _UncategorisedItemsDialogState
         ],
       ),
     );
+  }
+
+  void _updateCategories() {
+    for (var data in updatedRowCategoryData.values) {
+      // create a set is used to make the list contain unique values
+      data.category.keywords =
+          <String>{...data.category.keywords, ...data.keywords}.toList();
+      ref.read(categoriesProvider.notifier).updateCategory(data.category);
+    }
   }
 }

@@ -39,7 +39,7 @@ class Category {
 
   void removeKeyword(String keyword) {
     // keywords.remove(keyword);
-    // TODO fix this in the future
+    // TODO fix this in the future the ability not to edit
     var tempKeywords = [...keywords];
     tempKeywords.remove(keyword);
     keywords = tempKeywords;
