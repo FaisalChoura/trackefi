@@ -1,9 +1,9 @@
-import 'package:expense_categoriser/utils/models/category.dart';
+import 'package:expense_categoriser/categories/utils/models/category.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../reports/ui/uncategorised_item_row.dart';
+import '../../reports/ui/uncategorised_item_row.dart';
 
 class CategoriesNotifier extends StateNotifier<List<Category>> {
   Isar? _isar;

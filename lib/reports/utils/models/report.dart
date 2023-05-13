@@ -1,4 +1,4 @@
-import '../../utils/models/transaction.dart';
+import 'transaction.dart';
 
 class ReportCategory {
   num total = 0;

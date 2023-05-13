@@ -1,11 +1,11 @@
+import 'package:expense_categoriser/categories/services/categoriser.dart';
+import 'package:expense_categoriser/categories/utils/models/category.dart';
+import 'package:expense_categoriser/csv_files/services/csv_reader_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../services/categoriser.dart';
-import '../../services/csv_reader_service.dart';
-import '../../utils/models/category.dart';
-import '../../utils/models/transaction.dart';
-import '../models/report.dart';
+import '../utils/models/transaction.dart';
+import '../utils/models/report.dart';
 
 class ReportViewModel {
   Report? report;

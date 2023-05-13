@@ -1,9 +1,8 @@
+import 'package:expense_categoriser/csv_files/providers/csv_files_provider.dart';
+import 'package:expense_categoriser/csv_files/services/csv_reader_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../services/csv_files_provider.dart';
-import '../services/csv_reader_service.dart';
 
 class CsvImportScreen extends ConsumerWidget {
   final CsvReaderService csvReaderService = CsvReaderService();

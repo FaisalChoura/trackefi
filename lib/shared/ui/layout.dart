@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/utils/constants/pages.dart';
+import 'package:expense_categoriser/shared/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
