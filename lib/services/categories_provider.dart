@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../reports/ui/uncategorised_item_row.dart';
+
 class CategoriesNotifier extends StateNotifier<List<Category>> {
   Isar? _isar;
   CategoriesNotifier() : super([]) {
@@ -46,6 +48,16 @@ class CategoriesNotifier extends StateNotifier<List<Category>> {
 
   Future<Category?> getCategory(int id) async {
     return await _isar!.categories.get(id);
+  }
+
+  void updateCategoriesFromRowData(List<UncategorisedRowData> values) {
+    for (var data in values) {
+      // create a set is used to make the list contain unique values
+      data.category.keywords =
+          <String>{...data.category.keywords, ...data.keywords}.toList();
+      // TODO can be improved to batch operation
+      updateCategory(data.category);
+    }
   }
 }
 

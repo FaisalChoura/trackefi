@@ -1,5 +1,6 @@
-import '../utils/models/report.dart';
-import '../utils/models/transaction.dart';
+import 'package:expense_categoriser/reports/models/report.dart';
+
+import '../../utils/models/transaction.dart';
 
 class ReportService {
   Report generateReport(

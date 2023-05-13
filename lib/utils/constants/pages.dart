@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../screens/categories_screen.dart';
 import '../../screens/csv_import_screen.dart';
-import '../../screens/report_screen.dart';
+import '../../reports/screens/report_screen.dart';
 
 final pages = <String, WidgetBuilder>{
   ScreenRoutes.categories: (_) => const CategoriesScreen(),

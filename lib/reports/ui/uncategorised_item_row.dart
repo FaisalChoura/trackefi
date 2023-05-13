@@ -1,10 +1,10 @@
-import 'package:expense_categoriser/ui/selectable_words.dart';
+import 'package:expense_categoriser/reports/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../utils/models/category.dart';
-import '../utils/models/selectable_word_item.dart';
-import '../utils/models/transaction.dart';
+import '../../utils/models/category.dart';
+import '../../utils/models/transaction.dart';
+import '../models/selectable_word_item.dart';
 
 class UncategorisedItemRow extends ConsumerStatefulWidget {
   const UncategorisedItemRow(

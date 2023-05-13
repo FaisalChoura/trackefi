@@ -1,17 +1,18 @@
 import 'dart:async';
 
+import 'package:expense_categoriser/reports/models/report.dart';
+import 'package:expense_categoriser/reports/view_models/report_view_model.dart';
 import 'package:expense_categoriser/services/categoriser.dart';
 import 'package:expense_categoriser/services/csv_reader_service.dart';
-import 'package:expense_categoriser/services/report_service.dart';
+import 'package:expense_categoriser/reports/view_models/report_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/categories_provider.dart';
-import '../services/csv_files_provider.dart';
+import '../../services/categories_provider.dart';
+import '../../services/csv_files_provider.dart';
 import '../ui/uncategorised_item_row.dart';
-import '../utils/models/category.dart';
-import '../utils/models/report.dart';
-import '../utils/models/transaction.dart';
+import '../../utils/models/category.dart';
+import '../../utils/models/transaction.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -23,12 +24,13 @@ class ReportScreen extends ConsumerStatefulWidget {
 class _ReportScreenState extends ConsumerState<ReportScreen> {
   final ReportService reportService = ReportService();
   final CsvReaderService csvReaderService = CsvReaderService();
-  Report? report;
 
   @override
   Widget build(BuildContext context) {
     List<Category> categories = ref.watch(categoriesProvider);
     final csvFiles = ref.watch(csvFilesProvider);
+    final viewModel = ref.watch(reportViewModel);
+    final Report? report = viewModel.report;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
@@ -36,13 +38,31 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         MaterialButton(
             child: const Text('Generate Report'),
             onPressed: () async {
-              final data = await csvReaderService.convertFilesToCsv(csvFiles);
-              var categorisedTransactions =
-                  await _buildCategorisedTransactions(data, categories);
+              var categorisedTransactions = await ref
+                  .read(reportViewModel.notifier)
+                  .categoriseTransactions(csvFiles, categories);
 
-              setState(() {
-                report = reportService.generateReport(categorisedTransactions);
-              });
+              if (ref
+                  .read(reportViewModel.notifier)
+                  .hasUncategorisedTransactions(categorisedTransactions)) {
+                List<UncategorisedRowData>? updatedCategoryData = [];
+
+                updatedCategoryData = await _handleUncategorisedTransactions(
+                    categorisedTransactions['Uncategorised']!);
+
+                if (updatedCategoryData!.isNotEmpty) {
+                  ref
+                      .read(categoriesProvider.notifier)
+                      .updateCategoriesFromRowData(updatedCategoryData);
+                }
+
+                categorisedTransactions = await ref
+                    .read(reportViewModel.notifier)
+                    .categoriseTransactions(csvFiles, categories);
+              }
+              ref
+                  .read(reportViewModel.notifier)
+                  .buildReport(categorisedTransactions);
             }),
         if (report != null)
           Column(
@@ -55,25 +75,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  Future<Map<String, List<Transaction>>> _buildCategorisedTransactions(
-      Map<int, List<List<dynamic>>> data, List<Category> categories) async {
-    Categoriser categoriser = Categoriser(categories);
-
-    var categorisedTransactions =
-        // TODO handle multiple files
-        await categoriser.categorise(data[0]!);
-
-    if (categorisedTransactions['Uncategorised']!.isNotEmpty) {
-      await _handleUncategorisedTransactions(
-          categorisedTransactions['Uncategorised']!);
-      categorisedTransactions = await categoriser.categorise(data[0]!);
-    }
-    return categorisedTransactions;
-  }
-
-  Future<Map<String, List<Transaction>>?> _handleUncategorisedTransactions(
+  Future<List<UncategorisedRowData>?> _handleUncategorisedTransactions(
       List<Transaction> uncategorisedTransactions) async {
-    return showDialog<Map<String, List<Transaction>>>(
+    return showDialog<List<UncategorisedRowData>>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
@@ -117,7 +121,8 @@ class _UncategorisedItemsDialogState
       child: Column(
         children: [
           IconButton(
-              onPressed: () => _updateCategories(),
+              onPressed: () => Navigator.of(context)
+                  .pop(updatedRowCategoryData.values.toList()),
               icon: const Icon(Icons.check)),
           for (var i = 0; i < transactions.length; i++)
             UncategorisedItemRow(
@@ -130,14 +135,5 @@ class _UncategorisedItemsDialogState
         ],
       ),
     );
-  }
-
-  void _updateCategories() {
-    for (var data in updatedRowCategoryData.values) {
-      // create a set is used to make the list contain unique values
-      data.category.keywords =
-          <String>{...data.category.keywords, ...data.keywords}.toList();
-      ref.read(categoriesProvider.notifier).updateCategory(data.category);
-    }
   }
 }
