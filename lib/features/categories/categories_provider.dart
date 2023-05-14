@@ -3,7 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../utils/models/categories/category.dart';
-import '../../reports/ui/uncategorised_item_row.dart';
+import '../reports/ui/uncategorised_item_row.dart';
 
 class CategoriesNotifier extends StateNotifier<List<Category>> {
   Isar? _isar;

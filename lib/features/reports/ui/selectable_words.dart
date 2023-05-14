@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/models/selectable_word_item.dart';
+import '../../../utils/models/selectable_word_item.dart';
 
 class SelectableWords extends StatefulWidget {
   const SelectableWords({

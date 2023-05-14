@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../utils/models/categories/category.dart';
-import '../providers/categories_provider.dart';
-import '../ui/category_keyword_field.dart';
+import 'categories_provider.dart';
+import 'ui/category_keyword_field.dart';
 
 final showNewCategoryField = StateProvider<bool>((ref) => false);
 final selectedCategoryId = StateProvider<int>((ref) => 0);
