@@ -4,37 +4,43 @@ import 'package:path_provider/path_provider.dart';
 
 import '../utils/models/categories/category.dart';
 
-class CategoriesRepository {
-  CategoriesRepository();
-
+abstract class Repository<T> {
+  Repository(this.schema);
+  CollectionSchema<T> schema;
   Isar? _isar;
 
-  Future<void> _initDatabase() async {
+  Future<bool> checkDbConnection() async {
     if (_isar == null) {
       final dir = await getApplicationDocumentsDirectory();
       _isar ??= await Isar.open(
-        [CategorySchema],
+        [this.schema],
         directory: dir.path,
       );
     }
+    return true;
   }
+}
+
+class CategoriesRepository extends Repository<Category> {
+  CategoriesRepository(super.schema);
 
   // Returns category or null if not found
+  @override
   Future<Category?> get(int id) async {
-    await _initDatabase();
+    await checkDbConnection();
     return await _isar!.categories.get(id);
   }
 
   // Returns category or null if not found
   Future<List<Category>> getAll() async {
-    await _initDatabase();
+    await checkDbConnection();
 
     return await _isar!.categories.where().findAll();
   }
 
   // Returns the id of the created or updated category
   Future<int?> putCategory(Category category) async {
-    await _initDatabase();
+    await checkDbConnection();
 
     return await _isar?.writeTxn(() async {
       return await _isar!.categories.put(category);
@@ -43,7 +49,7 @@ class CategoriesRepository {
 
   // Returns bool of status of task
   Future<bool> delete(int id) async {
-    await _initDatabase();
+    await checkDbConnection();
 
     return await _isar!.writeTxn(() async {
       return await _isar!.categories.delete(id);
@@ -51,5 +57,5 @@ class CategoriesRepository {
   }
 }
 
-final categoryRepository =
-    Provider<CategoriesRepository>((ref) => CategoriesRepository());
+final categoryRepository = Provider<CategoriesRepository>(
+    (ref) => CategoriesRepository(CategorySchema));
