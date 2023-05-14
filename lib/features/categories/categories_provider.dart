@@ -1,53 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
 
+import '../../repositories/category_repository.dart';
 import '../../utils/models/categories/category.dart';
 import '../reports/ui/uncategorised_item_row.dart';
 
 class CategoriesNotifier extends StateNotifier<List<Category>> {
-  Isar? _isar;
-  CategoriesNotifier() : super([]) {
+  CategoriesRepository categoriesRepository;
+  CategoriesNotifier(this.categoriesRepository) : super([]) {
     _init();
   }
 
   _init() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _isar ??= await Isar.open(
-      [CategorySchema],
-      directory: dir.path,
-    );
-
-    final categories = _isar!.categories;
-    state = await categories.where().findAll();
+    state = await categoriesRepository.getAll();
   }
 
   void addCategory(Category category) async {
-    await _isar?.writeTxn(() async {
-      await _isar!.categories.put(category);
-      state = [...state, category];
-    });
+    await categoriesRepository.putCategory(category);
+    state = [...state, category];
   }
 
   void updateCategory(Category category) async {
-    await _isar?.writeTxn(() async {
-      await _isar!.categories.put(category);
-      state = [
-        for (final cat in state)
-          if (cat.id == category.id) category else cat,
-      ];
-    });
+    await categoriesRepository.putCategory(category);
+    state = [
+      for (final cat in state)
+        if (cat.id == category.id) category else cat,
+    ];
   }
 
   void deleteCategory(Category category) async {
-    await _isar!.writeTxn(() async {
-      await _isar!.categories.delete(category.id);
+    final deleted = await categoriesRepository.delete(category.id);
+    if (deleted) {
       state = state.where((cat) => cat.id != category.id).toList();
-    });
+    }
   }
 
   Future<Category?> getCategory(int id) async {
-    return await _isar!.categories.get(id);
+    return await categoriesRepository.get(id);
   }
 
   void updateCategoriesFromRowData(List<UncategorisedRowData> values) {
@@ -62,5 +50,7 @@ class CategoriesNotifier extends StateNotifier<List<Category>> {
 }
 
 final categoriesProvider =
-    StateNotifierProvider<CategoriesNotifier, List<Category>>(
-        (ref) => CategoriesNotifier());
+    StateNotifierProvider<CategoriesNotifier, List<Category>>((ref) {
+  final categoriesRepo = ref.read(categoryRepository);
+  return CategoriesNotifier(categoriesRepo);
+});
