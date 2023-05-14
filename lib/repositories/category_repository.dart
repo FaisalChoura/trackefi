@@ -25,7 +25,6 @@ class CategoriesRepository extends Repository<Category> {
   CategoriesRepository(super.schema);
 
   // Returns category or null if not found
-  @override
   Future<Category?> get(int id) async {
     await checkDbConnection();
     return await _isar!.categories.get(id);
