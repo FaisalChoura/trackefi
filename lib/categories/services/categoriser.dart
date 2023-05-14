@@ -1,7 +1,7 @@
-import 'package:expense_categoriser/categories/utils/enums/numbering_style.dart';
-import 'package:expense_categoriser/categories/utils/models/category.dart';
+import 'package:expense_categoriser/utils/enums/numbering_style.dart';
 import 'package:expense_categoriser/csv_files/utils/models/import_settings.dart';
 
+import '../../utils/models/categories/category.dart';
 import '../../reports/utils/models/transaction.dart';
 
 class Categoriser {

@@ -1,7 +1,7 @@
-import 'package:expense_categoriser/categories/utils/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../utils/models/categories/category.dart';
 import '../providers/categories_provider.dart';
 import '../ui/category_keyword_field.dart';
 

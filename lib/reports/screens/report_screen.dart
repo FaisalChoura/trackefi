@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:expense_categoriser/categories/utils/models/category.dart';
 import 'package:expense_categoriser/csv_files/providers/csv_files_provider.dart';
 import 'package:expense_categoriser/reports/utils/models/report.dart';
 import 'package:expense_categoriser/reports/view_models/report_view_model.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../categories/providers/categories_provider.dart';
 import '../../csv_files/services/csv_reader_service.dart';
+import '../../utils/models/categories/category.dart';
 import '../ui/uncategorised_item_row.dart';
 import '../utils/models/transaction.dart';
 
