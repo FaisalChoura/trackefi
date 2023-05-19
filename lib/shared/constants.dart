@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../features/categories/categories_screen.dart';
+import '../features/categories/presentaion/view/categories_screen.dart';
 import '../features/csv_files/csv_import_screen.dart';
 import '../features/reports/report_screen.dart';
 
