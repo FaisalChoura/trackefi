@@ -1,8 +1,8 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
-abstract class DbAccessRepository<T> {
-  DbAccessRepository(this.schema);
+abstract class DatabaseModel<T> {
+  DatabaseModel(this.schema);
   CollectionSchema<T> schema;
   Isar? isar;
 

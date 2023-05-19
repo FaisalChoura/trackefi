@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/models/categories/category.dart';
+import '../domain/model/category.dart';
 
 class CategoryKeywordField extends ConsumerStatefulWidget {
   final Category category;

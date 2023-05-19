@@ -1,6 +1,6 @@
 import 'package:expense_categoriser/utils/enums/numbering_style.dart';
 
-import '../utils/models/categories/category.dart';
+import '../features/categories/domain/model/category.dart';
 import '../utils/models/import_settings.dart';
 import '../utils/models/transaction.dart';
 

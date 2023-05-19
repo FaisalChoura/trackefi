@@ -2,9 +2,10 @@ import 'package:expense_categoriser/features/reports/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/models/categories/category.dart';
+import '../../../shared/domain/model/uncategories_row_data.dart';
 import '../../../utils/models/selectable_word_item.dart';
 import '../../../utils/models/transaction.dart';
+import '../../categories/domain/model/category.dart';
 
 class UncategorisedItemRow extends ConsumerStatefulWidget {
   const UncategorisedItemRow(
@@ -77,10 +78,4 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
                 selectableWordItem.keyword.toLowerCase())
             .toList());
   }
-}
-
-class UncategorisedRowData {
-  Category category;
-  List<String> keywords;
-  UncategorisedRowData(this.category, this.keywords);
 }

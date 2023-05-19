@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/models/categories/category.dart';
-import 'categories_provider.dart';
-import 'ui/category_keyword_field.dart';
+import '../../domain/model/category.dart';
+import '../category_keyword_field.dart';
+import '../viewmodel/categories_viewmodel.dart';
 
 final showNewCategoryField = StateProvider<bool>((ref) => false);
 final selectedCategoryId = StateProvider<int>((ref) => 0);
@@ -43,8 +43,15 @@ class CategoriesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Category> categories = ref.watch(categoriesProvider);
     bool showField = ref.watch(showNewCategoryField);
+    return ref.watch(categoriesViewModelStateNotifierProvider).maybeWhen(
+        data: (content) => _buildCategoriesView(showField, ref, content),
+        orElse: () =>
+            const Expanded(child: Center(child: CircularProgressIndicator())));
+  }
+
+  SizedBox _buildCategoriesView(
+      bool showField, WidgetRef ref, List<Category> categories) {
     return SizedBox(
         width: 180,
         child: Column(
@@ -62,7 +69,9 @@ class CategoriesList extends ConsumerWidget {
                             IconButton(
                               onPressed: () {
                                 ref
-                                    .watch(categoriesProvider.notifier)
+                                    .read(
+                                        categoriesViewModelStateNotifierProvider
+                                            .notifier)
                                     .addCategory(Category(
                                         categoryNameController.text, []));
                                 _closeNewCategoryInput(ref);
@@ -107,9 +116,11 @@ class CategoryDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(selectedCategoryId);
-    ref.watch(categoriesProvider);
+    ref.watch(categoriesViewModelStateNotifierProvider);
     return FutureBuilder(
-        future: ref.watch(categoriesProvider.notifier).getCategory(id),
+        future: ref
+            .watch(categoriesViewModelStateNotifierProvider.notifier)
+            .getCategory(id),
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             final category = snapshot.data!;
@@ -118,15 +129,15 @@ class CategoryDetails extends ConsumerWidget {
                 IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () => ref
-                        .read(categoriesProvider.notifier)
-                        .deleteCategory(category)),
+                        .read(categoriesViewModelStateNotifierProvider.notifier)
+                        .deleteCategory(category.id)),
                 Text(category.name),
                 CategoryKeywordField(
                   category: category,
                   onChange: (String addedCategory) {
                     category.keywords = [...category.keywords, addedCategory];
                     ref
-                        .read(categoriesProvider.notifier)
+                        .read(categoriesViewModelStateNotifierProvider.notifier)
                         .updateCategory(category);
                   },
                 ),
@@ -136,7 +147,8 @@ class CategoryDetails extends ConsumerWidget {
                       onPressed: () {
                         category.removeKeyword(keyword);
                         ref
-                            .read(categoriesProvider.notifier)
+                            .read(categoriesViewModelStateNotifierProvider
+                                .notifier)
                             .updateCategory(category);
                       }),
               ],

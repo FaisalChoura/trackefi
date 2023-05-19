@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../utils/models/categories/category.dart';
-import 'db_access_repository.dart';
+import '../../../shared/data/database/database_model.dart';
+import '../domain/model/category.dart';
 
-class CategoriesRepository extends DbAccessRepository<Category> {
-  CategoriesRepository(super.schema);
+class CategoriesDatabase extends DatabaseModel<Category> {
+  CategoriesDatabase(super.schema);
 
   // Returns category or null if not found
   Future<Category?> get(int id) async {
@@ -21,12 +21,12 @@ class CategoriesRepository extends DbAccessRepository<Category> {
     return await isar!.categories.where().findAll();
   }
 
-  // Returns the id of the created or updated category
-  Future<int?> putCategory(Category category) async {
+  Future<Category?> putCategory(Category category) async {
     await checkDbConnection();
 
     return await isar?.writeTxn(() async {
-      return await isar!.categories.put(category);
+      await isar!.categories.put(category);
+      return category;
     });
   }
 
@@ -40,5 +40,5 @@ class CategoriesRepository extends DbAccessRepository<Category> {
   }
 }
 
-final categoryRepository = Provider<CategoriesRepository>(
-    (ref) => CategoriesRepository(CategorySchema));
+final categoryRepository =
+    Provider<CategoriesDatabase>((ref) => CategoriesDatabase(CategorySchema));
