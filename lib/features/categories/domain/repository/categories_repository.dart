@@ -8,6 +8,4 @@ abstract class CategoriesRepository {
 
   Future<Category?> getCategory(int id);
   Future<List<Category>> getAllCategories();
-
-  void updateCategoriesFromRowData(List<UncategorisedRowData> values);
 }

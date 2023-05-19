@@ -26,15 +26,4 @@ class CategoriesRepositoryImpl implements CategoriesRepository {
   Future<List<Category>> getAllCategories() async {
     return await _categoriesDatabase.getAll();
   }
-
-  @override
-  void updateCategoriesFromRowData(List<UncategorisedRowData> values) {
-    for (var data in values) {
-      // create a set is used to make the list contain unique values
-      data.category.keywords =
-          <String>{...data.category.keywords, ...data.keywords}.toList();
-      // TODO can be improved to batch operation
-      putCategory(data.category);
-    }
-  }
 }
