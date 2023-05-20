@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/categoriser.dart';
 import '../../services/csv_reader_service.dart';
-import '../../utils/models/report.dart';
-import '../../utils/models/transaction.dart';
+import 'domain/model/report.dart';
+import 'domain/model/transaction.dart';
 import '../categories/domain/model/category.dart';
 
 class ReportViewModel {

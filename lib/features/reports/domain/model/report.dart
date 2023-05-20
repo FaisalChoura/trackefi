@@ -1,4 +1,4 @@
-import 'transaction.dart';
+import 'package:expense_categoriser/features/reports/domain/model/transaction.dart';
 
 class ReportCategory {
   num total = 0;

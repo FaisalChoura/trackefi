@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/domain/model/uncategories_row_data.dart';
 import '../../../utils/models/selectable_word_item.dart';
-import '../../../utils/models/transaction.dart';
+import '../domain/model/transaction.dart';
 import '../../categories/domain/model/category.dart';
 
 class UncategorisedItemRow extends ConsumerStatefulWidget {

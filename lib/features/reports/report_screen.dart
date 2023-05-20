@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/domain/model/uncategories_row_data.dart';
-import '../../utils/models/report.dart';
-import '../../utils/models/transaction.dart';
+import 'domain/model/report.dart';
+import 'domain/model/transaction.dart';
 import '../../services/csv_reader_service.dart';
 import '../categories/domain/model/category.dart';
 import '../categories/presentaion/viewmodel/categories_viewmodel.dart';
