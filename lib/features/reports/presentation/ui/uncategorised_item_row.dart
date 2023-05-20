@@ -1,11 +1,11 @@
-import 'package:expense_categoriser/features/reports/ui/selectable_words.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/domain/model/uncategories_row_data.dart';
-import '../../../utils/models/selectable_word_item.dart';
-import '../domain/model/transaction.dart';
-import '../../categories/domain/model/category.dart';
+import '../../../../shared/domain/model/uncategories_row_data.dart';
+import '../../../../utils/models/selectable_word_item.dart';
+import '../../domain/model/transaction.dart';
+import '../../../categories/domain/model/category.dart';
 
 class UncategorisedItemRow extends ConsumerStatefulWidget {
   const UncategorisedItemRow(

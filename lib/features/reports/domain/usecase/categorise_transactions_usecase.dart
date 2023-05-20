@@ -1,12 +1,21 @@
+import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+
 import '../../../../utils/enums/numbering_style.dart';
 import '../../../../utils/models/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 import '../model/transaction.dart';
 
 class CategoriseTransactionsUseCase {
-  List<Category> categories;
+  late List<Category> _categories;
+  final CategoriesRepository _categoriesRepository;
 
-  CategoriseTransactionsUseCase(this.categories);
+  CategoriseTransactionsUseCase(this._categoriesRepository) {
+    _init();
+  }
+
+  _init() async {
+    _categories = await _categoriesRepository.getAllCategories();
+  }
 
   Future<Map<String, List<Transaction>>> execute(
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
@@ -17,7 +26,7 @@ class CategoriseTransactionsUseCase {
     Map<String, List<Transaction>> categorisedTransactions =
         <String, List<Transaction>>{};
 
-    for (var category in categories) {
+    for (var category in _categories) {
       categorisedTransactions.putIfAbsent(category.name, () => []);
     }
     categorisedTransactions.putIfAbsent('Uncategorised', () => []);
@@ -45,7 +54,7 @@ class CategoriseTransactionsUseCase {
   Category? _findCategory(String description) {
     Category? matchedCategory;
     num lastStrength = 0;
-    for (var category in categories) {
+    for (var category in _categories) {
       if (category.isPartOfCategory(description)) {
         num newStrength = category.matchingStrength(description);
         if (newStrength > lastStrength) {

@@ -1,17 +1,17 @@
 import 'dart:async';
 
+import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../shared/domain/model/uncategories_row_data.dart';
-import 'domain/model/report.dart';
-import 'domain/model/transaction.dart';
-import '../../services/csv_reader_service.dart';
-import '../categories/domain/model/category.dart';
-import '../categories/presentaion/viewmodel/categories_viewmodel.dart';
-import '../csv_files/csv_files_provider.dart';
-import 'report_view_model.dart';
-import 'ui/uncategorised_item_row.dart';
+import '../../../../shared/domain/model/uncategories_row_data.dart';
+import '../../domain/model/report.dart';
+import '../../domain/model/transaction.dart';
+import '../../../../services/csv_reader_service.dart';
+import '../../../categories/domain/model/category.dart';
+import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
+import '../../../csv_files/csv_files_provider.dart';
+import '../ui/uncategorised_item_row.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -26,8 +26,6 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     final csvFiles = ref.watch(csvFilesProvider);
-    final viewModel = ref.watch(reportViewModel);
-    final Report? report = viewModel.report;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
@@ -67,13 +65,21 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   .read(reportViewModel.notifier)
                   .buildReport(categorisedTransactions);
             }),
-        if (report != null)
-          Column(
-            children: [
-              for (var category in report.categories)
-                Text("${category.name}: ${category.total}")
-            ],
-          )
+        ref.watch(reportViewModel).maybeWhen(
+              data: (report) {
+                if (report != null) {
+                  return Column(
+                    children: [
+                      for (var category in report.categories)
+                        Text("${category.name}: ${category.total}")
+                    ],
+                  );
+                }
+                return Container();
+              },
+              orElse: () => const Expanded(
+                  child: Center(child: CircularProgressIndicator())),
+            )
       ]),
     );
   }
