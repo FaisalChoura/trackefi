@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/model/uncategories_row_data.dart';
-import '../../domain/model/report.dart';
+import '../../../csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import '../../domain/model/transaction.dart';
-import '../../../../services/csv_reader_service.dart';
 import '../../../categories/domain/model/category.dart';
 import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
-import '../../../csv_files/csv_files_provider.dart';
 import '../ui/uncategorised_item_row.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
@@ -21,11 +19,10 @@ class ReportScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportScreenState extends ConsumerState<ReportScreen> {
-  final CsvReaderService csvReaderService = CsvReaderService();
-
   @override
   Widget build(BuildContext context) {
-    final csvFiles = ref.watch(csvFilesProvider);
+    // TODO fix this dependency
+    final csvFiles = ref.watch(csvFilesViewModelProvider).value!;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),

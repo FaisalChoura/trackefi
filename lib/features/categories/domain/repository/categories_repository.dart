@@ -1,4 +1,3 @@
-import '../../../../shared/domain/model/uncategories_row_data.dart';
 import '../model/category.dart';
 
 abstract class CategoriesRepository {

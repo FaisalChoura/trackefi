@@ -1,4 +1,3 @@
-import '../../../shared/domain/model/uncategories_row_data.dart';
 import '../domain/model/category.dart';
 import '../domain/repository/categories_repository.dart';
 import 'categories_database.dart';
