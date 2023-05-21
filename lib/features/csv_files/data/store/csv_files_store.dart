@@ -8,7 +8,7 @@ class CsvFilesStore extends StateNotifier<List<PlatformFile>> {
     state = [...state, ...files];
   }
 
-  removeFile(PlatformFile file) {
+  void removeFile(PlatformFile file) {
     state = state.where((f) => f.path != file.path).toList();
   }
 }
