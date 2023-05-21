@@ -1,7 +1,6 @@
 import 'package:expense_categoriser/features/categories/domain/domain_module.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/domain/model/uncategories_row_data.dart';
 import '../../domain/model/category.dart';
 import '../../domain/usecase/delete_category_usecase.dart';
 import '../../domain/usecase/get_all_categories_usecase.dart';
@@ -72,15 +71,5 @@ class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
 
   Future<Category?> getCategory(int id) async {
     return await _getCategoryUseCase.execute(id);
-  }
-
-  void updateCategoriesFromRowData(List<UncategorisedRowData> values) {
-    for (var data in values) {
-      // create a set is used to make the list contain unique values
-      data.category.keywords =
-          <String>{...data.category.keywords, ...data.keywords}.toList();
-      // TODO can be improved to batch operation
-      updateCategory(data.category);
-    }
   }
 }

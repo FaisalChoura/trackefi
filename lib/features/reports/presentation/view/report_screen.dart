@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/model/uncategories_row_data.dart';
 import '../../domain/model/transaction.dart';
-import '../../../categories/domain/model/category.dart';
 import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
 import '../ui/uncategorised_item_row.dart';
 
@@ -29,13 +28,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         MaterialButton(
             child: const Text('Generate Report'),
             onPressed: () async {
-              // TODO remove dependency on viewModel
-              List<Category> categories =
-                  ref.read(categoriesViewModelStateNotifierProvider).value ??
-                      [];
               var categorisedTransactions = await ref
                   .read(reportViewModel.notifier)
-                  .categoriseTransactions(csvFiles, categories);
+                  .categoriseTransactions(csvFiles);
 
               if (ref
                   .read(reportViewModel.notifier)
@@ -49,13 +44,13 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   // TODO remove dependency on viewModel
 
                   ref
-                      .read(categoriesViewModelStateNotifierProvider.notifier)
+                      .read(reportViewModel.notifier)
                       .updateCategoriesFromRowData(updatedCategoryData);
                 }
 
                 categorisedTransactions = await ref
                     .read(reportViewModel.notifier)
-                    .categoriseTransactions(csvFiles, categories);
+                    .categoriseTransactions(csvFiles);
               }
               ref
                   .read(reportViewModel.notifier)
