@@ -41,9 +41,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                     categorisedTransactions['Uncategorised']!);
 
                 if (updatedCategoryData!.isNotEmpty) {
-                  // TODO remove dependency on viewModel
-
-                  ref
+                  await ref
                       .read(reportViewModel.notifier)
                       .updateCategoriesFromRowData(updatedCategoryData);
                 }

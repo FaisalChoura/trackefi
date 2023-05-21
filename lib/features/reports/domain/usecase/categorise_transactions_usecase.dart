@@ -10,15 +10,17 @@ class CategoriseTransactionsUseCase {
   final CategoriesRepository _categoriesRepository;
 
   CategoriseTransactionsUseCase(this._categoriesRepository) {
-    _init();
+    _getCategories();
   }
 
-  _init() async {
+  _getCategories() async {
     _categories = await _categoriesRepository.getAllCategories();
   }
 
   Future<Map<String, List<Transaction>>> execute(
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
+    // get updated list of categories
+    await _getCategories();
     importSettings.fieldIndexes.amountField = 2;
     importSettings.fieldIndexes.dateField = 0;
     importSettings.fieldIndexes.descriptionField = 1;

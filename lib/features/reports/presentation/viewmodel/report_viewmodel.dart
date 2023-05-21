@@ -56,10 +56,12 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
     return categorisedTransactions['Uncategorised']!.isNotEmpty;
   }
 
-  void updateCategoriesFromRowData(List<UncategorisedRowData> values) {
+  Future<void> updateCategoriesFromRowData(
+      List<UncategorisedRowData> values) async {
     final updatedCategories = _updateCategoriesFromRowData.execute(values);
+    // TODO loops over multiple times if same cateogry is chosen for different keywords
     for (var category in updatedCategories) {
-      _putCategoryUseCase.execute(category);
+      await _putCategoryUseCase.execute(category);
     }
   }
 }
