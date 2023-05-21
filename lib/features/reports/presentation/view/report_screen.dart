@@ -116,21 +116,23 @@ class _UncategorisedItemsDialogState
     return ref.watch(categoriesViewModelStateNotifierProvider).maybeWhen(
         data: (categories) => SizedBox(
               height: 400,
-              child: Column(
-                children: [
-                  IconButton(
-                      onPressed: () => Navigator.of(context)
-                          .pop(updatedRowCategoryData.values.toList()),
-                      icon: const Icon(Icons.check)),
-                  for (var i = 0; i < transactions.length; i++)
-                    UncategorisedItemRow(
-                      transaction: transactions[i],
-                      categories: categories,
-                      onChanged: (categoryData) {
-                        updatedRowCategoryData[i] = categoryData;
-                      },
-                    )
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    IconButton(
+                        onPressed: () => Navigator.of(context)
+                            .pop(updatedRowCategoryData.values.toList()),
+                        icon: const Icon(Icons.check)),
+                    for (var i = 0; i < transactions.length; i++)
+                      UncategorisedItemRow(
+                        transaction: transactions[i],
+                        categories: categories,
+                        onChanged: (categoryData) {
+                          updatedRowCategoryData[i] = categoryData;
+                        },
+                      )
+                  ],
+                ),
               ),
             ),
         orElse: () =>
