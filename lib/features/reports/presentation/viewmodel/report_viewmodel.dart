@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/model/uncategories_row_data.dart';
 import '../../../categories/domain/domain_module.dart';
-import '../../../categories/domain/usecase/update_categories_from_data_usecase.dart';
+import '../../domain/usecase/update_categories_from_data_usecase.dart';
 import '../../domain/model/import_settings.dart';
 import '../../domain/model/report.dart';
 import '../../domain/model/transaction.dart';

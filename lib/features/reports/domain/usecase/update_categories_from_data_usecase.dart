@@ -1,5 +1,5 @@
 import '../../../../shared/domain/model/uncategories_row_data.dart';
-import '../model/category.dart';
+import '../../../categories/domain/model/category.dart';
 
 class UpdateCategoriesFromRowData {
   UpdateCategoriesFromRowData();
