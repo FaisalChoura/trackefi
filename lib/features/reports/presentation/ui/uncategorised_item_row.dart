@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/model/uncategories_row_data.dart';
-import '../../../../utils/models/selectable_word_item.dart';
+import '../../domain/model/selectable_word_item.dart';
 import '../../domain/model/transaction.dart';
 import '../../../categories/domain/model/category.dart';
 

@@ -1,12 +1,18 @@
 import 'package:file_picker/file_picker.dart';
 
+import '../repository/csv_files_repository.dart';
+
 class ImportFilesUseCase {
-  Future<List<PlatformFile>> execute() async {
+  final CsvFilesRepository _csvFilesRepository;
+
+  ImportFilesUseCase(this._csvFilesRepository);
+
+  void execute() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      return result.files;
+      _csvFilesRepository.addFiles(result.files);
     }
-    return [];
+    return;
   }
 }

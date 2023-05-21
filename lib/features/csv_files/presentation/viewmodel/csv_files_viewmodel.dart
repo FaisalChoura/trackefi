@@ -1,34 +1,29 @@
 import 'package:expense_categoriser/features/csv_files/domain/domain_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/import_files_usecase.dart';
+import 'package:expense_categoriser/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final csvFilesViewModelProvider =
-    StateNotifierProvider<CsvFilesViewModel, AsyncValue<List<PlatformFile>>>(
-        (ref) => CsvFilesViewModel(ref.watch(importFilesUseCaseProvider)));
+    Provider<CsvFilesViewModel>((ref) => CsvFilesViewModel(
+          ref.watch(importFilesUseCaseProvider),
+          ref.watch(removeFilesUseCaseProvider),
+        ));
 
-class CsvFilesViewModel extends StateNotifier<AsyncValue<List<PlatformFile>>> {
+class CsvFilesViewModel {
   final ImportFilesUseCase _importFilesUseCase;
+  final RemoveFileUseCase _removeFileUseCase;
 
   CsvFilesViewModel(
     this._importFilesUseCase,
-  ) : super(const AsyncValue.data([]));
+    this._removeFileUseCase,
+  );
 
   void importFiles() async {
-    final files = await _importFilesUseCase.execute();
-    _addFiles(files);
+    _importFilesUseCase.execute();
   }
 
-  void _addFiles(List<PlatformFile> files) {
-    state = AsyncValue.data([...state.value ?? [], ...files]);
-  }
-
-  removeFile(PlatformFile file) {
-    state = AsyncValue.data(
-        _currentStateValue.where((f) => f.path != file.path).toList());
-  }
-
-  List<PlatformFile> get _currentStateValue {
-    return state.value ?? [];
+  void removeFile(PlatformFile file) async {
+    _removeFileUseCase.execute(file);
   }
 }

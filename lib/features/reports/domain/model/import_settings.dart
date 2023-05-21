@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/utils/enums/numbering_style.dart';
+import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
 
 class CsvImportSettings {
   String fieldDelimiter = ',';

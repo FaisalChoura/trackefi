@@ -1,7 +1,7 @@
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
 
-import '../../../../utils/enums/numbering_style.dart';
-import '../../../../utils/models/import_settings.dart';
+import '../enum/numbering_style.dart';
+import '../model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 import '../model/transaction.dart';
 

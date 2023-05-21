@@ -5,7 +5,7 @@ import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../utils/models/import_settings.dart';
+import '../../domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 import '../../domain/model/report.dart';
 import '../../domain/model/transaction.dart';

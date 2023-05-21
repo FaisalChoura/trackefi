@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/domain/model/uncategories_row_data.dart';
-import '../../../csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import '../../domain/model/transaction.dart';
 import '../../../categories/domain/model/category.dart';
 import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
@@ -21,8 +21,7 @@ class ReportScreen extends ConsumerStatefulWidget {
 class _ReportScreenState extends ConsumerState<ReportScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO fix this dependency
-    final csvFiles = ref.watch(csvFilesViewModelProvider).value!;
+    final csvFiles = ref.watch(csvFilesStoreProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),

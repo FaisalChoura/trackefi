@@ -6,7 +6,7 @@ import '../features/reports/presentation/view/report_screen.dart';
 
 final pages = <String, WidgetBuilder>{
   ScreenRoutes.categories: (_) => const CategoriesScreen(),
-  ScreenRoutes.csvImport: (_) => CsvImportScreen(),
+  ScreenRoutes.csvImport: (_) => const CsvImportScreen(),
   ScreenRoutes.reports: (_) => const ReportScreen(),
 };
 
