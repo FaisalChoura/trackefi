@@ -6,7 +6,7 @@ import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/domain/model/uncategories_row_data.dart';
+import '../../domain/model/uncategories_row_data.dart';
 import '../../../categories/domain/domain_module.dart';
 import '../../domain/usecase/update_categories_from_data_usecase.dart';
 import '../../domain/model/import_settings.dart';

@@ -1,4 +1,4 @@
-import '../../../features/categories/domain/model/category.dart';
+import '../../../categories/domain/model/category.dart';
 
 class UncategorisedRowData {
   Category category;
