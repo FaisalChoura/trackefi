@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expense_categoriser/core/domain/errors/error_object.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,11 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   Widget build(BuildContext context) {
     final csvFiles = ref.watch(csvFilesStoreProvider);
 
+    ref.listen(
+      reportViewModel,
+      (_, state) => state.showDialogOnError(context),
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
       body: Column(children: [
@@ -40,7 +46,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 updatedCategoryData = await _handleUncategorisedTransactions(
                     categorisedTransactions['Uncategorised']!);
 
-                if (updatedCategoryData!.isNotEmpty) {
+                if (updatedCategoryData.isNotEmpty) {
                   await ref
                       .read(reportViewModel.notifier)
                       .updateCategoriesFromRowData(updatedCategoryData);
@@ -66,6 +72,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 }
                 return Container();
               },
+              error: (error, stackTrace) => Container(),
               orElse: () => const Expanded(
                   child: Center(child: CircularProgressIndicator())),
             )
@@ -73,17 +80,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  Future<List<UncategorisedRowData>?> _handleUncategorisedTransactions(
+  Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
       List<Transaction> uncategorisedTransactions) async {
-    return showDialog<List<UncategorisedRowData>>(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: UncategorisedItemsDialog(
-              uncategorisedTransactions: uncategorisedTransactions),
-        );
-      },
-    );
+    return await showDialog<List<UncategorisedRowData>>(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: UncategorisedItemsDialog(
+                  uncategorisedTransactions: uncategorisedTransactions),
+            );
+          },
+        ) ??
+        [];
   }
 }
 
@@ -138,4 +146,22 @@ class _UncategorisedItemsDialogState
         orElse: () =>
             const Expanded(child: Center(child: CircularProgressIndicator())));
   }
+}
+
+extension AsyncValueUI on AsyncValue {
+  void showDialogOnError(BuildContext context) => whenOrNull(error: (error, _) {
+        showDialog<List<UncategorisedRowData>>(
+          context: context,
+          builder: (BuildContext context) {
+            return SizedBox(
+              height: 400,
+              child: Dialog(
+                child: Text(
+                    ErrorObject.exceptionToErrorObjectMapper(error.toString())
+                        .title),
+              ),
+            );
+          },
+        );
+      });
 }

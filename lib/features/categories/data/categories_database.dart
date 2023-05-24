@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../../../shared/data/database/database_model.dart';
+import '../../../core/data/database/database_model.dart';
 import '../domain/model/category.dart';
 
 class CategoriesDatabase extends DatabaseModel<Category> {
