@@ -13,7 +13,7 @@
 - Persist reports
 - Export report
 - Search and filter reports
-- Create rules
 - Create tags
+- Create rules
 - Implement design
 - Combine reports to generate bigger reports
