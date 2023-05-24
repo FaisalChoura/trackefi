@@ -45,15 +45,20 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
 
   Future<Map<String, List<Transaction>>> categoriseTransactions(
       List<PlatformFile> files) async {
-    final data = await _convertCsvFileUseCase.execute(files);
-    return
-        // TODO handle multiple files
-        await _categoriseTransactionsUseCase.execute(
-            data[0]!, CsvImportSettings());
+    try {
+      final data = await _convertCsvFileUseCase.execute(files);
+      return
+          // TODO handle multiple files
+          await _categoriseTransactionsUseCase.execute(
+              data[0]!, CsvImportSettings());
+    } catch (e, s) {
+      state = AsyncValue.error(e, s);
+      return {};
+    }
   }
 
   bool hasUncategorisedTransactions(categorisedTransactions) {
-    return categorisedTransactions['Uncategorised']!.isNotEmpty;
+    return categorisedTransactions['Uncategorised'].isNotEmpty;
   }
 
   Future<void> updateCategoriesFromRowData(

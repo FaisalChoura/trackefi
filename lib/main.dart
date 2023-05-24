@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/shared/presentation/ui/layout.dart';
+import 'package:expense_categoriser/core/presentation/ui/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
