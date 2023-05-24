@@ -9,6 +9,7 @@ environment:
 dependencies:
   csv: ^5.0.2
   file_picker: ^5.2.11
+  fl_chart: ^0.62.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.3.6

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:expense_categoriser/core/domain/errors/error_object.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,7 +67,17 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   return Column(
                     children: [
                       for (var category in report.categories)
-                        Text("${category.name}: ${category.total}")
+                        Text("${category.name}: ${category.total}"),
+                      SizedBox(
+                        height: 300,
+                        child: PieChart(PieChartData(
+                            centerSpaceRadius: 5,
+                            borderData: FlBorderData(show: false),
+                            sectionsSpace: 2,
+                            sections: ref
+                                .read(reportViewModel.notifier)
+                                .generateChartData(report))),
+                      )
                     ],
                   );
                 }
