@@ -46,7 +46,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 updatedCategoryData = await _handleUncategorisedTransactions(
                     categorisedTransactions['Uncategorised']!);
 
-                if (updatedCategoryData!.isNotEmpty) {
+                if (updatedCategoryData.isNotEmpty) {
                   await ref
                       .read(reportViewModel.notifier)
                       .updateCategoriesFromRowData(updatedCategoryData);
@@ -80,17 +80,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     );
   }
 
-  Future<List<UncategorisedRowData>?> _handleUncategorisedTransactions(
+  Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
       List<Transaction> uncategorisedTransactions) async {
-    return showDialog<List<UncategorisedRowData>>(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: UncategorisedItemsDialog(
-              uncategorisedTransactions: uncategorisedTransactions),
-        );
-      },
-    );
+    return await showDialog<List<UncategorisedRowData>>(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: UncategorisedItemsDialog(
+                  uncategorisedTransactions: uncategorisedTransactions),
+            );
+          },
+        ) ??
+        [];
   }
 }
 

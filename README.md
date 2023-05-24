@@ -9,8 +9,9 @@
 - ~~Handle uncategorised transactions~~
 - Errors
 - Graphs for report
-- Export report
+- Unique transactions in uncategorised transactions dialog
 - Persist reports
+- Export report
 - Search and filter reports
 - Create rules
 - Create tags
