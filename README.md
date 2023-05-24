@@ -7,7 +7,7 @@
 - ~~Create UI for adding/removing categories & keywords~~
 - ~~Create report view~~
 - ~~Handle uncategorised transactions~~
-- Errors
+- ~~Errors~~
 - Graphs for report
 - Unique transactions in uncategorised transactions dialog
 - Persist reports
