@@ -66,6 +66,11 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 if (report != null) {
                   return Column(
                     children: [
+                      const Text('Total Spent'),
+                      Text(report.expenses.toString()),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       for (var category in report.categories)
                         Text("${category.name}: ${category.total}"),
                       SizedBox(

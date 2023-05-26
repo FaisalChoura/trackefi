@@ -15,5 +15,12 @@ class Report {
   num income;
   num expenses;
   List<ReportCategory> categories;
-  Report(this.income, this.expenses, this.categories);
+  Report(this.income, this.expenses, this.categories) {
+    if (categories.isNotEmpty) {
+      final totalExpenses = categories
+          .map((category) => category.total)
+          .reduce((value, element) => value + element);
+      expenses = num.parse(totalExpenses.toStringAsFixed(2));
+    }
+  }
 }

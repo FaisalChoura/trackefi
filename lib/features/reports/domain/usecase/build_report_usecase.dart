@@ -3,12 +3,12 @@ import '../model/transaction.dart';
 
 class BuildReportUseCase {
   Report execute(Map<String, List<Transaction>> categorisedTransactions) {
-    Report report = Report(0, 0, []);
+    List<ReportCategory> categories = [];
     for (var categoryName in categorisedTransactions.keys) {
       ReportCategory category =
           ReportCategory(categoryName, categorisedTransactions[categoryName]!);
-      report.categories.add(category);
+      categories.add(category);
     }
-    return report;
+    return Report(0, 0, categories);
   }
 }
