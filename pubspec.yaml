@@ -12,6 +12,7 @@ dependencies:
   fl_chart: ^0.62.0
   flutter:
     sdk: flutter
+  flutter_colorpicker: ^1.0.3
   flutter_riverpod: ^2.3.6
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1

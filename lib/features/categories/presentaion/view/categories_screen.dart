@@ -4,12 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/model/category.dart';
 import '../category_keyword_field.dart';
 import '../viewmodel/categories_viewmodel.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 final showNewCategoryField = StateProvider<bool>((ref) => false);
 final selectedCategoryId = StateProvider<int>((ref) => 0);
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
+
+  void changeColor(Color color) {}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,11 +113,28 @@ class CategoriesList extends ConsumerWidget {
   }
 }
 
-class CategoryDetails extends ConsumerWidget {
+class CategoryDetails extends ConsumerStatefulWidget {
   const CategoryDetails({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CategoryDetails> createState() => _CategoryDetailsState();
+}
+
+class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
+  Color pickerColor = Color(0xff443a49);
+  Color currentColor = Color(0xff443a49);
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final id = ref.watch(selectedCategoryId);
     ref.watch(categoriesViewModelStateNotifierProvider);
     return FutureBuilder(
@@ -126,6 +146,10 @@ class CategoryDetails extends ConsumerWidget {
             final category = snapshot.data!;
             return Column(
               children: [
+                ColorDisplay(
+                    pickerColor: category.colorValues != null
+                        ? category.colorValues!.toColor()
+                        : pickerColor),
                 IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () => ref
@@ -151,10 +175,42 @@ class CategoryDetails extends ConsumerWidget {
                                 .notifier)
                             .updateCategory(category);
                       }),
+                ColorPicker(
+                  pickerColor: currentColor,
+                  onColorChanged: (color) {
+                    setState(() {
+                      currentColor = color;
+                    });
+                  },
+                ),
+                MaterialButton(onPressed: () {
+                  category.colorValues = ColorValues.fromColor(currentColor);
+                  ref
+                      .read(categoriesViewModelStateNotifierProvider.notifier)
+                      .updateCategory(category);
+                }),
               ],
             );
           }
           return Container();
         });
+  }
+}
+
+class ColorDisplay extends StatelessWidget {
+  const ColorDisplay({
+    super.key,
+    required this.pickerColor,
+  });
+
+  final Color pickerColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      width: 50,
+      color: pickerColor,
+    );
   }
 }
