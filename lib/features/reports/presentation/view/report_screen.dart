@@ -166,7 +166,7 @@ class _UncategorisedItemsDialogState
 
 extension AsyncValueUI on AsyncValue {
   void showDialogOnError(BuildContext context) => whenOrNull(error: (error, _) {
-        showDialog<List<UncategorisedRowData>>(
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return SizedBox(

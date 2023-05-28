@@ -121,11 +121,7 @@ class CategoryDetails extends ConsumerStatefulWidget {
 }
 
 class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
-  Color pickerColor = Color(0xff443a49);
-  Color currentColor = Color(0xff443a49);
-  void changeColor(Color color) {
-    setState(() => pickerColor = color);
-  }
+  Color currentColor = const Color(0xff443a49);
 
   @override
   void initState() {
@@ -149,7 +145,7 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
                 ColorDisplay(
                     pickerColor: category.colorValues != null
                         ? category.colorValues!.toColor()
-                        : pickerColor),
+                        : currentColor),
                 IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () => ref
@@ -175,25 +171,53 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
                                 .notifier)
                             .updateCategory(category);
                       }),
-                ColorPicker(
-                  pickerColor: currentColor,
-                  onColorChanged: (color) {
-                    setState(() {
-                      currentColor = color;
-                    });
-                  },
-                ),
-                MaterialButton(onPressed: () {
-                  category.colorValues = ColorValues.fromColor(currentColor);
-                  ref
-                      .read(categoriesViewModelStateNotifierProvider.notifier)
-                      .updateCategory(category);
-                }),
+                MaterialButton(
+                    child: Text('select color'),
+                    onPressed: () {
+                      _setNewCategoryColor(currentColor, category);
+                    }),
               ],
             );
           }
           return Container();
         });
+  }
+
+  Future<Color> _selectColor(Color currentColor) async {
+    Color newSelectedColor = currentColor;
+    return await showDialog<Color>(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+                child: Container(
+              height: 350,
+              width: 650,
+              child: Column(
+                children: [
+                  ColorPicker(
+                    pickerColor: newSelectedColor,
+                    onColorChanged: (color) {
+                      newSelectedColor = color;
+                    },
+                  ),
+                  MaterialButton(
+                      child: const Text('Select'),
+                      onPressed: () =>
+                          Navigator.of(context).pop(newSelectedColor))
+                ],
+              ),
+            ));
+          },
+        ) ??
+        currentColor;
+  }
+
+  void _setNewCategoryColor(Color color, Category category) async {
+    final color = await _selectColor(currentColor);
+    category.colorValues = ColorValues.fromColor(color);
+    ref
+        .read(categoriesViewModelStateNotifierProvider.notifier)
+        .updateCategory(category);
   }
 }
 
