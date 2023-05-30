@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
 import '../enum/numbering_style.dart';
 import '../model/import_settings.dart';
@@ -17,7 +18,7 @@ class CategoriseTransactionsUseCase {
     _categories = await _categoriesRepository.getAllCategories();
   }
 
-  Future<Map<String, List<Transaction>>> execute(
+  Future<List<ReportCategorySnapshot>> execute(
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
     // get updated list of categories
     await _getCategories();
@@ -25,13 +26,17 @@ class CategoriseTransactionsUseCase {
     importSettings.fieldIndexes.dateField = 0;
     importSettings.fieldIndexes.descriptionField = 1;
 
-    Map<String, List<Transaction>> categorisedTransactions =
-        <String, List<Transaction>>{};
+    Map<String, ReportCategorySnapshot> categoriesMap =
+        <String, ReportCategorySnapshot>{};
 
+    categoriesMap.putIfAbsent(
+        'Uncategorised',
+        () =>
+            ReportCategorySnapshot.fromCategory(Category('Uncategorised', [])));
     for (var category in _categories) {
-      categorisedTransactions.putIfAbsent(category.name, () => []);
+      categoriesMap.putIfAbsent(
+          category.name, () => ReportCategorySnapshot.fromCategory(category));
     }
-    categorisedTransactions.putIfAbsent('Uncategorised', () => []);
 
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
@@ -45,12 +50,12 @@ class CategoriseTransactionsUseCase {
       Category? category = _findCategory(row[1]);
 
       if (category != null) {
-        categorisedTransactions[category.name]!.add(transaction);
+        categoriesMap[category.name]!.addTransaction(transaction);
       } else {
-        categorisedTransactions['Uncategorised']!.add(transaction);
+        categoriesMap['Uncategorised']!.addTransaction(transaction);
       }
     }
-    return categorisedTransactions;
+    return categoriesMap.values.toList();
   }
 
   Category? _findCategory(String description) {

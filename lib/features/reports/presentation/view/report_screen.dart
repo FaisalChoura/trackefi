@@ -45,7 +45,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 List<UncategorisedRowData>? updatedCategoryData = [];
 
                 updatedCategoryData = await _handleUncategorisedTransactions(
-                    categorisedTransactions['Uncategorised']!);
+                    categorisedTransactions[0].transactions);
 
                 if (updatedCategoryData.isNotEmpty) {
                   await ref

@@ -1,5 +1,6 @@
 import 'package:expense_categoriser/features/categories/domain/usecase/put_category_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
+import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/build_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
@@ -13,7 +14,6 @@ import '../../../categories/domain/domain_module.dart';
 import '../../domain/usecase/update_categories_from_data_usecase.dart';
 import '../../domain/model/import_settings.dart';
 import '../../domain/model/report.dart';
-import '../../domain/model/transaction.dart';
 
 final reportViewModel =
     StateNotifierProvider<ReportViewModel, AsyncValue<Report?>>((ref) =>
@@ -39,13 +39,13 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
       this._putCategoryUseCase)
       : super(const AsyncValue.data(null));
 
-  void buildReport(Map<String, List<Transaction>> categorisedTransactions) {
+  void buildReport(List<ReportCategorySnapshot> categorisedTransactions) {
     state = const AsyncValue.loading();
     final report = _buildReportUseCase.execute(categorisedTransactions);
     state = AsyncValue.data(report);
   }
 
-  Future<Map<String, List<Transaction>>> categoriseTransactions(
+  Future<List<ReportCategorySnapshot>> categoriseTransactions(
       List<PlatformFile> files) async {
     try {
       final data = await _convertCsvFileUseCase.execute(files);
@@ -55,12 +55,13 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
               data[0]!, CsvImportSettings());
     } catch (e, s) {
       state = AsyncValue.error(e, s);
-      return {};
+      return [];
     }
   }
 
-  bool hasUncategorisedTransactions(categorisedTransactions) {
-    return categorisedTransactions['Uncategorised'].isNotEmpty;
+  bool hasUncategorisedTransactions(
+      List<ReportCategorySnapshot> categorisedTransactions) {
+    return categorisedTransactions[0].transactions.isNotEmpty;
   }
 
   Future<void> updateCategoriesFromRowData(
@@ -77,7 +78,9 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
     return report.categories
         .map(
           (category) => PieChartSectionData(
-              color: Colors.purple,
+              color: category.colorValues != null
+                  ? category.colorValues!.toColor()
+                  : Colors.purple,
               value: double.parse(category.total.toString()),
               radius: 100),
         )

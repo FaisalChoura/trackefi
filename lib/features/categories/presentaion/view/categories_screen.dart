@@ -172,7 +172,7 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
                             .updateCategory(category);
                       }),
                 MaterialButton(
-                    child: Text('select color'),
+                    child: const Text('select color'),
                     onPressed: () {
                       _setNewCategoryColor(currentColor, category);
                     }),
@@ -189,7 +189,7 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
           context: context,
           builder: (BuildContext context) {
             return Dialog(
-                child: Container(
+                child: SizedBox(
               height: 350,
               width: 650,
               child: Column(
