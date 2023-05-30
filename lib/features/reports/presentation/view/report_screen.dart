@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:expense_categoriser/core/domain/errors/error_object.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,8 +44,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   .hasUncategorisedTransactions(categorisedTransactions)) {
                 List<UncategorisedRowData>? updatedCategoryData = [];
 
-                updatedCategoryData = await _handleUncategorisedTransactions(
-                    categorisedTransactions['Uncategorised']!);
+                final dataToBeUnique = <Transaction>[];
+                var enteredMap = <String, bool?>{};
+                // TODO create extenstion for this
+                for (var transaction
+                    in categorisedTransactions[0].transactions) {
+                  if (enteredMap[transaction.name] == null) {
+                    dataToBeUnique.add(transaction);
+                    enteredMap.putIfAbsent(transaction.name, () => true);
+                  }
+                }
+                updatedCategoryData =
+                    await _handleUncategorisedTransactions(dataToBeUnique);
 
                 if (updatedCategoryData.isNotEmpty) {
                   await ref
@@ -65,8 +76,23 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 if (report != null) {
                   return Column(
                     children: [
+                      const Text('Total Spent'),
+                      Text(report.expenses.toString()),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       for (var category in report.categories)
-                        Text("${category.name}: ${category.total}")
+                        Text("${category.name}: ${category.total}"),
+                      SizedBox(
+                        height: 300,
+                        child: PieChart(PieChartData(
+                            centerSpaceRadius: 5,
+                            borderData: FlBorderData(show: false),
+                            sectionsSpace: 2,
+                            sections: ref
+                                .read(reportViewModel.notifier)
+                                .generateChartData(report))),
+                      )
                     ],
                   );
                 }
@@ -150,7 +176,7 @@ class _UncategorisedItemsDialogState
 
 extension AsyncValueUI on AsyncValue {
   void showDialogOnError(BuildContext context) => whenOrNull(error: (error, _) {
-        showDialog<List<UncategorisedRowData>>(
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return SizedBox(

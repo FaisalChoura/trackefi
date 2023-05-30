@@ -1,14 +1,9 @@
+import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+
 import '../model/report.dart';
-import '../model/transaction.dart';
 
 class BuildReportUseCase {
-  Report execute(Map<String, List<Transaction>> categorisedTransactions) {
-    Report report = Report(0, 0, []);
-    for (var categoryName in categorisedTransactions.keys) {
-      ReportCategory category =
-          ReportCategory(categoryName, categorisedTransactions[categoryName]!);
-      report.categories.add(category);
-    }
-    return report;
+  Report execute(List<ReportCategorySnapshot> categorisedTransactions) {
+    return Report(0, 0, categorisedTransactions);
   }
 }

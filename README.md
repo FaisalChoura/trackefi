@@ -8,12 +8,12 @@
 - ~~Create report view~~
 - ~~Handle uncategorised transactions~~
 - ~~Errors~~
-- Graphs for report
-- Unique transactions in uncategorised transactions dialog
+- ~~Graphs for report~~
+- ~~Unique transactions in uncategorised transactions dialog~~
 - Persist reports
 - Export report
 - Search and filter reports
-- Create rules
 - Create tags
+- Create rules
 - Implement design
 - Combine reports to generate bigger reports
