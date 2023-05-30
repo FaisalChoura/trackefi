@@ -65,7 +65,6 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
               });
               widget.onChanged(_onChangeData());
             }),
-        Text(widget.transaction.amount.toString()),
       ],
     );
   }
