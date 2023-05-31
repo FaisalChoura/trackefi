@@ -92,7 +92,12 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                             sections: ref
                                 .read(reportViewModel.notifier)
                                 .generateChartData(report))),
-                      )
+                      ),
+                      MaterialButton(
+                          child: const Text('Save Report'),
+                          onPressed: () => ref
+                              .read(reportViewModel.notifier)
+                              .putReport(report))
                     ],
                   );
                 }
