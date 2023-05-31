@@ -7,8 +7,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/model/report_category_snapshot.dart';
 import '../../domain/model/uncategories_row_data.dart';
-import '../../domain/model/transaction.dart';
 import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
 import '../ui/uncategorised_item_row.dart';
 
