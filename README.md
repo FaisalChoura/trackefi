@@ -11,6 +11,7 @@
 - ~~Graphs for report~~
 - ~~Unique transactions in uncategorised transactions dialog~~
 - Persist reports
+- Basic UI
 - Export report
 - Search and filter reports
 - Create tags
