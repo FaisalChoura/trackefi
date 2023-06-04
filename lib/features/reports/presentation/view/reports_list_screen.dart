@@ -17,8 +17,14 @@ class ReportsListScreen extends StatelessWidget {
             data: (data) => ListView.builder(
                 itemCount: data.length,
                 itemBuilder: (context, index) {
+                  final report = data[index];
                   return ListTile(
-                    title: Text(data[index].expenses.toString()),
+                    title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Report: ${report.id}'),
+                          Text(report.createdAt.toUtc().toString())
+                        ]),
                   );
                 }),
             orElse: () => Center(child: CircularProgressIndicator()),

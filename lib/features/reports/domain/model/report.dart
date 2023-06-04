@@ -9,8 +9,11 @@ class Report {
   Id id = Isar.autoIncrement;
   double income;
   double expenses;
+  late DateTime createdAt;
   List<ReportCategorySnapshot> categories;
+
   Report(this.income, this.expenses, this.categories) {
+    this.createdAt = DateTime.now();
     if (categories.isNotEmpty) {
       final totalExpenses = categories
           .map((category) => category.total)

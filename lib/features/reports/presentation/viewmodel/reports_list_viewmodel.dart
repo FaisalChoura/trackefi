@@ -12,12 +12,12 @@ final reportsListViewModel =
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(this._getAllReportsUseCase)
       : super(const AsyncValue.data([])) {
-    _init();
+    getList();
   }
 
   final GetAllReportsUseCase _getAllReportsUseCase;
 
-  void _init() async {
+  void getList() async {
     state = const AsyncValue.loading();
     final reports = await _getAllReportsUseCase.execute();
     state = AsyncValue.data(reports);

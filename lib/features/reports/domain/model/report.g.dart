@@ -23,13 +23,18 @@ const ReportSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'ReportCategorySnapshot',
     ),
-    r'expenses': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 1,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'expenses': PropertySchema(
+      id: 2,
       name: r'expenses',
       type: IsarType.double,
     ),
     r'income': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'income',
       type: IsarType.double,
     )
@@ -82,8 +87,9 @@ void _reportSerialize(
     ReportCategorySnapshotSchema.serialize,
     object.categories,
   );
-  writer.writeDouble(offsets[1], object.expenses);
-  writer.writeDouble(offsets[2], object.income);
+  writer.writeDateTime(offsets[1], object.createdAt);
+  writer.writeDouble(offsets[2], object.expenses);
+  writer.writeDouble(offsets[3], object.income);
 }
 
 Report _reportDeserialize(
@@ -93,8 +99,8 @@ Report _reportDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Report(
+    reader.readDouble(offsets[3]),
     reader.readDouble(offsets[2]),
-    reader.readDouble(offsets[1]),
     reader.readObjectList<ReportCategorySnapshot>(
           offsets[0],
           ReportCategorySnapshotSchema.deserialize,
@@ -103,6 +109,7 @@ Report _reportDeserialize(
         ) ??
         [],
   );
+  object.createdAt = reader.readDateTime(offsets[1]);
   object.id = id;
   return object;
 }
@@ -123,8 +130,10 @@ P _reportDeserializeProp<P>(
           ) ??
           []) as P;
     case 1:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 2:
+      return (reader.readDouble(offset)) as P;
+    case 3:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -301,6 +310,59 @@ extension ReportQueryFilter on QueryBuilder<Report, Report, QFilterCondition> {
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterFilterCondition> createdAtEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterFilterCondition> createdAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterFilterCondition> createdAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterFilterCondition> createdAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
@@ -493,6 +555,18 @@ extension ReportQueryObject on QueryBuilder<Report, Report, QFilterCondition> {
 extension ReportQueryLinks on QueryBuilder<Report, Report, QFilterCondition> {}
 
 extension ReportQuerySortBy on QueryBuilder<Report, Report, QSortBy> {
+  QueryBuilder<Report, Report, QAfterSortBy> sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterSortBy> sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<Report, Report, QAfterSortBy> sortByExpenses() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'expenses', Sort.asc);
@@ -519,6 +593,18 @@ extension ReportQuerySortBy on QueryBuilder<Report, Report, QSortBy> {
 }
 
 extension ReportQuerySortThenBy on QueryBuilder<Report, Report, QSortThenBy> {
+  QueryBuilder<Report, Report, QAfterSortBy> thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Report, Report, QAfterSortBy> thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<Report, Report, QAfterSortBy> thenByExpenses() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'expenses', Sort.asc);
@@ -557,6 +643,12 @@ extension ReportQuerySortThenBy on QueryBuilder<Report, Report, QSortThenBy> {
 }
 
 extension ReportQueryWhereDistinct on QueryBuilder<Report, Report, QDistinct> {
+  QueryBuilder<Report, Report, QDistinct> distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
+    });
+  }
+
   QueryBuilder<Report, Report, QDistinct> distinctByExpenses() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'expenses');
@@ -581,6 +673,12 @@ extension ReportQueryProperty on QueryBuilder<Report, Report, QQueryProperty> {
       categoriesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'categories');
+    });
+  }
+
+  QueryBuilder<Report, DateTime, QQueryOperations> createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 
