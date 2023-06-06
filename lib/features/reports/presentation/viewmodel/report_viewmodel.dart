@@ -6,8 +6,6 @@ import 'package:expense_categoriser/features/reports/domain/usecase/categorise_t
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/uncategories_row_data.dart';
@@ -75,20 +73,6 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
     for (var category in updatedCategories) {
       await _putCategoryUseCase.execute(category);
     }
-  }
-
-  List<PieChartSectionData> generateChartData(Report report) {
-    // TODO each category should have a color
-    return report.categories
-        .map(
-          (category) => PieChartSectionData(
-              color: category.colorValues != null
-                  ? category.colorValues!.toColor()
-                  : Colors.purple,
-              value: double.parse(category.total.toString()),
-              radius: 100),
-        )
-        .toList();
   }
 
   Future<void> putReport(Report report) async {

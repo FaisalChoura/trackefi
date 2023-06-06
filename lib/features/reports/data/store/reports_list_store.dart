@@ -12,7 +12,7 @@ class ReportsListStore extends StateNotifier<List<Report>> {
     state = [...state, report];
   }
 
-  void removeReport(Report report) {
-    state = state.where((f) => f.id != report.id).toList();
+  void removeReport(int id) {
+    state = state.where((f) => f.id != id).toList();
   }
 }

@@ -12,8 +12,8 @@ class ReportsListStoreRepositoryImpl implements ReportsListStoreRepository {
   }
 
   @override
-  removeReport(Report report) {
-    _store.removeReport(report);
+  removeReport(int id) {
+    _store.removeReport(id);
   }
 
   @override
