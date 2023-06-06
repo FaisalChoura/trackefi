@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/model/uncategories_row_data.dart';
 import '../../../categories/domain/domain_module.dart';
 import '../../domain/usecase/update_categories_from_data_usecase.dart';
-import '../../domain/model/import_settings.dart';
+import '../../../csv_files/domain/model/import_settings.dart';
 import '../../domain/model/report.dart';
 
 final reportViewModel =

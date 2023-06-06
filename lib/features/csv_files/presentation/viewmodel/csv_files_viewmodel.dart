@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/features/csv_files/domain/domain_module.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/import_files_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,11 +20,15 @@ class CsvFilesViewModel {
     this._removeFileUseCase,
   );
 
-  void importFiles() async {
-    _importFilesUseCase.execute();
+  Future<FilePickerResult?> getFiles() async {
+    return await FilePicker.platform.pickFiles();
   }
 
-  void removeFile(PlatformFile file) async {
-    _removeFileUseCase.execute(file);
+  void importFiles(List<CsvFileData> files) async {
+    _importFilesUseCase.execute(files);
+  }
+
+  void removeFile(CsvFileData fileData) async {
+    _removeFileUseCase.execute(fileData);
   }
 }

@@ -2,7 +2,7 @@ import 'package:expense_categoriser/features/categories/domain/repository/catego
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
 import '../enum/numbering_style.dart';
-import '../model/import_settings.dart';
+import '../../../csv_files/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 
 class CategoriseTransactionsUseCase {

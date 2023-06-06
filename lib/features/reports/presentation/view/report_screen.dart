@@ -23,7 +23,10 @@ class ReportScreen extends ConsumerStatefulWidget {
 class _ReportScreenState extends ConsumerState<ReportScreen> {
   @override
   Widget build(BuildContext context) {
-    final csvFiles = ref.watch(csvFilesStoreProvider);
+    final csvFiles = ref
+        .watch(csvFilesStoreProvider)
+        .map((fileData) => fileData.file)
+        .toList();
 
     ref.listen(
       reportViewModel,

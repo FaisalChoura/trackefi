@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../repository/csv_files_repository.dart';
@@ -7,12 +8,7 @@ class ImportFilesUseCase {
 
   ImportFilesUseCase(this._csvFilesRepository);
 
-  void execute() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      _csvFilesRepository.addFiles(result.files);
-    }
-    return;
+  void execute(List<CsvFileData> filesData) {
+    _csvFilesRepository.addFiles(filesData);
   }
 }

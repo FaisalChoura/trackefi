@@ -1,6 +1,6 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 
 abstract class CsvFilesRepository {
-  void addFiles(List<PlatformFile> files);
-  void removeFile(PlatformFile file);
+  void addFiles(List<CsvFileData> filesData);
+  void removeFile(CsvFileData fileData);
 }
