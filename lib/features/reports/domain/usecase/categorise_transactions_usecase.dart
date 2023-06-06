@@ -4,7 +4,6 @@ import 'package:expense_categoriser/features/reports/domain/model/report_categor
 import '../enum/numbering_style.dart';
 import '../model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
-import '../model/transaction.dart';
 
 class CategoriseTransactionsUseCase {
   late List<Category> _categories;
@@ -40,7 +39,7 @@ class CategoriseTransactionsUseCase {
 
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
-      num transactionAmount = _parseNumberStyle(importSettings.numberStyle,
+      double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
           row[importSettings.fieldIndexes.amountField]);
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
@@ -73,12 +72,12 @@ class CategoriseTransactionsUseCase {
     return matchedCategory;
   }
 
-  num _parseNumberStyle(NumberingStyle numberingStyle, String amount) {
+  double _parseNumberStyle(NumberingStyle numberingStyle, String amount) {
     if (numberingStyle == NumberingStyle.eu) {
-      return num.parse(
+      return double.parse(
         amount.replaceAll(RegExp(','), '.'),
       );
     }
-    return num.parse(amount);
+    return double.parse(amount);
   }
 }

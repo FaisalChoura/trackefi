@@ -2,7 +2,11 @@ import 'package:expense_categoriser/core/presentation/ui/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+import 'core/data/database/database_manager.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DBManager.isntance.initDatabase();
   runApp(const ProviderScope(child: MainApp()));
 }
 

@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:expense_categoriser/core/domain/errors/error_object.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../domain/model/report_category_snapshot.dart';
 import '../../domain/model/uncategories_row_data.dart';
-import '../../domain/model/transaction.dart';
 import '../../../categories/presentaion/viewmodel/categories_viewmodel.dart';
 import '../ui/uncategorised_item_row.dart';
 
@@ -35,6 +36,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         MaterialButton(
             child: const Text('Generate Report'),
             onPressed: () async {
+              // TODO extract to external function
               var categorisedTransactions = await ref
                   .read(reportViewModel.notifier)
                   .categoriseTransactions(csvFiles);
@@ -76,23 +78,12 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 if (report != null) {
                   return Column(
                     children: [
-                      const Text('Total Spent'),
-                      Text(report.expenses.toString()),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      for (var category in report.categories)
-                        Text("${category.name}: ${category.total}"),
-                      SizedBox(
-                        height: 300,
-                        child: PieChart(PieChartData(
-                            centerSpaceRadius: 5,
-                            borderData: FlBorderData(show: false),
-                            sectionsSpace: 2,
-                            sections: ref
-                                .read(reportViewModel.notifier)
-                                .generateChartData(report))),
-                      )
+                      ReportBreakdown(report: report),
+                      MaterialButton(
+                          child: const Text('Save Report'),
+                          onPressed: () => ref
+                              .read(reportViewModel.notifier)
+                              .putReport(report))
                     ],
                   );
                 }

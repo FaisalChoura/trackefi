@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/features/reports/presentation/view/reports_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/categories/presentaion/view/categories_screen.dart';
@@ -8,10 +9,12 @@ final pages = <String, WidgetBuilder>{
   ScreenRoutes.categories: (_) => const CategoriesScreen(),
   ScreenRoutes.csvImport: (_) => const CsvImportScreen(),
   ScreenRoutes.reports: (_) => const ReportScreen(),
+  ScreenRoutes.reportsList: (_) => const ReportsListScreen(),
 };
 
 class ScreenRoutes {
   static String categories = 'Categories';
   static String csvImport = 'CSV Import';
   static String reports = 'Reports';
+  static String reportsList = 'ReportsList';
 }

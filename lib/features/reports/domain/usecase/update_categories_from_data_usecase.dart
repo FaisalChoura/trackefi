@@ -12,6 +12,8 @@ class UpdateCategoriesFromRowData {
 
       categories.add(data.category);
     }
+
+    // TODO use repository here
     return categories;
   }
 }

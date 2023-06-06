@@ -9,6 +9,6 @@ class ErrorObject {
     if (exceptionType == (NoCsvFileImportedException).toString()) {
       return ErrorObject(title: 'No CSV file found!', message: 'test');
     }
-    return ErrorObject(title: 'Uknown!', message: 'test');
+    return ErrorObject(title: exceptionType, message: 'test');
   }
 }

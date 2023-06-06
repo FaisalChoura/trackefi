@@ -4,9 +4,8 @@ import 'package:expense_categoriser/features/reports/domain/model/report_categor
 import 'package:expense_categoriser/features/reports/domain/usecase/build_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
+import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/uncategories_row_data.dart';
@@ -22,7 +21,8 @@ final reportViewModel =
             ref.watch(convertCsvFileUseCaseProvider),
             ref.watch(categoriseTransactionsUseCaseProvider),
             ref.watch(updateCategoriesFromRowDataProvider),
-            ref.watch(putCategoriesUseCaseProvider)));
+            ref.watch(putCategoriesUseCaseProvider),
+            ref.watch(putReportUseCaseProvider)));
 
 class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   final BuildReportUseCase _buildReportUseCase;
@@ -30,13 +30,15 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   final CategoriseTransactionsUseCase _categoriseTransactionsUseCase;
   final UpdateCategoriesFromRowData _updateCategoriesFromRowData;
   final PutCategoryUseCase _putCategoryUseCase;
+  final PutReportUseCase _putReportUseCase;
 
   ReportViewModel(
       this._buildReportUseCase,
       this._convertCsvFileUseCase,
       this._categoriseTransactionsUseCase,
       this._updateCategoriesFromRowData,
-      this._putCategoryUseCase)
+      this._putCategoryUseCase,
+      this._putReportUseCase)
       : super(const AsyncValue.data(null));
 
   void buildReport(List<ReportCategorySnapshot> categorisedTransactions) {
@@ -73,17 +75,7 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
     }
   }
 
-  List<PieChartSectionData> generateChartData(Report report) {
-    // TODO each category should have a color
-    return report.categories
-        .map(
-          (category) => PieChartSectionData(
-              color: category.colorValues != null
-                  ? category.colorValues!.toColor()
-                  : Colors.purple,
-              value: double.parse(category.total.toString()),
-              radius: 100),
-        )
-        .toList();
+  Future<void> putReport(Report report) async {
+    await _putReportUseCase.execute(report);
   }
 }

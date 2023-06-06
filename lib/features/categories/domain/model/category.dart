@@ -48,6 +48,7 @@ class Category {
   }
 
   RegExp _generateRegex() {
+    // TODO handle characters that need escaping from regex suchs as * as a first character
     String regexString = keywords.join("|");
     return RegExp(regexString);
   }
