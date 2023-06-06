@@ -20,8 +20,14 @@ final categoriseTransactionsUseCaseProvider =
 final convertCsvFileUseCaseProvider =
     Provider<ConvertCsvFileUseCase>((ref) => ConvertCsvFileUseCase());
 
-final getAllReportsUseCaseProvider = Provider<GetAllReportsUseCase>(
-    (ref) => GetAllReportsUseCase(ref.watch(reportsRepositoryProvider)));
+final getAllReportsUseCaseProvider =
+    Provider<GetAllReportsUseCase>((ref) => GetAllReportsUseCase(
+          ref.watch(reportsRepositoryProvider),
+          ref.watch(reportsListStoreRepositoryProvider),
+        ));
 
-final putReportUseCaseProvider = Provider<PutReportUseCase>(
-    (ref) => PutReportUseCase(ref.watch(reportsRepositoryProvider)));
+final putReportUseCaseProvider =
+    Provider<PutReportUseCase>((ref) => PutReportUseCase(
+          ref.watch(reportsRepositoryProvider),
+          ref.watch(reportsListStoreRepositoryProvider),
+        ));
