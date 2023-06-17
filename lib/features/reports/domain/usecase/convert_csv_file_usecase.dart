@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import '../../../../core/domain/errors/exceptions.dart';
 
 class ConvertCsvFileUseCase {
+  // TODO Name this type
   Future<Map<int, List<List<dynamic>>>> execute(
       List<PlatformFile> files) async {
     if (files.isEmpty) throw NoCsvFileImportedException();
