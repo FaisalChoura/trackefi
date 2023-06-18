@@ -1,6 +1,7 @@
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
+import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
 import 'package:file_picker/file_picker.dart';
@@ -34,7 +35,7 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                   final result =
                       await ref.read(csvFilesViewModelProvider).getFiles();
                   if (result != null) {
-                    await _openImportSettingsDialog(result.files);
+                    final x = await _openImportSettingsDialog(result.files);
                     final csvData = result.files
                         .map((file) => CsvFileData(file, CsvImportSettings()))
                         .toList();
@@ -82,6 +83,7 @@ class _CsvImportsSettingsDialogState
 
   @override
   Widget build(BuildContext context) {
+    FieldIndexes fieldIndexes = FieldIndexes();
     final file = widget.files[0];
     return Container(
       child: Form(
@@ -115,14 +117,44 @@ class _CsvImportsSettingsDialogState
                 if (snapshot.data != null) {
                   final headerList = snapshot.data;
                   // TODO create widget to map fields to indexes
-                  return Row(
-                    children: [for (var title in snapshot.data!) Text(title)],
+                  return HorizontalListMapper<int, UsableCsvFields>(
+                    headerValueMap: headerList!.asReverseMap(),
+                    options: [
+                      HorizontalListMapperOption<UsableCsvFields>(
+                          label: 'Description',
+                          value: UsableCsvFields.description),
+                      HorizontalListMapperOption<UsableCsvFields>(
+                          label: 'Date', value: UsableCsvFields.date),
+                      HorizontalListMapperOption<UsableCsvFields>(
+                          label: 'Amount', value: UsableCsvFields.amount),
+                    ],
+                    onChanged: (value) {
+                      fieldIndexes = FieldIndexes.fromMap(value);
+                    },
                   );
                 }
                 return Container();
+              }),
+          MaterialButton(
+              child: Text('Done'),
+              onPressed: () {
+                final importSettings = CsvImportSettings();
+                importSettings.fieldIndexes = fieldIndexes;
+                Navigator.of(context).pop([CsvFileData(file, importSettings)]);
               })
         ]),
       ),
     );
+  }
+}
+
+// TODO extract this
+extension ReverseMap on List<String> {
+  Map<String, int> asReverseMap() {
+    Map<String, int> map = {};
+    for (var i = 0; i < length; i++) {
+      map[this[i]] = i;
+    }
+    return map;
   }
 }
