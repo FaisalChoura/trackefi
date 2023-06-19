@@ -37,7 +37,7 @@ class CsvFilesViewModel {
     _removeFileUseCase.execute(fileData);
   }
 
-  Future<List<String>> getHeaderRow(PlatformFile file) async {
+  Future<List<String>> getHeaderRow(CsvFileData file) async {
     final data = await _convertCsvFileUseCase.execute([file]);
     return data[0]![0].map((e) => e.toString()).toList();
   }

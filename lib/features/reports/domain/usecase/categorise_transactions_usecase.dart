@@ -21,9 +21,6 @@ class CategoriseTransactionsUseCase {
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
     // get updated list of categories
     await _getCategories();
-    importSettings.fieldIndexes.amountField = 2;
-    importSettings.fieldIndexes.dateField = 0;
-    importSettings.fieldIndexes.descriptionField = 1;
 
     Map<String, ReportCategorySnapshot> categoriesMap =
         <String, ReportCategorySnapshot>{};

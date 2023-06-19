@@ -35,10 +35,10 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                   final result =
                       await ref.read(csvFilesViewModelProvider).getFiles();
                   if (result != null) {
-                    final x = await _openImportSettingsDialog(result.files);
-                    final csvData = result.files
+                    final csvData = await _openImportSettingsDialog(result.files
+                        // TODO handle what happens when different csv separators are added and how we show the initial horizontal list
                         .map((file) => CsvFileData(file, CsvImportSettings()))
-                        .toList();
+                        .toList());
                     ref.read(csvFilesViewModelProvider).importFiles(csvData);
                   }
                 },
@@ -49,13 +49,13 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
   }
 
   Future<List<CsvFileData>> _openImportSettingsDialog(
-      List<PlatformFile> files) async {
+      List<CsvFileData> filesData) async {
     return await showDialog<List<CsvFileData>>(
           context: context,
           builder: (BuildContext context) {
             return Dialog(
               child: CsvImportsSettingsDialog(
-                files: files,
+                filesData: filesData,
               ),
             );
           },
@@ -65,10 +65,10 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
 }
 
 class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
-  const CsvImportsSettingsDialog({Key? key, required this.files})
+  const CsvImportsSettingsDialog({Key? key, required this.filesData})
       : super(key: key);
 
-  final List<PlatformFile> files;
+  final List<CsvFileData> filesData;
 
   @override
   ConsumerState<CsvImportsSettingsDialog> createState() =>
@@ -84,7 +84,7 @@ class _CsvImportsSettingsDialogState
   @override
   Widget build(BuildContext context) {
     FieldIndexes fieldIndexes = FieldIndexes();
-    final file = widget.files[0];
+    final fileData = widget.filesData[0];
     return Container(
       child: Form(
         child: Column(children: [
@@ -112,7 +112,8 @@ class _CsvImportsSettingsDialogState
                 }
               }),
           FutureBuilder(
-              future: ref.read(csvFilesViewModelProvider).getHeaderRow(file),
+              future:
+                  ref.read(csvFilesViewModelProvider).getHeaderRow(fileData),
               builder: (context, snapshot) {
                 if (snapshot.data != null) {
                   final headerList = snapshot.data;
@@ -140,7 +141,8 @@ class _CsvImportsSettingsDialogState
               onPressed: () {
                 final importSettings = CsvImportSettings();
                 importSettings.fieldIndexes = fieldIndexes;
-                Navigator.of(context).pop([CsvFileData(file, importSettings)]);
+                Navigator.of(context)
+                    .pop([CsvFileData(fileData.file, importSettings)]);
               })
         ]),
       ),

@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/features/categories/domain/usecase/put_category_usecase.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/build_report_usecase.dart';
@@ -48,13 +49,13 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   }
 
   Future<List<ReportCategorySnapshot>> categoriseTransactions(
-      List<PlatformFile> files) async {
+      List<CsvFileData> filesData) async {
     try {
-      final data = await _convertCsvFileUseCase.execute(files);
+      final filesList = await _convertCsvFileUseCase.execute(filesData);
       return
           // TODO handle multiple files
           await _categoriseTransactionsUseCase.execute(
-              data[0]!, CsvImportSettings());
+              filesList[0]!, filesData[0].importSettings);
     } catch (e, s) {
       state = AsyncValue.error(e, s);
       return [];
