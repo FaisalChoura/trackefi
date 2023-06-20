@@ -6,13 +6,11 @@ import 'package:expense_categoriser/features/reports/domain/usecase/build_report
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/uncategories_row_data.dart';
 import '../../../categories/domain/domain_module.dart';
 import '../../domain/usecase/update_categories_from_data_usecase.dart';
-import '../../../csv_files/domain/model/import_settings.dart';
 import '../../domain/model/report.dart';
 
 final reportViewModel =
@@ -58,7 +56,7 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
               filesList[0]!, filesData[0].importSettings);
     } catch (e, s) {
       state = AsyncValue.error(e, s);
-      return [];
+      rethrow;
     }
   }
 

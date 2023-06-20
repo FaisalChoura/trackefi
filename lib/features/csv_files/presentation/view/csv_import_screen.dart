@@ -4,7 +4,6 @@ import 'package:expense_categoriser/features/csv_files/domain/model/import_setti
 import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -80,17 +79,26 @@ class _CsvImportsSettingsDialogState
   NumberingStyle numberingStyle = NumberingStyle.eu;
   TextEditingController fieldDelimiterController = TextEditingController();
   TextEditingController endOfLineContrller = TextEditingController();
+  String fieldDelimiter = ',';
 
   @override
   Widget build(BuildContext context) {
     FieldIndexes fieldIndexes = FieldIndexes();
     final fileData = widget.filesData[0];
+    // TODO clean up how form is handled and submited
     return Container(
       child: Form(
         child: Column(children: [
           TextField(
+            // TODO max 1 character validation
             decoration: const InputDecoration(label: Text('Field Separator')),
             controller: fieldDelimiterController,
+            onChanged: (value) {
+              setState(() {
+                fieldDelimiter = value;
+                fileData.importSettings.fieldDelimiter = fieldDelimiter;
+              });
+            },
           ),
           DropdownButton(
               value: numberingStyle,
@@ -108,6 +116,7 @@ class _CsvImportsSettingsDialogState
                 if (value != null) {
                   setState(() {
                     numberingStyle = value;
+                    fileData.importSettings.numberStyle = value;
                   });
                 }
               }),
@@ -117,7 +126,6 @@ class _CsvImportsSettingsDialogState
               builder: (context, snapshot) {
                 if (snapshot.data != null) {
                   final headerList = snapshot.data;
-                  // TODO create widget to map fields to indexes
                   return HorizontalListMapper<int, UsableCsvFields>(
                     headerValueMap: headerList!.asReverseMap(),
                     options: [
@@ -139,8 +147,11 @@ class _CsvImportsSettingsDialogState
           MaterialButton(
               child: Text('Done'),
               onPressed: () {
+                // TODO related to form clean up
                 final importSettings = CsvImportSettings();
                 importSettings.fieldIndexes = fieldIndexes;
+                importSettings.fieldDelimiter = fieldDelimiter;
+                importSettings.numberStyle = numberingStyle;
                 Navigator.of(context)
                     .pop([CsvFileData(fileData.file, importSettings)]);
               })

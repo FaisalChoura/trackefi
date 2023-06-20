@@ -4,7 +4,6 @@ import 'package:expense_categoriser/core/domain/errors/error_object.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
