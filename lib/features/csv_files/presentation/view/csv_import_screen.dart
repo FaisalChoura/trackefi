@@ -79,7 +79,6 @@ class _CsvImportsSettingsDialogState
   NumberingStyle numberingStyle = NumberingStyle.eu;
   TextEditingController fieldDelimiterController = TextEditingController();
   TextEditingController endOfLineContrller = TextEditingController();
-  String fieldDelimiter = ',';
 
   @override
   Widget build(BuildContext context) {
@@ -90,14 +89,15 @@ class _CsvImportsSettingsDialogState
       child: Form(
         child: Column(children: [
           TextField(
-            // TODO max 1 character validation
             decoration: const InputDecoration(label: Text('Field Separator')),
             controller: fieldDelimiterController,
+            maxLength: 1,
             onChanged: (value) {
-              setState(() {
-                fieldDelimiter = value;
-                fileData.importSettings.fieldDelimiter = fieldDelimiter;
-              });
+              if (value.isNotEmpty) {
+                setState(() {
+                  fileData.importSettings.fieldDelimiter = value;
+                });
+              }
             },
           ),
           DropdownButton(
@@ -150,7 +150,7 @@ class _CsvImportsSettingsDialogState
                 // TODO related to form clean up
                 final importSettings = CsvImportSettings();
                 importSettings.fieldIndexes = fieldIndexes;
-                importSettings.fieldDelimiter = fieldDelimiter;
+                importSettings.fieldDelimiter = fieldDelimiterController.text;
                 importSettings.numberStyle = numberingStyle;
                 Navigator.of(context)
                     .pop([CsvFileData(fileData.file, importSettings)]);
