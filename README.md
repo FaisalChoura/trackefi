@@ -10,8 +10,10 @@
 - ~~Errors~~
 - ~~Graphs for report~~
 - ~~Unique transactions in uncategorised transactions dialog~~
-- Persist reports
-- Basic UI
+- ~~Persist reports~~
+- Basic UI / Error Handling
+- Report analytics
+- Multiple files
 - Export report
 - Search and filter reports
 - Create tags

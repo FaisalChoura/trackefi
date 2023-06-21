@@ -43,7 +43,8 @@ class CategoriseTransactionsUseCase {
           row[importSettings.fieldIndexes.dateField],
           transactionAmount);
 
-      Category? category = _findCategory(row[1]);
+      Category? category =
+          _findCategory(row[importSettings.fieldIndexes.descriptionField]);
 
       if (category != null) {
         categoriesMap[category.name]!.addTransaction(transaction);

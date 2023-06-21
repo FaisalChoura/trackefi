@@ -56,13 +56,15 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
               filesList[0]!, filesData[0].importSettings);
     } catch (e, s) {
       state = AsyncValue.error(e, s);
-      rethrow;
+      return [];
     }
   }
 
   bool hasUncategorisedTransactions(
       List<ReportCategorySnapshot> categorisedTransactions) {
-    return categorisedTransactions[0].transactions.isNotEmpty;
+    return categorisedTransactions.isNotEmpty
+        ? categorisedTransactions[0].transactions.isNotEmpty
+        : false;
   }
 
   Future<void> updateCategoriesFromRowData(
