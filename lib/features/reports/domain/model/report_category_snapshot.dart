@@ -26,7 +26,10 @@ class ReportCategorySnapshot {
 @embedded
 class Transaction {
   String name;
-  String date;
+  late DateTime date;
   double amount;
-  Transaction([this.name = '', this.date = '', this.amount = 0]);
+  Transaction(
+      [this.name = '', this.amount = 0, String dateString = '01/01/1995']) {
+    date = DateTime.parse(dateString);
+  }
 }

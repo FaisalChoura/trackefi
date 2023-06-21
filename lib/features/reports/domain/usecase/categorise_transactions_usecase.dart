@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
@@ -38,10 +39,13 @@ class CategoriseTransactionsUseCase {
       List<dynamic> row = data[i];
       double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
           row[importSettings.fieldIndexes.amountField]);
+
+      _validateDateField(row[importSettings.fieldIndexes.dateField]);
+
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
-          row[importSettings.fieldIndexes.dateField],
-          transactionAmount);
+          transactionAmount,
+          row[importSettings.fieldIndexes.dateField]);
 
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);
@@ -71,11 +75,24 @@ class CategoriseTransactionsUseCase {
   }
 
   double _parseNumberStyle(NumberingStyle numberingStyle, String amount) {
-    if (numberingStyle == NumberingStyle.eu) {
-      return double.parse(
-        amount.replaceAll(RegExp(','), '.'),
-      );
+    try {
+      if (numberingStyle == NumberingStyle.eu) {
+        return double.parse(
+          amount.replaceAll(RegExp(','), '.'),
+        );
+      }
+      return double.parse(amount);
+    } catch (e) {
+      throw IncorrectAmountMappingException();
     }
-    return double.parse(amount);
+  }
+
+  bool _validateDateField(String date) {
+    try {
+      DateTime.parse(date);
+      return true;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
