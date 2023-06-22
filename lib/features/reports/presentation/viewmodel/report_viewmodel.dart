@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/categories/domain/usecase/put_category_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
@@ -50,6 +51,15 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
       List<CsvFileData> filesData) async {
     try {
       final filesList = await _convertCsvFileUseCase.execute(filesData);
+      if (filesList.isEmpty) {
+        return [];
+      }
+
+      // if header row is one chunck that means the separation failed
+      if (filesList[0]![0].length <= 1) {
+        throw IncorrectFeildSeparatorException();
+      }
+
       return
           // TODO handle multiple files
           await _categoriseTransactionsUseCase.execute(

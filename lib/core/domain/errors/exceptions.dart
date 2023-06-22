@@ -20,3 +20,10 @@ class IncorrectAmountMappingException extends BaseException {
     return 'IncorrectAmountMappingException';
   }
 }
+
+class IncorrectFeildSeparatorException extends BaseException {
+  @override
+  String get stringValue {
+    return 'IncorrectFeildSeparatorException';
+  }
+}
