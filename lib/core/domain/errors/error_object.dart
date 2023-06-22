@@ -16,6 +16,11 @@ class ErrorObject {
       message =
           'You have mapped a field that cannot be assigned to amount, please re-import your csv';
     }
+    if (exceptionType == (IncorrectFeildSeparatorException).toString()) {
+      title = "Incorrect field separator";
+      message =
+          'You have set a wrong feild separator in the settings please enter the correct one and retry';
+    }
     return ErrorObject(title: title, message: message);
   }
 }
