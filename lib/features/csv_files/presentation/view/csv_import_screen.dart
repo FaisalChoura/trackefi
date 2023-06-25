@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
@@ -5,6 +6,7 @@ import 'package:expense_categoriser/features/csv_files/presentation/ui/horizonta
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:expense_categoriser/features/reports/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,9 +34,11 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
               child: MaterialButton(
                 child: const Text('load CSV'),
                 onPressed: () async {
-                  final result =
-                      await ref.read(csvFilesViewModelProvider).getFiles();
+                  FilePickerResult? result;
+                  result = await ref.read(csvFilesViewModelProvider).getFiles();
                   if (result != null) {
+                    // TODO handle exceptions
+                    _checkFileType(result.files);
                     final csvData = await _openImportSettingsDialog(result.files
                         // TODO handle what happens when different csv separators are added and how we show the initial horizontal list
                         .map((file) => CsvFileData(file, CsvImportSettings()))
@@ -46,6 +50,14 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
             ),
           ],
         ));
+  }
+
+  void _checkFileType(List<PlatformFile> files) {
+    for (var file in files) {
+      if (file.extension != 'csv') {
+        throw WrongFileTypeException();
+      }
+    }
   }
 
   Future<List<CsvFileData>> _openImportSettingsDialog(

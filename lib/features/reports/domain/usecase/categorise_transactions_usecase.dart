@@ -102,7 +102,7 @@ class CategoriseTransactionsUseCase {
       }
       return formatedDate;
     } catch (e) {
-      throw IncorrectDateFormat();
+      throw IncorrectDateFormatException();
     }
   }
 }

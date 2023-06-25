@@ -28,9 +28,16 @@ class IncorrectFeildSeparatorException extends BaseException {
   }
 }
 
-class IncorrectDateFormat extends BaseException {
+class IncorrectDateFormatException extends BaseException {
   @override
   String get stringValue {
-    return 'IncorrectDateFormat';
+    return 'IncorrectDateFormatException';
+  }
+}
+
+class WrongFileTypeException extends BaseException {
+  @override
+  String get stringValue {
+    return 'WrongFileTypeException';
   }
 }
