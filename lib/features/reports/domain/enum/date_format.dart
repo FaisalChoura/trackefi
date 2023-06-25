@@ -1,0 +1,4 @@
+enum DateFormatEnum {
+  ddmmyyyy,
+  mmddyyyy,
+}

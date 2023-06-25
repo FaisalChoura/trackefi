@@ -12,6 +12,7 @@
 - ~~Unique transactions in uncategorised transactions dialog~~
 - ~~Persist reports~~
 - Basic UI / Error Handling
+- Update default import settings
 - Report analytics
 - Multiple files
 - Export report

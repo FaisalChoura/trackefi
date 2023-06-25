@@ -1,5 +1,6 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+import 'package:expense_categoriser/features/reports/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
 import '../enum/numbering_style.dart';
@@ -40,12 +41,13 @@ class CategoriseTransactionsUseCase {
       double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
           row[importSettings.fieldIndexes.amountField]);
 
-      _validateDateField(row[importSettings.fieldIndexes.dateField]);
+      String formatedDate = formatDate(
+          row[importSettings.fieldIndexes.dateField], importSettings);
 
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
           transactionAmount,
-          row[importSettings.fieldIndexes.dateField]);
+          formatedDate);
 
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);
@@ -87,12 +89,16 @@ class CategoriseTransactionsUseCase {
     }
   }
 
-  bool _validateDateField(String date) {
-    try {
-      DateTime.parse(date);
-      return true;
-    } catch (e) {
-      rethrow;
+  String formatDate(String date, CsvImportSettings settings) {
+    List<String> dateChunks = date.split(settings.dateSeparator);
+    String formatedDate = '';
+    if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
+      formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
+    } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
+      formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
+    } else {
+      throw 'WrongDateFOrmat';
     }
+    return formatedDate;
   }
 }

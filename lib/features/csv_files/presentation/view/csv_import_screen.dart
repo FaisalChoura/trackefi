@@ -3,6 +3,7 @@ import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_dat
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
+import 'package:expense_categoriser/features/reports/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,12 +78,14 @@ class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
 class _CsvImportsSettingsDialogState
     extends ConsumerState<CsvImportsSettingsDialog> {
   NumberingStyle numberingStyle = NumberingStyle.eu;
+  DateFormatEnum dateFormat = DateFormatEnum.ddmmyyyy;
   TextEditingController fieldDelimiterController = TextEditingController();
+  TextEditingController dateSeparatorController = TextEditingController();
   TextEditingController endOfLineContrller = TextEditingController();
+  FieldIndexes fieldIndexes = FieldIndexes();
 
   @override
   Widget build(BuildContext context) {
-    FieldIndexes fieldIndexes = FieldIndexes();
     final fileData = widget.filesData[0];
     // TODO clean up how form is handled and submited
     return Container(
@@ -96,6 +99,18 @@ class _CsvImportsSettingsDialogState
               if (value.isNotEmpty) {
                 setState(() {
                   fileData.importSettings.fieldDelimiter = value;
+                });
+              }
+            },
+          ),
+          TextField(
+            decoration: const InputDecoration(label: Text('Date Separator')),
+            controller: dateSeparatorController,
+            maxLength: 1,
+            onChanged: (value) {
+              if (value.isNotEmpty) {
+                setState(() {
+                  fileData.importSettings.dateSeparator = value;
                 });
               }
             },
@@ -117,6 +132,26 @@ class _CsvImportsSettingsDialogState
                   setState(() {
                     numberingStyle = value;
                     fileData.importSettings.numberStyle = value;
+                  });
+                }
+              }),
+          DropdownButton(
+              value: dateFormat,
+              items: const [
+                DropdownMenuItem(
+                  value: DateFormatEnum.ddmmyyyy,
+                  child: Text('DDMMYYYY'),
+                ),
+                DropdownMenuItem(
+                  value: DateFormatEnum.mmddyyyy,
+                  child: Text('MMDDYYYY'),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    dateFormat = value;
+                    fileData.importSettings.dateFormat = value;
                   });
                 }
               }),
@@ -150,8 +185,11 @@ class _CsvImportsSettingsDialogState
                 // TODO related to form clean up
                 final importSettings = CsvImportSettings();
                 importSettings.fieldIndexes = fieldIndexes;
+                // TODO add validations
                 importSettings.fieldDelimiter = fieldDelimiterController.text;
                 importSettings.numberStyle = numberingStyle;
+                importSettings.dateFormat = dateFormat;
+                importSettings.dateSeparator = dateSeparatorController.text;
                 Navigator.of(context)
                     .pop([CsvFileData(fileData.file, importSettings)]);
               })
