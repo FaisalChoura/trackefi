@@ -90,15 +90,19 @@ class CategoriseTransactionsUseCase {
   }
 
   String formatDate(String date, CsvImportSettings settings) {
-    List<String> dateChunks = date.split(settings.dateSeparator);
-    String formatedDate = '';
-    if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
-      formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
-    } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
-      formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
-    } else {
-      throw 'WrongDateFOrmat';
+    try {
+      List<String> dateChunks = date.split(settings.dateSeparator);
+      String formatedDate = '';
+      if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
+        formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
+      } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
+        formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
+      } else {
+        throw 'WrongDateFormat';
+      }
+      return formatedDate;
+    } catch (e) {
+      throw IncorrectDateFormat();
     }
-    return formatedDate;
   }
 }

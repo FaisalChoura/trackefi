@@ -27,3 +27,10 @@ class IncorrectFeildSeparatorException extends BaseException {
     return 'IncorrectFeildSeparatorException';
   }
 }
+
+class IncorrectDateFormat extends BaseException {
+  @override
+  String get stringValue {
+    return 'IncorrectDateFormat';
+  }
+}

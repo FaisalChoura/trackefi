@@ -21,6 +21,11 @@ class ErrorObject {
       message =
           'You have set a wrong feild separator in the settings please enter the correct one and retry';
     }
+    if (exceptionType == (IncorrectDateFormat).toString()) {
+      title = "Incorrect date format";
+      message =
+          'The date format is either incorrect or unsupported. Please check your date separator and format in the csv settigns';
+    }
     return ErrorObject(title: title, message: message);
   }
 }
