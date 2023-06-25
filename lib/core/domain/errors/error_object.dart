@@ -14,7 +14,7 @@ class ErrorObject {
     if (exceptionType == (IncorrectAmountMappingException).toString()) {
       title = "Incorrect mapped item for amount feild";
       message =
-          'You have mapped a field that cannot be assigned to amount, please re-import your csv';
+          'You have mapped a field that cannot be assigned to amount or you have set the wrong number style, please re-import your csv';
     }
     if (exceptionType == (IncorrectFeildSeparatorException).toString()) {
       title = "Incorrect field separator";

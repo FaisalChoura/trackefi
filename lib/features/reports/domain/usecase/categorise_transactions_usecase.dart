@@ -41,7 +41,7 @@ class CategoriseTransactionsUseCase {
       double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
           row[importSettings.fieldIndexes.amountField]);
 
-      String formatedDate = formatDate(
+      String formatedDate = _formatDate(
           row[importSettings.fieldIndexes.dateField], importSettings);
 
       Transaction transaction = Transaction(
@@ -89,7 +89,7 @@ class CategoriseTransactionsUseCase {
     }
   }
 
-  String formatDate(String date, CsvImportSettings settings) {
+  String _formatDate(String date, CsvImportSettings settings) {
     try {
       List<String> dateChunks = date.split(settings.dateSeparator);
       String formatedDate = '';
