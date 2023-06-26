@@ -21,4 +21,12 @@ class Report {
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
     }
   }
+
+  List<Transaction> get transactions {
+    List<Transaction> transactions = [];
+    for (var category in categories) {
+      transactions = [...transactions, ...category.transactions];
+    }
+    return transactions;
+  }
 }
