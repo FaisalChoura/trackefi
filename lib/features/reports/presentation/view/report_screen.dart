@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:expense_categoriser/core/domain/errors/error_object.dart';
+import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
@@ -162,22 +162,4 @@ class _UncategorisedItemsDialogState
         orElse: () =>
             const Expanded(child: Center(child: CircularProgressIndicator())));
   }
-}
-
-extension AsyncValueUI on AsyncValue {
-  void showDialogOnError(BuildContext context) => whenOrNull(error: (error, _) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return SizedBox(
-              height: 400,
-              child: Dialog(
-                child: Text(
-                    ErrorObject.exceptionToErrorObjectMapper(error.toString())
-                        .title),
-              ),
-            );
-          },
-        );
-      });
 }

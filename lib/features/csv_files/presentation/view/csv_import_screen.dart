@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
+import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
@@ -20,6 +20,11 @@ class CsvImportScreen extends ConsumerStatefulWidget {
 class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      csvFilesViewModelProvider,
+      (_, state) => state.showDialogOnError(context),
+    );
+
     final csvFilesData = ref.watch(csvFilesStoreProvider);
     return Scaffold(
         appBar: AppBar(title: const Text('CSV import')),
@@ -28,36 +33,31 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
             for (var fileData in csvFilesData)
               MaterialButton(
                   child: Text(fileData.file.name),
-                  onPressed: () =>
-                      ref.read(csvFilesViewModelProvider).removeFile(fileData)),
+                  onPressed: () => ref
+                      .read(csvFilesViewModelProvider.notifier)
+                      .removeFile(fileData)),
             Center(
               child: MaterialButton(
                 child: const Text('load CSV'),
                 onPressed: () async {
                   FilePickerResult? result;
-                  result = await ref.read(csvFilesViewModelProvider).getFiles();
+                  result = await ref
+                      .read(csvFilesViewModelProvider.notifier)
+                      .getFiles();
                   if (result != null) {
-                    // TODO handle exceptions
-                    _checkFileType(result.files);
                     final csvData = await _openImportSettingsDialog(result.files
                         // TODO handle what happens when different csv separators are added and how we show the initial horizontal list
                         .map((file) => CsvFileData(file, CsvImportSettings()))
                         .toList());
-                    ref.read(csvFilesViewModelProvider).importFiles(csvData);
+                    ref
+                        .read(csvFilesViewModelProvider.notifier)
+                        .importFiles(csvData);
                   }
                 },
               ),
             ),
           ],
         ));
-  }
-
-  void _checkFileType(List<PlatformFile> files) {
-    for (var file in files) {
-      if (file.extension != 'csv') {
-        throw WrongFileTypeException();
-      }
-    }
   }
 
   Future<List<CsvFileData>> _openImportSettingsDialog(
@@ -93,8 +93,15 @@ class _CsvImportsSettingsDialogState
   DateFormatEnum dateFormat = DateFormatEnum.ddmmyyyy;
   TextEditingController fieldDelimiterController = TextEditingController();
   TextEditingController dateSeparatorController = TextEditingController();
-  TextEditingController endOfLineContrller = TextEditingController();
   FieldIndexes fieldIndexes = FieldIndexes();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    fieldDelimiterController.text = ',';
+    dateSeparatorController.text = '/';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,23 +109,34 @@ class _CsvImportsSettingsDialogState
     // TODO clean up how form is handled and submited
     return Container(
       child: Form(
+        key: _formKey,
         child: Column(children: [
-          TextField(
+          TextFormField(
             decoration: const InputDecoration(label: Text('Field Separator')),
             controller: fieldDelimiterController,
             maxLength: 1,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'This field cannot be empty';
+              }
+              return null;
+            },
             onChanged: (value) {
               if (value.isNotEmpty) {
-                setState(() {
-                  fileData.importSettings.fieldDelimiter = value;
-                });
+                setState(() {});
               }
             },
           ),
-          TextField(
+          TextFormField(
             decoration: const InputDecoration(label: Text('Date Separator')),
             controller: dateSeparatorController,
             maxLength: 1,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'This field cannot be empty';
+              }
+              return null;
+            },
             onChanged: (value) {
               if (value.isNotEmpty) {
                 setState(() {
@@ -168,8 +186,9 @@ class _CsvImportsSettingsDialogState
                 }
               }),
           FutureBuilder(
-              future:
-                  ref.read(csvFilesViewModelProvider).getHeaderRow(fileData),
+              future: ref
+                  .read(csvFilesViewModelProvider.notifier)
+                  .getHeaderRow(fileData),
               builder: (context, snapshot) {
                 if (snapshot.data != null) {
                   final headerList = snapshot.data;
@@ -194,16 +213,17 @@ class _CsvImportsSettingsDialogState
           MaterialButton(
               child: Text('Done'),
               onPressed: () {
-                // TODO related to form clean up
-                final importSettings = CsvImportSettings();
-                importSettings.fieldIndexes = fieldIndexes;
-                // TODO add validations
-                importSettings.fieldDelimiter = fieldDelimiterController.text;
-                importSettings.numberStyle = numberingStyle;
-                importSettings.dateFormat = dateFormat;
-                importSettings.dateSeparator = dateSeparatorController.text;
-                Navigator.of(context)
-                    .pop([CsvFileData(fileData.file, importSettings)]);
+                if (_formKey.currentState!.validate()) {
+                  final importSettings = CsvImportSettings();
+                  importSettings.fieldIndexes = fieldIndexes;
+                  importSettings.fieldDelimiter = fieldDelimiterController.text;
+                  importSettings.numberStyle = numberingStyle;
+                  importSettings.dateFormat = dateFormat;
+                  importSettings.dateSeparator = dateSeparatorController.text;
+                  Navigator.of(context)
+                      .pop([CsvFileData(fileData.file, importSettings)]);
+                  // TODO related to form clean up
+                }
               })
         ]),
       ),
