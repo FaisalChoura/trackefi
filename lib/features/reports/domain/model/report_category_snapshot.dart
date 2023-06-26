@@ -29,7 +29,7 @@ class Transaction {
   late DateTime date;
   double amount;
   Transaction(
-      [this.name = '', this.amount = 0, String dateString = '01/01/1995']) {
+      [this.name = '', this.amount = 0, String dateString = '1995-01-01']) {
     date = DateTime.parse(dateString);
   }
 }
