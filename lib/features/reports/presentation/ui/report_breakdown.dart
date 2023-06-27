@@ -12,9 +12,8 @@ class ReportBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = report.categories;
-    // TODO add spending over days bar chart
-    // TODO add spending per transaction
+    // TODO add top spending days bar chart
+    // TODO add list off all transactions with dates
     return Row(
       children: [
         CategoriesPieChart(
