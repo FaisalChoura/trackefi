@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/indicator.dart';
@@ -13,13 +15,52 @@ class ReportBreakdown extends StatelessWidget {
     final categories = report.categories;
     // TODO add spending over days bar chart
     // TODO add spending per transaction
-    // TODO add transaction list
     return Row(
       children: [
         CategoriesPieChart(
           categories: report.categories,
+        ),
+        SpendingPerTransactionList(
+          transactions: report.transactions,
         )
       ],
+    );
+  }
+}
+
+class SpendingPerTransactionList extends StatelessWidget {
+  SpendingPerTransactionList({super.key, required this.transactions});
+  List<Transaction> transactions;
+
+  Map<String, double> groupedTransactionMap() {
+    final groupedTransactions = <String, double>{};
+    for (var transaction in transactions) {
+      if (groupedTransactions[transaction.name] != null) {
+        groupedTransactions[transaction.name] =
+            groupedTransactions[transaction.name]! + transaction.amount;
+      } else {
+        groupedTransactions[transaction.name] = transaction.amount;
+      }
+    }
+    return groupedTransactions;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final groupedTransactionsMap = groupedTransactionMap();
+    final groupedTransactionsNames = groupedTransactionsMap.keys.toList();
+    return SizedBox(
+      height: 400,
+      width: 400,
+      child: ListView.builder(
+          itemCount: groupedTransactionsNames.length,
+          itemBuilder: (context, i) {
+            final name = groupedTransactionsNames[i];
+            return ListTile(
+              title: Text(name),
+              subtitle: Text(groupedTransactionsMap[name].toString()),
+            );
+          }),
     );
   }
 }
