@@ -12,6 +12,7 @@
 - ~~Unique transactions in uncategorised transactions dialog~~
 - ~~Persist reports~~
 - Basic UI / Error Handling
+- Handle positive values
 - Update default import settings
 - Report analytics
 - Multiple files
