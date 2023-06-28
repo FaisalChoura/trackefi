@@ -97,6 +97,8 @@ class CategoriseTransactionsUseCase {
         formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
       } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
         formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
+      } else if (settings.dateFormat == DateFormatEnum.yyyymmdd) {
+        formatedDate = "${dateChunks[0]}-${dateChunks[1]}-${dateChunks[2]}";
       } else {
         throw 'WrongDateFormat';
       }

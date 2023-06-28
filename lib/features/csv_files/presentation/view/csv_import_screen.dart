@@ -176,6 +176,10 @@ class _CsvImportsSettingsDialogState
                   value: DateFormatEnum.mmddyyyy,
                   child: Text('MMDDYYYY'),
                 ),
+                DropdownMenuItem(
+                  value: DateFormatEnum.yyyymmdd,
+                  child: Text('YYYYMMDD'),
+                ),
               ],
               onChanged: (value) {
                 if (value != null) {
