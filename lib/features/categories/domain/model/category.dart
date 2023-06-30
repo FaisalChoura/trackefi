@@ -13,6 +13,7 @@ class Category {
   // transactions
 
   bool isPartOfCategory(String description) {
+    // TODO This is being called to many times when breakpoint is added
     if (keywords.isEmpty) {
       return false;
     }
@@ -23,7 +24,8 @@ class Category {
     num strength = 0;
     String matchedKeyword = '';
     for (var keyword in keywords) {
-      if (RegExp(keyword).hasMatch(description.toLowerCase())) {
+      final escapedKeyword = RegExp.escape(keyword);
+      if (RegExp(escapedKeyword).hasMatch(description.toLowerCase())) {
         matchedKeyword = keyword;
         break; // exit of first match
       }
@@ -31,7 +33,8 @@ class Category {
     List<String> keywordGroup = matchedKeyword.split(' ');
     for (var subKeyword in keywordGroup) {
       // keyword separator
-      strength = RegExp(subKeyword).hasMatch(description.toLowerCase())
+      final escapedSubKeyword = RegExp.escape(subKeyword);
+      strength = RegExp(escapedSubKeyword).hasMatch(description.toLowerCase())
           ? strength + 1
           : strength;
     }
@@ -48,8 +51,8 @@ class Category {
   }
 
   RegExp _generateRegex() {
-    // TODO handle characters that need escaping from regex suchs as * as a first character
-    String regexString = keywords.join("|");
+    String regexString =
+        keywords.map((keyword) => RegExp.escape(keyword)).join("|");
     return RegExp(regexString);
   }
 }

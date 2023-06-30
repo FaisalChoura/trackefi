@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -74,7 +73,7 @@ class CostlyDatesBarChart extends StatelessWidget {
       space: 4,
       child: Text(
         text,
-        style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
       ),
     );
   }

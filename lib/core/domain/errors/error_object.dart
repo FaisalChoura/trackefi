@@ -5,9 +5,10 @@ class ErrorObject {
   String message;
   ErrorObject({required this.title, required this.message});
 
-  factory ErrorObject.exceptionToErrorObjectMapper(String exceptionType) {
+  factory ErrorObject.exceptionToErrorObjectMapper(
+      String exceptionType, StackTrace s) {
     String title = exceptionType;
-    String message = 'Uknown error';
+    String message = s.toString();
     if (exceptionType == (NoCsvFileImportedException).toString()) {
       title = 'No CSV file found!';
       message = 'Please import a CSV file before generating a report';

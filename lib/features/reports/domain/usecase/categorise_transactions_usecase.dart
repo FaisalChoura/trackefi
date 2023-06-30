@@ -24,6 +24,8 @@ class CategoriseTransactionsUseCase {
     // get updated list of categories
     await _getCategories();
 
+    // TODO sort out negatives and positive transaction
+
     Map<String, ReportCategorySnapshot> categoriesMap =
         <String, ReportCategorySnapshot>{};
 
