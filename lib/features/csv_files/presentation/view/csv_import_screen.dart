@@ -1,11 +1,12 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
-import 'package:expense_categoriser/features/reports/domain/enum/date_format.dart';
-import 'package:expense_categoriser/features/reports/domain/enum/numbering_style.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,6 +95,7 @@ class _CsvImportsSettingsDialogState
   TextEditingController fieldDelimiterController = TextEditingController();
   TextEditingController dateSeparatorController = TextEditingController();
   FieldIndexes fieldIndexes = FieldIndexes();
+  ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -166,6 +168,26 @@ class _CsvImportsSettingsDialogState
                 }
               }),
           DropdownButton(
+              value: expenseSign,
+              items: const [
+                DropdownMenuItem(
+                  value: ExpenseSignEnum.negative,
+                  child: Text('Negative'),
+                ),
+                DropdownMenuItem(
+                  value: ExpenseSignEnum.positive,
+                  child: Text('Positive'),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    expenseSign = value;
+                    fileData.importSettings.expenseSign = expenseSign;
+                  });
+                }
+              }),
+          DropdownButton(
               value: dateFormat,
               items: const [
                 DropdownMenuItem(
@@ -219,11 +241,13 @@ class _CsvImportsSettingsDialogState
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   final importSettings = CsvImportSettings();
+                  // TODO can this be cleaned up
                   importSettings.fieldIndexes = fieldIndexes;
                   importSettings.fieldDelimiter = fieldDelimiterController.text;
                   importSettings.numberStyle = numberingStyle;
                   importSettings.dateFormat = dateFormat;
                   importSettings.dateSeparator = dateSeparatorController.text;
+                  importSettings.expenseSign = expenseSign;
                   Navigator.of(context)
                       .pop([CsvFileData(fileData.file, importSettings)]);
                   // TODO related to form clean up

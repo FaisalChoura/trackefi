@@ -1,0 +1,1 @@
+enum ExpenseSignEnum { negative, positive }

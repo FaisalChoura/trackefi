@@ -19,11 +19,11 @@ class ReportBreakdown extends StatelessWidget {
           categories: report.categories,
         ),
         SpendingPerTransactionList(
-          transactions: report.transactions,
+          transactions: report.expenseTransactions,
         ),
         CostlyDatesBarChart(
           dateCount: 5,
-          transactions: report.transactions,
+          transactions: report.expenseTransactions,
         )
       ],
     );

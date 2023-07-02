@@ -1,9 +1,10 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
-import 'package:expense_categoriser/features/reports/domain/enum/date_format.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
-import '../enum/numbering_style.dart';
 import '../../../csv_files/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 
@@ -24,8 +25,6 @@ class CategoriseTransactionsUseCase {
     // get updated list of categories
     await _getCategories();
 
-    // TODO sort out negatives and positive transaction
-
     Map<String, ReportCategorySnapshot> categoriesMap =
         <String, ReportCategorySnapshot>{};
 
@@ -45,11 +44,13 @@ class CategoriseTransactionsUseCase {
 
       String formatedDate = _formatDate(
           row[importSettings.fieldIndexes.dateField], importSettings);
+      bool isIncome = _transactionIsIncome(transactionAmount, importSettings);
 
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
           transactionAmount,
-          formatedDate);
+          formatedDate,
+          isIncome);
 
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);
@@ -108,5 +109,13 @@ class CategoriseTransactionsUseCase {
     } catch (e) {
       throw IncorrectDateFormatException();
     }
+  }
+
+  bool _transactionIsIncome(double amount, CsvImportSettings importSettings) {
+    if (importSettings.expenseSign == ExpenseSignEnum.negative && amount > 0 ||
+        importSettings.expenseSign == ExpenseSignEnum.positive && amount < 0) {
+      return true;
+    }
+    return false;
   }
 }

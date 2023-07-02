@@ -28,8 +28,12 @@ class Transaction {
   String name;
   late DateTime date;
   double amount;
+  bool isIncome;
   Transaction(
-      [this.name = '', this.amount = 0, String dateString = '1995-01-01']) {
+      [this.name = '',
+      this.amount = 0,
+      String dateString = '1995-01-01',
+      this.isIncome = false]) {
     date = DateTime.parse(dateString);
   }
 }

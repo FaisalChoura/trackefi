@@ -13,7 +13,7 @@ class Report {
   List<ReportCategorySnapshot> categories;
 
   Report(this.income, this.expenses, this.categories) {
-    this.createdAt = DateTime.now();
+    createdAt = DateTime.now();
     if (categories.isNotEmpty) {
       final totalExpenses = categories
           .map((category) => category.total)
@@ -22,10 +22,24 @@ class Report {
     }
   }
 
-  List<Transaction> get transactions {
+  List<Transaction> get expenseTransactions {
     List<Transaction> transactions = [];
     for (var category in categories) {
-      transactions = [...transactions, ...category.transactions];
+      final expenseTransactions =
+          category.transactions.where((transaction) => !transaction.isIncome);
+      transactions = [...transactions, ...expenseTransactions];
+    }
+    return transactions;
+  }
+
+  List<Transaction> get incomeTransactions {
+    List<Transaction> transactions = [];
+
+    // TODO O(nm) can be better
+    for (var category in categories) {
+      final incomeTransactions =
+          category.transactions.where((transaction) => transaction.isIncome);
+      transactions = [...transactions, ...incomeTransactions];
     }
     return transactions;
   }
