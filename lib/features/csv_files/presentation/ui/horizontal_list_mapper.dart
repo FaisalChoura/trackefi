@@ -22,10 +22,9 @@ class _HorizontalListMapperState<K, T>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Row(
+    return Row(
       children: genrateColumns(),
-    ));
+    );
   }
 
   List<Widget> genrateColumns() {

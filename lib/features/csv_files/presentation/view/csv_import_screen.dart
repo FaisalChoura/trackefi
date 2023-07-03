@@ -39,6 +39,7 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                       .removeFile(fileData)),
             Center(
               child: MaterialButton(
+                // TODO edit import settings after loading CSV
                 child: const Text('load CSV'),
                 onPressed: () async {
                   FilePickerResult? result;
@@ -47,7 +48,6 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                       .getFiles();
                   if (result != null) {
                     final csvData = await _openImportSettingsDialog(result.files
-                        // TODO handle what happens when different csv separators are added and how we show the initial horizontal list
                         .map((file) => CsvFileData(file, CsvImportSettings()))
                         .toList());
                     ref
@@ -109,152 +109,161 @@ class _CsvImportsSettingsDialogState
   Widget build(BuildContext context) {
     final fileData = widget.filesData[0];
     // TODO clean up how form is handled and submited
-    return Container(
-      child: Form(
-        key: _formKey,
-        child: Column(children: [
-          TextFormField(
-            decoration: const InputDecoration(label: Text('Field Separator')),
-            controller: fieldDelimiterController,
-            maxLength: 1,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'This field cannot be empty';
-              }
-              return null;
-            },
+    return Form(
+      key: _formKey,
+      child: Column(children: [
+        TextFormField(
+          decoration: const InputDecoration(label: Text('Field Separator')),
+          controller: fieldDelimiterController,
+          maxLength: 1,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field cannot be empty';
+            }
+            return null;
+          },
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              setState(() {
+                fileData.importSettings.fieldDelimiter = value;
+              });
+            }
+          },
+        ),
+        TextFormField(
+          decoration: const InputDecoration(label: Text('Date Separator')),
+          controller: dateSeparatorController,
+          maxLength: 1,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field cannot be empty';
+            }
+            return null;
+          },
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              setState(() {
+                fileData.importSettings.dateSeparator = value;
+              });
+            }
+          },
+        ),
+        DropdownButton(
+            value: numberingStyle,
+            items: const [
+              DropdownMenuItem(
+                value: NumberingStyle.eu,
+                child: Text('EU'),
+              ),
+              DropdownMenuItem(
+                value: NumberingStyle.us,
+                child: Text('US'),
+              ),
+            ],
             onChanged: (value) {
-              if (value.isNotEmpty) {
-                setState(() {});
-              }
-            },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(label: Text('Date Separator')),
-            controller: dateSeparatorController,
-            maxLength: 1,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'This field cannot be empty';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              if (value.isNotEmpty) {
+              if (value != null) {
                 setState(() {
-                  fileData.importSettings.dateSeparator = value;
+                  numberingStyle = value;
+                  fileData.importSettings.numberStyle = value;
                 });
               }
-            },
-          ),
-          DropdownButton(
-              value: numberingStyle,
-              items: const [
-                DropdownMenuItem(
-                  value: NumberingStyle.eu,
-                  child: Text('EU'),
-                ),
-                DropdownMenuItem(
-                  value: NumberingStyle.us,
-                  child: Text('US'),
-                ),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    numberingStyle = value;
-                    fileData.importSettings.numberStyle = value;
-                  });
-                }
-              }),
-          DropdownButton(
-              value: expenseSign,
-              items: const [
-                DropdownMenuItem(
-                  value: ExpenseSignEnum.negative,
-                  child: Text('Negative'),
-                ),
-                DropdownMenuItem(
-                  value: ExpenseSignEnum.positive,
-                  child: Text('Positive'),
-                ),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    expenseSign = value;
-                    fileData.importSettings.expenseSign = expenseSign;
-                  });
-                }
-              }),
-          DropdownButton(
-              value: dateFormat,
-              items: const [
-                DropdownMenuItem(
-                  value: DateFormatEnum.ddmmyyyy,
-                  child: Text('DDMMYYYY'),
-                ),
-                DropdownMenuItem(
-                  value: DateFormatEnum.mmddyyyy,
-                  child: Text('MMDDYYYY'),
-                ),
-                DropdownMenuItem(
-                  value: DateFormatEnum.yyyymmdd,
-                  child: Text('YYYYMMDD'),
-                ),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    dateFormat = value;
-                    fileData.importSettings.dateFormat = value;
-                  });
-                }
-              }),
-          FutureBuilder(
-              future: ref
-                  .read(csvFilesViewModelProvider.notifier)
-                  .getHeaderRow(fileData),
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  final headerList = snapshot.data;
-                  return HorizontalListMapper<int, UsableCsvFields>(
-                    headerValueMap: headerList!.asReverseMap(),
-                    options: [
-                      HorizontalListMapperOption<UsableCsvFields>(
-                          label: 'Description',
-                          value: UsableCsvFields.description),
-                      HorizontalListMapperOption<UsableCsvFields>(
-                          label: 'Date', value: UsableCsvFields.date),
-                      HorizontalListMapperOption<UsableCsvFields>(
-                          label: 'Amount', value: UsableCsvFields.amount),
-                    ],
-                    onChanged: (value) {
-                      fieldIndexes = FieldIndexes.fromMap(value);
-                    },
-                  );
-                }
-                return Container();
-              }),
-          MaterialButton(
-              child: Text('Done'),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  final importSettings = CsvImportSettings();
-                  // TODO can this be cleaned up
-                  importSettings.fieldIndexes = fieldIndexes;
-                  importSettings.fieldDelimiter = fieldDelimiterController.text;
-                  importSettings.numberStyle = numberingStyle;
-                  importSettings.dateFormat = dateFormat;
-                  importSettings.dateSeparator = dateSeparatorController.text;
-                  importSettings.expenseSign = expenseSign;
-                  Navigator.of(context)
-                      .pop([CsvFileData(fileData.file, importSettings)]);
-                  // TODO related to form clean up
-                }
-              })
-        ]),
-      ),
+            }),
+        DropdownButton(
+            value: expenseSign,
+            items: const [
+              DropdownMenuItem(
+                value: ExpenseSignEnum.negative,
+                child: Text('Negative'),
+              ),
+              DropdownMenuItem(
+                value: ExpenseSignEnum.positive,
+                child: Text('Positive'),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  expenseSign = value;
+                  fileData.importSettings.expenseSign = expenseSign;
+                });
+              }
+            }),
+        DropdownButton(
+            value: dateFormat,
+            items: const [
+              DropdownMenuItem(
+                value: DateFormatEnum.ddmmyyyy,
+                child: Text('DDMMYYYY'),
+              ),
+              DropdownMenuItem(
+                value: DateFormatEnum.mmddyyyy,
+                child: Text('MMDDYYYY'),
+              ),
+              DropdownMenuItem(
+                value: DateFormatEnum.yyyymmdd,
+                child: Text('YYYYMMDD'),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  dateFormat = value;
+                  fileData.importSettings.dateFormat = value;
+                });
+              }
+            }),
+        FutureBuilder(
+            future: ref
+                .read(csvFilesViewModelProvider.notifier)
+                .getHeaderAndFirstRow(fileData),
+            builder: (context, snapshot) {
+              // TODO handle if future errors out
+              if (snapshot.data != null) {
+                final headerList = snapshot.data!.headerRow;
+                final firstDataRow = snapshot.data!.firstRow;
+                return Column(
+                  children: [
+                    Row(
+                      children: [for (var col in firstDataRow) Text("$col |")],
+                    ),
+                    HorizontalListMapper<int, UsableCsvFields>(
+                      headerValueMap: headerList.asReverseMap(),
+                      options: [
+                        HorizontalListMapperOption<UsableCsvFields>(
+                            label: 'Description',
+                            value: UsableCsvFields.description),
+                        HorizontalListMapperOption<UsableCsvFields>(
+                            label: 'Date', value: UsableCsvFields.date),
+                        HorizontalListMapperOption<UsableCsvFields>(
+                            label: 'Amount', value: UsableCsvFields.amount),
+                      ],
+                      onChanged: (value) {
+                        fieldIndexes = FieldIndexes.fromMap(value);
+                      },
+                    )
+                  ],
+                );
+              }
+              return Container();
+            }),
+        MaterialButton(
+            child: const Text('Done'),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                final importSettings = CsvImportSettings();
+                // TODO can this be cleaned up
+                importSettings.fieldIndexes = fieldIndexes;
+                importSettings.fieldDelimiter = fieldDelimiterController.text;
+                importSettings.numberStyle = numberingStyle;
+                importSettings.dateFormat = dateFormat;
+                importSettings.dateSeparator = dateSeparatorController.text;
+                importSettings.expenseSign = expenseSign;
+                Navigator.of(context)
+                    .pop([CsvFileData(fileData.file, importSettings)]);
+                // TODO related to form clean up
+              }
+            })
+      ]),
     );
   }
 }

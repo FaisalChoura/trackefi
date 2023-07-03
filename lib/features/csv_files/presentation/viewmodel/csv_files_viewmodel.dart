@@ -53,6 +53,14 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
     return data[0]![0].map((e) => e.toString()).toList();
   }
 
+  Future<HeaderFirstRowData> getHeaderAndFirstRow(CsvFileData file) async {
+    // TODO make this more efficient as it will convert the entire file and we should convert first 5 rows
+    final data = await _convertCsvFileUseCase.execute([file]);
+    final headerRow = data[0]![0].map((e) => e.toString()).toList();
+    final firstRow = data[0]![1].map((e) => e.toString()).toList();
+    return HeaderFirstRowData(headerRow, firstRow);
+  }
+
   void _checkFileType(List<PlatformFile> files) {
     for (var file in files) {
       if (file.extension != 'csv') {
@@ -60,4 +68,11 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
       }
     }
   }
+}
+
+class HeaderFirstRowData {
+  List<String> headerRow;
+  List<String> firstRow;
+
+  HeaderFirstRowData(this.headerRow, this.firstRow);
 }
