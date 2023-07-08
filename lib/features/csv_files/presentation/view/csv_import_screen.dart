@@ -217,7 +217,9 @@ class _CsvImportsSettingsDialogState
                 .read(csvFilesViewModelProvider.notifier)
                 .getHeaderAndFirstRow(fileData),
             builder: (context, snapshot) {
-              // TODO handle if future errors out
+              if (snapshot.error != null) {
+                return Text(snapshot.error.toString());
+              }
               if (snapshot.data != null) {
                 final headerList = snapshot.data!.headerRow;
                 final firstDataRow = snapshot.data!.firstRow;
