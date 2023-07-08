@@ -13,7 +13,6 @@ class Category {
   // transactions
 
   bool isPartOfCategory(String description) {
-    // TODO This is being called to many times when breakpoint is added
     if (keywords.isEmpty) {
       return false;
     }
@@ -42,12 +41,8 @@ class Category {
     return strength;
   }
 
-  void removeKeyword(String keyword) {
-    // keywords.remove(keyword);
-    // TODO fix this in the future the ability not to edit
-    var tempKeywords = [...keywords];
-    tempKeywords.remove(keyword);
-    keywords = tempKeywords;
+  void removeKeyword(String removedKeyword) {
+    keywords = keywords.where((keyword) => keyword != removedKeyword).toList();
   }
 
   RegExp _generateRegex() {

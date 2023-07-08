@@ -41,29 +41,49 @@ class _HorizontalListMapperState<K, T>
             DropdownButton(
                 value: selectedValues[mappedHeaderValue],
                 items: [
+                  const DropdownMenuItem(
+                    value: null,
+                    child: Text(''),
+                  ),
                   for (var option in widget.options)
-                    // TODO should not allow duplicate values
                     DropdownMenuItem(
                       value: option.value,
+                      enabled: _isOptionEnabled(option.value),
                       child: Text(option.label),
                     ),
                 ],
                 onChanged: (value) {
-                  if (value != null) {
+                  if (value == null) {
                     setState(() {
-                      final tempValues = {...selectedValues};
-                      tempValues[mappedHeaderValue] = value;
-                      selectedValues = tempValues;
+                      selectedValues.remove(mappedHeaderValue);
 
                       widget.onChanged(selectedValues);
                     });
+                    return;
                   }
+                  setState(() {
+                    final tempValues = {...selectedValues};
+                    tempValues[mappedHeaderValue] = value;
+                    selectedValues = tempValues;
+
+                    widget.onChanged(selectedValues);
+                  });
                 })
           ],
         ));
       }
     }
     return columnList;
+  }
+
+  bool _isOptionEnabled(T value) {
+    final selectedValuesKeys = selectedValues.keys.toList();
+    for (var key in selectedValuesKeys) {
+      if (selectedValues[key] == value) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

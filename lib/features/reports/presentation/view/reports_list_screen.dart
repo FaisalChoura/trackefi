@@ -14,7 +14,6 @@ class ReportsListScreen extends StatelessWidget {
       key: const Key('1'),
       appBar: AppBar(title: const Text('Reports List')),
       body: Consumer(builder: (context, ref, child) {
-        // TODO clean up duplicate lists here
         final reportsList = ref.watch(reportsListStoreProvider);
         final viewModel = ref.watch(reportsListViewModel);
         return Container(
