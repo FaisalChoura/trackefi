@@ -144,8 +144,8 @@ class _UncategorisedItemsDialogState
                 child: Column(
                   children: [
                     IconButton(
-                        onPressed: () => Navigator.of(context)
-                            .pop(updatedRowCategoryData.values.toList()),
+                        onPressed: () => Navigator.of(context).pop(groupRowData(
+                            updatedRowCategoryData.values.toList())),
                         icon: const Icon(Icons.check)),
                     for (var i = 0; i < transactions.length; i++)
                       UncategorisedItemRow(
@@ -161,5 +161,19 @@ class _UncategorisedItemsDialogState
             ),
         orElse: () =>
             const Expanded(child: Center(child: CircularProgressIndicator())));
+  }
+
+  List<UncategorisedRowData> groupRowData(
+      List<UncategorisedRowData> ungroupedList) {
+    Map<String, UncategorisedRowData> groupedMap = {};
+    for (var item in ungroupedList) {
+      if (groupedMap[item.category.name] != null) {
+        final existingItem = groupedMap[item.category.name]!;
+        existingItem.keywords = [...existingItem.keywords, ...item.keywords];
+      } else {
+        groupedMap[item.category.name] = item;
+      }
+    }
+    return groupedMap.values.toList();
   }
 }

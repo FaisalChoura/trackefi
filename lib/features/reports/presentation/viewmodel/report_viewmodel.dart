@@ -80,7 +80,6 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   Future<void> updateCategoriesFromRowData(
       List<UncategorisedRowData> values) async {
     final updatedCategories = _updateCategoriesFromRowData.execute(values);
-    // TODO loops over multiple times if same cateogry is chosen for different keywords
     for (var category in updatedCategories) {
       await _putCategoryUseCase.execute(category);
     }
