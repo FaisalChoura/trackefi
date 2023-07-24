@@ -1,9 +1,13 @@
+import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+
 import '../model/uncategories_row_data.dart';
 import '../../../categories/domain/model/category.dart';
 
 class UpdateCategoriesFromRowData {
-  UpdateCategoriesFromRowData();
-  List<Category> execute(List<UncategorisedRowData> values) {
+  final CategoriesRepository _categoriesRepository;
+
+  UpdateCategoriesFromRowData(this._categoriesRepository);
+  void execute(List<UncategorisedRowData> values) async {
     List<Category> categories = [];
     for (var data in values) {
       // create a set is used to make the list contain unique values
@@ -13,7 +17,8 @@ class UpdateCategoriesFromRowData {
       categories.add(data.category);
     }
 
-    // TODO use repository here
-    return categories;
+    for (var category in categories) {
+      await _categoriesRepository.putCategory(category);
+    }
   }
 }

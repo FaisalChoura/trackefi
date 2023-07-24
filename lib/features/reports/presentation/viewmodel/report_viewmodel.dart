@@ -1,5 +1,4 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
-import 'package:expense_categoriser/features/categories/domain/usecase/put_category_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -21,7 +20,6 @@ final reportViewModel =
             ref.watch(convertCsvFileUseCaseProvider),
             ref.watch(categoriseTransactionsUseCaseProvider),
             ref.watch(updateCategoriesFromRowDataProvider),
-            ref.watch(putCategoriesUseCaseProvider),
             ref.watch(putReportUseCaseProvider)));
 
 class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
@@ -29,7 +27,6 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   final ConvertCsvFileUseCase _convertCsvFileUseCase;
   final CategoriseTransactionsUseCase _categoriseTransactionsUseCase;
   final UpdateCategoriesFromRowData _updateCategoriesFromRowData;
-  final PutCategoryUseCase _putCategoryUseCase;
   final PutReportUseCase _putReportUseCase;
 
   ReportViewModel(
@@ -37,7 +34,6 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
       this._convertCsvFileUseCase,
       this._categoriseTransactionsUseCase,
       this._updateCategoriesFromRowData,
-      this._putCategoryUseCase,
       this._putReportUseCase)
       : super(const AsyncValue.data(null));
 
@@ -79,10 +75,7 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
 
   Future<void> updateCategoriesFromRowData(
       List<UncategorisedRowData> values) async {
-    final updatedCategories = _updateCategoriesFromRowData.execute(values);
-    for (var category in updatedCategories) {
-      await _putCategoryUseCase.execute(category);
-    }
+    _updateCategoriesFromRowData.execute(values);
   }
 
   Future<void> putReport(Report report) async {
