@@ -91,12 +91,12 @@ class CostlyDatesBarChart extends StatelessWidget {
 
   Map<String, double> _groupTransactionsByDateMap() {
     final groupedTransactions = <String, double>{};
-    // TODO round doubles
     for (var transaction in transactions) {
       final dateString = _dateString(transaction.date);
       if (groupedTransactions[dateString] != null) {
-        groupedTransactions[dateString] =
-            groupedTransactions[dateString]! + transaction.amount;
+        groupedTransactions[dateString] = double.parse(
+            (groupedTransactions[transaction.name]! + transaction.amount)
+                .toStringAsFixed(2));
       } else {
         groupedTransactions[dateString] = transaction.amount;
       }
@@ -134,12 +134,12 @@ class SpendingPerTransactionList extends StatelessWidget {
   final List<Transaction> transactions;
 
   Map<String, double> groupedTransactionByNameMap() {
-    // TODO round doubles
     final groupedTransactions = <String, double>{};
     for (var transaction in transactions) {
       if (groupedTransactions[transaction.name] != null) {
-        groupedTransactions[transaction.name] =
-            groupedTransactions[transaction.name]! + transaction.amount;
+        groupedTransactions[transaction.name] = double.parse(
+            (groupedTransactions[transaction.name]! + transaction.amount)
+                .toStringAsFixed(2));
       } else {
         groupedTransactions[transaction.name] = transaction.amount;
       }
