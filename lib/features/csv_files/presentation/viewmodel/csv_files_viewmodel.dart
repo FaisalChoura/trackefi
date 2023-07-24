@@ -54,7 +54,6 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<HeaderFirstRowData> getHeaderAndFirstRow(CsvFileData file) async {
-    // TODO make this more efficient as it will convert the entire file and we should convert first 5 rows
     final data = await _convertCsvFileUseCase.execute([file]);
     final headerRow = data[0]![0].map((e) => e.toString()).toList();
     final firstRow = data[0]![1].map((e) => e.toString()).toList();

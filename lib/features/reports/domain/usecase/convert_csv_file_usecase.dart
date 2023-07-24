@@ -6,10 +6,11 @@ import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_dat
 
 import '../../../../core/domain/errors/exceptions.dart';
 
+typedef ConvertedCsvFile = Map<int, List<List<dynamic>>>;
+
 class ConvertCsvFileUseCase {
-  // TODO Name this type
-  Future<Map<int, List<List<dynamic>>>> execute(
-      List<CsvFileData> filesData) async {
+  // TODO make it accept how many lines to format
+  Future<ConvertedCsvFile> execute(List<CsvFileData> filesData) async {
     if (filesData.isEmpty) throw NoCsvFileImportedException();
     // TODO use end of line from import settings
     final Map<int, List<List<dynamic>>> convertedFilesMap = {};
