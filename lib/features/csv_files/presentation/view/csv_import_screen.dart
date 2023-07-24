@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
+import 'package:expense_categoriser/core/domain/extensions/reverse_map_extension.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
@@ -271,12 +272,4 @@ class _CsvImportsSettingsDialogState
 }
 
 // TODO extract this
-extension ReverseMap on List<String> {
-  Map<String, int> asReverseMap() {
-    Map<String, int> map = {};
-    for (var i = 0; i < length; i++) {
-      map[this[i]] = i;
-    }
-    return map;
-  }
-}
+
