@@ -14,11 +14,25 @@ class AppMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<String> menuItems = [
-      ScreenRoutes.categories,
-      ScreenRoutes.csvImport,
-      ScreenRoutes.reports,
-      ScreenRoutes.reportsList,
+    String selectedItem = ref.watch(selectedPageNameProvider);
+
+    List<MenuItem> menuItems = [
+      MenuItem(
+        icon: Icons.category,
+        title: ScreenRoutes.categories,
+      ),
+      MenuItem(
+        icon: Icons.file_present,
+        title: ScreenRoutes.csvImport,
+      ),
+      MenuItem(
+        icon: Icons.bar_chart_outlined,
+        title: ScreenRoutes.reports,
+      ),
+      MenuItem(
+        icon: Icons.list,
+        title: ScreenRoutes.reportsList,
+      ),
     ];
     return Scaffold(
       body: Padding(
@@ -44,13 +58,15 @@ class AppMenu extends ConsumerWidget {
                   itemCount: menuItems.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      title: Text(menuItems[index]),
+                      title: Text(menuItems[index].title),
+                      leading: Icon(menuItems[index].icon),
+                      selected: selectedItem == menuItems[index].title,
                       onTap: () => {
                         if (ref.read(selectedPageNameProvider.notifier).state !=
-                            menuItems[index])
+                            menuItems[index].title)
                           {
                             ref.read(selectedPageNameProvider.notifier).state =
-                                menuItems[index]
+                                menuItems[index].title
                           }
                       },
                     );
@@ -61,4 +77,10 @@ class AppMenu extends ConsumerWidget {
       ),
     );
   }
+}
+
+class MenuItem {
+  String title;
+  IconData icon;
+  MenuItem({required this.icon, required this.title});
 }

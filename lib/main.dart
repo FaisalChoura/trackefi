@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +16,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: lightTheme,
       debugShowCheckedModeBanner: false,
-      home: Layout(),
+      home: const Layout(),
     );
   }
 }
