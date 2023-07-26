@@ -1,8 +1,11 @@
+import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 
-import '../enum/numbering_style.dart';
-import '../model/import_settings.dart';
+import '../../../csv_files/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
 
 class CategoriseTransactionsUseCase {
@@ -21,9 +24,6 @@ class CategoriseTransactionsUseCase {
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
     // get updated list of categories
     await _getCategories();
-    importSettings.fieldIndexes.amountField = 2;
-    importSettings.fieldIndexes.dateField = 0;
-    importSettings.fieldIndexes.descriptionField = 1;
 
     Map<String, ReportCategorySnapshot> categoriesMap =
         <String, ReportCategorySnapshot>{};
@@ -41,12 +41,19 @@ class CategoriseTransactionsUseCase {
       List<dynamic> row = data[i];
       double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
           row[importSettings.fieldIndexes.amountField]);
+
+      String formatedDate = _formatDate(
+          row[importSettings.fieldIndexes.dateField], importSettings);
+      bool isIncome = _transactionIsIncome(transactionAmount, importSettings);
+
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
-          row[importSettings.fieldIndexes.dateField],
-          transactionAmount);
+          transactionAmount,
+          formatedDate,
+          isIncome);
 
-      Category? category = _findCategory(row[1]);
+      Category? category =
+          _findCategory(row[importSettings.fieldIndexes.descriptionField]);
 
       if (category != null) {
         categoriesMap[category.name]!.addTransaction(transaction);
@@ -73,11 +80,42 @@ class CategoriseTransactionsUseCase {
   }
 
   double _parseNumberStyle(NumberingStyle numberingStyle, String amount) {
-    if (numberingStyle == NumberingStyle.eu) {
-      return double.parse(
-        amount.replaceAll(RegExp(','), '.'),
-      );
+    try {
+      if (numberingStyle == NumberingStyle.eu) {
+        return double.parse(
+          amount.replaceAll(RegExp(','), '.'),
+        );
+      }
+      return double.parse(amount);
+    } catch (e) {
+      throw IncorrectAmountMappingException();
     }
-    return double.parse(amount);
+  }
+
+  String _formatDate(String date, CsvImportSettings settings) {
+    try {
+      List<String> dateChunks = date.split(settings.dateSeparator);
+      String formatedDate = '';
+      if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
+        formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
+      } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
+        formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
+      } else if (settings.dateFormat == DateFormatEnum.yyyymmdd) {
+        formatedDate = "${dateChunks[0]}-${dateChunks[1]}-${dateChunks[2]}";
+      } else {
+        throw 'WrongDateFormat';
+      }
+      return formatedDate;
+    } catch (e) {
+      throw IncorrectDateFormatException();
+    }
+  }
+
+  bool _transactionIsIncome(double amount, CsvImportSettings importSettings) {
+    if (importSettings.expenseSign == ExpenseSignEnum.negative && amount > 0 ||
+        importSettings.expenseSign == ExpenseSignEnum.positive && amount < 0) {
+      return true;
+    }
+    return false;
   }
 }

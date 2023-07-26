@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:expense_categoriser/core/domain/errors/error_object.dart';
+import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/report_viewmodel.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,44 +35,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
       body: Column(children: [
         MaterialButton(
             child: const Text('Generate Report'),
-            onPressed: () async {
-              // TODO extract to external function
-              var categorisedTransactions = await ref
-                  .read(reportViewModel.notifier)
-                  .categoriseTransactions(csvFiles);
-
-              if (ref
-                  .read(reportViewModel.notifier)
-                  .hasUncategorisedTransactions(categorisedTransactions)) {
-                List<UncategorisedRowData>? updatedCategoryData = [];
-
-                final dataToBeUnique = <Transaction>[];
-                var enteredMap = <String, bool?>{};
-                // TODO create extenstion for this
-                for (var transaction
-                    in categorisedTransactions[0].transactions) {
-                  if (enteredMap[transaction.name] == null) {
-                    dataToBeUnique.add(transaction);
-                    enteredMap.putIfAbsent(transaction.name, () => true);
-                  }
-                }
-                updatedCategoryData =
-                    await _handleUncategorisedTransactions(dataToBeUnique);
-
-                if (updatedCategoryData.isNotEmpty) {
-                  await ref
-                      .read(reportViewModel.notifier)
-                      .updateCategoriesFromRowData(updatedCategoryData);
-                }
-
-                categorisedTransactions = await ref
-                    .read(reportViewModel.notifier)
-                    .categoriseTransactions(csvFiles);
-              }
-              ref
-                  .read(reportViewModel.notifier)
-                  .buildReport(categorisedTransactions);
-            }),
+            onPressed: () => _generateReport(csvFiles)),
         ref.watch(reportViewModel).maybeWhen(
               data: (report) {
                 if (report != null) {
@@ -95,6 +58,40 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             )
       ]),
     );
+  }
+
+  void _generateReport(List<CsvFileData> csvFiles) async {
+    var categorisedTransactions = await ref
+        .read(reportViewModel.notifier)
+        .categoriseTransactions(csvFiles);
+
+    if (ref
+        .read(reportViewModel.notifier)
+        .hasUncategorisedTransactions(categorisedTransactions)) {
+      List<UncategorisedRowData>? updatedCategoryData = [];
+
+      final dataToBeUnique = <Transaction>[];
+      var enteredMap = <String, bool?>{};
+      for (var transaction in categorisedTransactions[0].expensesTransactions) {
+        if (enteredMap[transaction.name] == null) {
+          dataToBeUnique.add(transaction);
+          enteredMap.putIfAbsent(transaction.name, () => true);
+        }
+      }
+      updatedCategoryData =
+          await _handleUncategorisedTransactions(dataToBeUnique);
+
+      if (updatedCategoryData.isNotEmpty) {
+        await ref
+            .read(reportViewModel.notifier)
+            .updateCategoriesFromRowData(updatedCategoryData);
+      }
+
+      categorisedTransactions = await ref
+          .read(reportViewModel.notifier)
+          .categoriseTransactions(csvFiles);
+    }
+    ref.read(reportViewModel.notifier).buildReport(categorisedTransactions);
   }
 
   Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
@@ -145,8 +142,8 @@ class _UncategorisedItemsDialogState
                 child: Column(
                   children: [
                     IconButton(
-                        onPressed: () => Navigator.of(context)
-                            .pop(updatedRowCategoryData.values.toList()),
+                        onPressed: () => Navigator.of(context).pop(groupRowData(
+                            updatedRowCategoryData.values.toList())),
                         icon: const Icon(Icons.check)),
                     for (var i = 0; i < transactions.length; i++)
                       UncategorisedItemRow(
@@ -163,22 +160,18 @@ class _UncategorisedItemsDialogState
         orElse: () =>
             const Expanded(child: Center(child: CircularProgressIndicator())));
   }
-}
 
-extension AsyncValueUI on AsyncValue {
-  void showDialogOnError(BuildContext context) => whenOrNull(error: (error, _) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return SizedBox(
-              height: 400,
-              child: Dialog(
-                child: Text(
-                    ErrorObject.exceptionToErrorObjectMapper(error.toString())
-                        .title),
-              ),
-            );
-          },
-        );
-      });
+  List<UncategorisedRowData> groupRowData(
+      List<UncategorisedRowData> ungroupedList) {
+    Map<String, UncategorisedRowData> groupedMap = {};
+    for (var item in ungroupedList) {
+      if (groupedMap[item.category.name] != null) {
+        final existingItem = groupedMap[item.category.name]!;
+        existingItem.keywords = [...existingItem.keywords, ...item.keywords];
+      } else {
+        groupedMap[item.category.name] = item;
+      }
+    }
+    return groupedMap.values.toList();
+  }
 }

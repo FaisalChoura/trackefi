@@ -23,7 +23,8 @@ class Category {
     num strength = 0;
     String matchedKeyword = '';
     for (var keyword in keywords) {
-      if (RegExp(keyword).hasMatch(description.toLowerCase())) {
+      final escapedKeyword = RegExp.escape(keyword);
+      if (RegExp(escapedKeyword).hasMatch(description.toLowerCase())) {
         matchedKeyword = keyword;
         break; // exit of first match
       }
@@ -31,7 +32,8 @@ class Category {
     List<String> keywordGroup = matchedKeyword.split(' ');
     for (var subKeyword in keywordGroup) {
       // keyword separator
-      strength = RegExp(subKeyword).hasMatch(description.toLowerCase())
+      final escapedSubKeyword = RegExp.escape(subKeyword);
+      strength = RegExp(escapedSubKeyword).hasMatch(description.toLowerCase())
           ? strength + 1
           : strength;
     }
@@ -39,17 +41,13 @@ class Category {
     return strength;
   }
 
-  void removeKeyword(String keyword) {
-    // keywords.remove(keyword);
-    // TODO fix this in the future the ability not to edit
-    var tempKeywords = [...keywords];
-    tempKeywords.remove(keyword);
-    keywords = tempKeywords;
+  void removeKeyword(String removedKeyword) {
+    keywords = keywords.where((keyword) => keyword != removedKeyword).toList();
   }
 
   RegExp _generateRegex() {
-    // TODO handle characters that need escaping from regex suchs as * as a first character
-    String regexString = keywords.join("|");
+    String regexString =
+        keywords.map((keyword) => RegExp.escape(keyword)).join("|");
     return RegExp(regexString);
   }
 }

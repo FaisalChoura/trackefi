@@ -1,14 +1,14 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CsvFilesStore extends StateNotifier<List<PlatformFile>> {
+class CsvFilesStore extends StateNotifier<List<CsvFileData>> {
   CsvFilesStore() : super([]);
 
-  void addFiles(List<PlatformFile> files) {
-    state = [...state, ...files];
+  void addFiles(List<CsvFileData> filesData) {
+    state = [...state, ...filesData];
   }
 
-  void removeFile(PlatformFile file) {
-    state = state.where((f) => f.path != file.path).toList();
+  void removeFile(CsvFileData fileData) {
+    state = state.where((f) => f.file.path != fileData.file.path).toList();
   }
 }

@@ -20,5 +20,5 @@ final getAllCategoriesUseCaseProvider = Provider<GetAllCategoriesUseCase>(
     (ref) => GetAllCategoriesUseCase(ref.watch(categoriesRepositoryProvider)));
 
 final updateCategoriesFromRowDataProvider =
-    Provider<UpdateCategoriesFromRowData>(
-        (ref) => UpdateCategoriesFromRowData());
+    Provider<UpdateCategoriesFromRowData>((ref) =>
+        UpdateCategoriesFromRowData(ref.watch(categoriesRepositoryProvider)));

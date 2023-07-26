@@ -1,4 +1,4 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 
 import '../../domain/repository/csv_files_repository.dart';
 import '../store/csv_files_store.dart';
@@ -8,12 +8,12 @@ class CsvFilesRepositoryImpl implements CsvFilesRepository {
   CsvFilesRepositoryImpl(this._store);
 
   @override
-  void addFiles(List<PlatformFile> files) {
-    _store.addFiles(files);
+  void addFiles(List<CsvFileData> filesData) {
+    _store.addFiles(filesData);
   }
 
   @override
-  void removeFile(PlatformFile file) {
-    _store.removeFile(file);
+  void removeFile(CsvFileData fileData) {
+    _store.removeFile(fileData);
   }
 }

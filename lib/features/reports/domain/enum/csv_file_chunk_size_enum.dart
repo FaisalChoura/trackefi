@@ -1,0 +1,1 @@
+enum CsvFileChunkSizeEnum { small, full }

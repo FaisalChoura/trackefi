@@ -5,9 +5,11 @@ part 'report_category_snapshot.g.dart';
 
 @embedded
 class ReportCategorySnapshot {
-  double total = 0;
+  double totalExpenses = 0;
+  double totalIncome = 0;
   String name;
-  List<Transaction> transactions = [];
+  List<Transaction> expensesTransactions = [];
+  List<Transaction> incomeTransactions = [];
   ColorValues? colorValues;
   ReportCategorySnapshot([this.name = '']);
 
@@ -18,15 +20,29 @@ class ReportCategorySnapshot {
   }
 
   void addTransaction(Transaction transaction) {
-    transactions.add(transaction);
-    total = double.parse((total + transaction.amount).toStringAsFixed(2));
+    if (transaction.isIncome) {
+      incomeTransactions.add(transaction);
+      totalIncome =
+          double.parse((totalIncome + transaction.amount).toStringAsFixed(2));
+      return;
+    }
+    expensesTransactions.add(transaction);
+    totalExpenses =
+        double.parse((totalExpenses + transaction.amount).toStringAsFixed(2));
   }
 }
 
 @embedded
 class Transaction {
   String name;
-  String date;
+  late DateTime date;
   double amount;
-  Transaction([this.name = '', this.date = '', this.amount = 0]);
+  bool isIncome;
+  Transaction(
+      [this.name = '',
+      this.amount = 0,
+      String dateString = '1995-01-01',
+      this.isIncome = false]) {
+    date = DateTime.parse(dateString);
+  }
 }

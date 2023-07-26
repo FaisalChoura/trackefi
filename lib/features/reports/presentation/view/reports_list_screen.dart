@@ -14,7 +14,6 @@ class ReportsListScreen extends StatelessWidget {
       key: const Key('1'),
       appBar: AppBar(title: const Text('Reports List')),
       body: Consumer(builder: (context, ref, child) {
-        // TODO clean up duplicate lists here
         final reportsList = ref.watch(reportsListStoreProvider);
         final viewModel = ref.watch(reportsListViewModel);
         return Container(
@@ -35,14 +34,14 @@ class ReportsListScreen extends StatelessWidget {
                         builder: (context) =>
                             ReportBreakdownScreen(report: report))),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () => ref
                           .read(reportsListViewModel.notifier)
                           .removeReport(report.id),
                     ),
                   );
                 }),
-            orElse: () => Center(child: CircularProgressIndicator()),
+            orElse: () => const Center(child: CircularProgressIndicator()),
           ),
         );
       }),

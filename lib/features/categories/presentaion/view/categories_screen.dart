@@ -124,12 +124,6 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
   Color currentColor = const Color(0xff443a49);
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final id = ref.watch(selectedCategoryId);
     ref.watch(categoriesViewModelStateNotifierProvider);

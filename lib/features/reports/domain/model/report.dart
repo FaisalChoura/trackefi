@@ -13,12 +13,28 @@ class Report {
   List<ReportCategorySnapshot> categories;
 
   Report(this.income, this.expenses, this.categories) {
-    this.createdAt = DateTime.now();
+    createdAt = DateTime.now();
     if (categories.isNotEmpty) {
       final totalExpenses = categories
-          .map((category) => category.total)
+          .map((category) => category.totalExpenses)
           .reduce((value, element) => value + element);
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
     }
+  }
+
+  List<Transaction> get expenseTransactions {
+    List<Transaction> transactions = [];
+    for (var category in categories) {
+      transactions = [...transactions, ...category.expensesTransactions];
+    }
+    return transactions;
+  }
+
+  List<Transaction> get incomeTransactions {
+    List<Transaction> transactions = [];
+    for (var category in categories) {
+      transactions = [...transactions, ...category.incomeTransactions];
+    }
+    return transactions;
   }
 }

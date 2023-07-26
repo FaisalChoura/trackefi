@@ -9,5 +9,35 @@ abstract class BaseException implements Exception {
 
 class NoCsvFileImportedException extends BaseException {
   @override
-  String stringValue = 'NoCsvFileImportedException';
+  String get stringValue {
+    return 'NoCsvFileImportedException';
+  }
+}
+
+class IncorrectAmountMappingException extends BaseException {
+  @override
+  String get stringValue {
+    return 'IncorrectAmountMappingException';
+  }
+}
+
+class IncorrectFeildSeparatorException extends BaseException {
+  @override
+  String get stringValue {
+    return 'IncorrectFeildSeparatorException';
+  }
+}
+
+class IncorrectDateFormatException extends BaseException {
+  @override
+  String get stringValue {
+    return 'IncorrectDateFormatException';
+  }
+}
+
+class WrongFileTypeException extends BaseException {
+  @override
+  String get stringValue {
+    return 'WrongFileTypeException';
+  }
 }
