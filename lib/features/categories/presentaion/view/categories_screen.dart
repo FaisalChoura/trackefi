@@ -17,14 +17,7 @@ class CategoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Categories'),
-          actions: [
-            IconButton(
-                onPressed: () => _openNewCategoryInput(ref),
-                icon: const Icon(Icons.add))
-          ],
-        ),
+        extendBodyBehindAppBar: true,
         body: Row(
           children: [
             CategoriesList(),
@@ -58,7 +51,15 @@ class CategoriesList extends ConsumerWidget {
     return SizedBox(
         width: 180,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
+              child: Text(
+                'Categories',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
             showField
                 ? Padding(
                     padding: const EdgeInsets.all(4.0),
