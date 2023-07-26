@@ -16,7 +16,7 @@ class Report {
     createdAt = DateTime.now();
     if (categories.isNotEmpty) {
       final totalExpenses = categories
-          .map((category) => category.total)
+          .map((category) => category.totalExpenses)
           .reduce((value, element) => value + element);
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
     }
@@ -25,21 +25,15 @@ class Report {
   List<Transaction> get expenseTransactions {
     List<Transaction> transactions = [];
     for (var category in categories) {
-      final expenseTransactions =
-          category.transactions.where((transaction) => !transaction.isIncome);
-      transactions = [...transactions, ...expenseTransactions];
+      transactions = [...transactions, ...category.expensesTransactions];
     }
     return transactions;
   }
 
   List<Transaction> get incomeTransactions {
     List<Transaction> transactions = [];
-
-    // TODO O(nm) can be better
     for (var category in categories) {
-      final incomeTransactions =
-          category.transactions.where((transaction) => transaction.isIncome);
-      transactions = [...transactions, ...incomeTransactions];
+      transactions = [...transactions, ...category.incomeTransactions];
     }
     return transactions;
   }

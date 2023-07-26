@@ -95,7 +95,7 @@ class CostlyDatesBarChart extends StatelessWidget {
       final dateString = _dateString(transaction.date);
       if (groupedTransactions[dateString] != null) {
         groupedTransactions[dateString] = double.parse(
-            (groupedTransactions[transaction.name]! + transaction.amount)
+            (groupedTransactions[dateString]! + transaction.amount)
                 .toStringAsFixed(2));
       } else {
         groupedTransactions[dateString] = transaction.amount;
@@ -183,7 +183,7 @@ class CategoriesPieChart extends StatelessWidget {
             color: category.colorValues != null
                 ? category.colorValues!.toColor()
                 : Colors.purple,
-            text: "${category.name}: ${category.total}",
+            text: "${category.name}: ${category.totalExpenses}",
             isSquare: true,
           ),
         const SizedBox(
@@ -212,7 +212,7 @@ class CategoriesPieChart extends StatelessWidget {
               color: category.colorValues != null
                   ? category.colorValues!.toColor()
                   : Colors.purple,
-              value: double.parse(category.total.toString()),
+              value: double.parse(category.totalExpenses.toString()),
               radius: 30,
               showTitle: false),
         )

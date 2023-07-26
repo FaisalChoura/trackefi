@@ -57,11 +57,11 @@ int _reportCategorySnapshotEstimateSize(
     }
   }
   bytesCount += 3 + object.name.length * 3;
-  bytesCount += 3 + object.transactions.length * 3;
+  bytesCount += 3 + object.expensesTransactions.length * 3;
   {
     final offsets = allOffsets[Transaction]!;
-    for (var i = 0; i < object.transactions.length; i++) {
-      final value = object.transactions[i];
+    for (var i = 0; i < object.expensesTransactions.length; i++) {
+      final value = object.expensesTransactions[i];
       bytesCount += TransactionSchema.estimateSize(value, offsets, allOffsets);
     }
   }
@@ -81,12 +81,12 @@ void _reportCategorySnapshotSerialize(
     object.colorValues,
   );
   writer.writeString(offsets[1], object.name);
-  writer.writeDouble(offsets[2], object.total);
+  writer.writeDouble(offsets[2], object.totalExpenses);
   writer.writeObjectList<Transaction>(
     offsets[3],
     allOffsets,
     TransactionSchema.serialize,
-    object.transactions,
+    object.expensesTransactions,
   );
 }
 
@@ -104,8 +104,8 @@ ReportCategorySnapshot _reportCategorySnapshotDeserialize(
     ColorValuesSchema.deserialize,
     allOffsets,
   );
-  object.total = reader.readDouble(offsets[2]);
-  object.transactions = reader.readObjectList<Transaction>(
+  object.totalExpenses = reader.readDouble(offsets[2]);
+  object.expensesTransactions = reader.readObjectList<Transaction>(
         offsets[3],
         TransactionSchema.deserialize,
         allOffsets,

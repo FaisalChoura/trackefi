@@ -69,7 +69,7 @@ class ReportViewModel extends StateNotifier<AsyncValue<Report?>> {
   bool hasUncategorisedTransactions(
       List<ReportCategorySnapshot> categorisedTransactions) {
     return categorisedTransactions.isNotEmpty
-        ? categorisedTransactions[0].transactions.isNotEmpty
+        ? categorisedTransactions[0].expensesTransactions.isNotEmpty
         : false;
   }
 

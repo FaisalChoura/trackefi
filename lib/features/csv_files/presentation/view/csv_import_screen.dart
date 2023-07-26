@@ -109,7 +109,6 @@ class _CsvImportsSettingsDialogState
   @override
   Widget build(BuildContext context) {
     final fileData = widget.filesData[0];
-    // TODO clean up how form is handled and submited
     return Form(
       key: _formKey,
       child: Column(children: [
@@ -254,7 +253,6 @@ class _CsvImportsSettingsDialogState
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 final importSettings = CsvImportSettings();
-                // TODO can this be cleaned up
                 importSettings.fieldIndexes = fieldIndexes;
                 importSettings.fieldDelimiter = fieldDelimiterController.text;
                 importSettings.numberStyle = numberingStyle;
@@ -263,7 +261,6 @@ class _CsvImportsSettingsDialogState
                 importSettings.expenseSign = expenseSign;
                 Navigator.of(context)
                     .pop([CsvFileData(fileData.file, importSettings)]);
-                // TODO related to form clean up
               }
             })
       ]),

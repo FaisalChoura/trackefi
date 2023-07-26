@@ -72,7 +72,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
       final dataToBeUnique = <Transaction>[];
       var enteredMap = <String, bool?>{};
-      for (var transaction in categorisedTransactions[0].transactions) {
+      for (var transaction in categorisedTransactions[0].expensesTransactions) {
         if (enteredMap[transaction.name] == null) {
           dataToBeUnique.add(transaction);
           enteredMap.putIfAbsent(transaction.name, () => true);
