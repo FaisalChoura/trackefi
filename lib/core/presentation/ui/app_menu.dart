@@ -21,23 +21,44 @@ class AppMenu extends ConsumerWidget {
       ScreenRoutes.reportsList,
     ];
     return Scaffold(
-      appBar: AppBar(title: const Text('Categoriser')),
-      body: ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: menuItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text(menuItems[index]),
-              onTap: () => {
-                if (ref.read(selectedPageNameProvider.notifier).state !=
-                    menuItems[index])
-                  {
-                    ref.read(selectedPageNameProvider.notifier).state =
-                        menuItems[index]
-                  }
-              },
-            );
-          }),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 24, bottom: 24, left: 8, right: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Icon(Icons.money_off_csred_outlined),
+                  Text(
+                    'Trackefi',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: menuItems.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(menuItems[index]),
+                      onTap: () => {
+                        if (ref.read(selectedPageNameProvider.notifier).state !=
+                            menuItems[index])
+                          {
+                            ref.read(selectedPageNameProvider.notifier).state =
+                                menuItems[index]
+                          }
+                      },
+                    );
+                  }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
