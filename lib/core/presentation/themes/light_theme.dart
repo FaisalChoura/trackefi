@@ -32,4 +32,10 @@ final lightTheme = ThemeData(
       selectedColor: Color(0xFF14CC60),
       iconColor: TColors.gunmetal,
       textColor: TColors.gunmetal,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(12),
+          bottom: Radius.circular(12),
+        ),
+      ),
     ));

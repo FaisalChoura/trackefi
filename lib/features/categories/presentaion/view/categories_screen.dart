@@ -120,10 +120,11 @@ class CategoriesList extends ConsumerWidget {
             const Expanded(child: Center(child: CircularProgressIndicator())));
   }
 
-  SizedBox _buildCategoriesView(
+  Container _buildCategoriesView(
       WidgetRef ref, List<Category> categories, int selectedId) {
-    return SizedBox(
-        width: 180,
+    return Container(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        width: 220,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
