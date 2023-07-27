@@ -43,20 +43,29 @@ class CategoriesScreen extends ConsumerWidget {
     );
   }
 
-  // TODO extract to own widget
-  Dialog _newCategoryBuilder(BuildContext context, WidgetRef ref) {
+  _newCategoryBuilder(BuildContext context, WidgetRef ref) {
+    return NewCategoryDialog(categoryNameController: categoryNameController);
+  }
+}
+
+class NewCategoryDialog extends ConsumerWidget {
+  const NewCategoryDialog({
+    super.key,
+    required this.categoryNameController,
+  });
+
+  final TextEditingController categoryNameController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
               top: Radius.circular(10.0), bottom: Radius.circular(10))),
       child: CallbackShortcuts(
         bindings: <ShortcutActivator, VoidCallback>{
-          const SingleActivator(LogicalKeyboardKey.enter): () {
-            ref
-                .read(categoriesViewModelStateNotifierProvider.notifier)
-                .addCategory(Category(categoryNameController.text, []));
-            Navigator.of(context).pop();
-          },
+          const SingleActivator(LogicalKeyboardKey.enter): () =>
+              _addCategory(context, ref)
         },
         child: Container(
           height: 170,
@@ -80,12 +89,7 @@ class CategoriesScreen extends ConsumerWidget {
                 height: 16,
               ),
               TrButton(
-                onPressed: () {
-                  ref
-                      .read(categoriesViewModelStateNotifierProvider.notifier)
-                      .addCategory(Category(categoryNameController.text, []));
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => _addCategory(context, ref),
                 child: const Text('Add Category'),
               )
             ],
@@ -93,6 +97,14 @@ class CategoriesScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _addCategory(BuildContext context, WidgetRef ref) {
+    ref
+        .read(categoriesViewModelStateNotifierProvider.notifier)
+        .addCategory(Category(categoryNameController.text, []));
+    categoryNameController.clear();
+    Navigator.of(context).pop();
   }
 }
 
