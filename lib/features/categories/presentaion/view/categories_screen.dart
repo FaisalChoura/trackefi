@@ -2,6 +2,7 @@ import 'package:expense_categoriser/core/presentation/ui/button.dart';
 import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
 import 'package:expense_categoriser/features/categories/presentaion/ui/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/category.dart';
@@ -29,50 +30,66 @@ class CategoriesScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => _newCategoryBuilder(context, ref),
-        ),
+        onPressed: () => _openNewCategoryDialog(context, ref),
         child: const Icon(Icons.add),
       ),
     );
   }
 
+  _openNewCategoryDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => _newCategoryBuilder(context, ref),
+    );
+  }
+
+  // TODO extract to own widget
   Dialog _newCategoryBuilder(BuildContext context, WidgetRef ref) {
     return Dialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
               top: Radius.circular(10.0), bottom: Radius.circular(10))),
-      child: Container(
-        height: 170,
-        width: 400,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'New Category',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            TrTextField(
-              controller: categoryNameController,
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            TrButton(
-              onPressed: () {
-                ref
-                    .read(categoriesViewModelStateNotifierProvider.notifier)
-                    .addCategory(Category(categoryNameController.text, []));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Add Category'),
-            )
-          ],
+      child: CallbackShortcuts(
+        bindings: <ShortcutActivator, VoidCallback>{
+          const SingleActivator(LogicalKeyboardKey.enter): () {
+            ref
+                .read(categoriesViewModelStateNotifierProvider.notifier)
+                .addCategory(Category(categoryNameController.text, []));
+            Navigator.of(context).pop();
+          },
+        },
+        child: Container(
+          height: 170,
+          width: 400,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'New Category',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TrTextField(
+                controller: categoryNameController,
+                autofocus: true,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TrButton(
+                onPressed: () {
+                  ref
+                      .read(categoriesViewModelStateNotifierProvider.notifier)
+                      .addCategory(Category(categoryNameController.text, []));
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Add Category'),
+              )
+            ],
+          ),
         ),
       ),
     );
