@@ -36,21 +36,21 @@ class AppMenu extends ConsumerWidget {
     ];
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(top: 24, bottom: 24, left: 8, right: 8),
+        padding: const EdgeInsets.only(top: 36, bottom: 24, left: 8, right: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Icon(Icons.money_off_csred_outlined),
-                  Text(
-                    'Trackefi',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+            const Row(
+              children: [
+                Icon(Icons.money_off_csred_outlined),
+                Text(
+                  'Trackefi',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 16,
             ),
             Expanded(
               child: ListView.builder(

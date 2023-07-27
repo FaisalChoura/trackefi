@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,22 +7,25 @@ import '../domain/model/category.dart';
 class CategoryKeywordField extends ConsumerStatefulWidget {
   final Category category;
   final ValueChanged<String> onChange;
-  const CategoryKeywordField(
-      {Key? key, required this.category, required this.onChange})
-      : super(key: key);
+  late final TextEditingController? controller;
 
+  CategoryKeywordField(
+      {super.key,
+      required this.category,
+      required this.onChange,
+      this.controller}) {
+    controller ??= TextEditingController();
+  }
   @override
   ConsumerState<CategoryKeywordField> createState() =>
       CategoryKeywordFieldState();
 }
 
 class CategoryKeywordFieldState extends ConsumerState<CategoryKeywordField> {
-  TextEditingController controller = TextEditingController();
-
   @override
   void initState() {
     super.initState();
-    controller.addListener(_handleChanges);
+    widget.controller!.addListener(_handleChanges);
   }
 
   @override
@@ -29,21 +33,20 @@ class CategoryKeywordFieldState extends ConsumerState<CategoryKeywordField> {
     return Column(
       children: [
         SizedBox(
-          width: 240,
-          child: TextField(
-            controller: controller,
-          ),
-        ),
+            width: 240,
+            child: TrTextField(
+              controller: widget.controller,
+            )),
       ],
     );
   }
 
   _handleChanges() {
-    final text = controller.text;
+    final text = widget.controller!.text;
     if (text.isNotEmpty && text.substring(text.length - 1) == ',') {
       final addedCategory = text.substring(0, text.length - 1);
       widget.onChange(addedCategory);
-      controller.clear();
+      widget.controller!.clear();
     }
   }
 }
