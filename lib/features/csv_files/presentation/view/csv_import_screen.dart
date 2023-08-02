@@ -29,8 +29,10 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
 
     final csvFilesData = ref.watch(csvFilesStoreProvider);
     return Scaffold(
-        appBar: AppBar(title: const Text('CSV import')),
-        body: Column(
+      body: Padding(
+        padding:
+            const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 24),
+        child: Column(
           children: [
             for (var fileData in csvFilesData)
               MaterialButton(
@@ -38,28 +40,25 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                   onPressed: () => ref
                       .read(csvFilesViewModelProvider.notifier)
                       .removeFile(fileData)),
-            Center(
-              child: MaterialButton(
-                // TODO edit import settings after loading CSV
-                child: const Text('load CSV'),
-                onPressed: () async {
-                  FilePickerResult? result;
-                  result = await ref
-                      .read(csvFilesViewModelProvider.notifier)
-                      .getFiles();
-                  if (result != null) {
-                    final csvData = await _openImportSettingsDialog(result.files
-                        .map((file) => CsvFileData(file, CsvImportSettings()))
-                        .toList());
-                    ref
-                        .read(csvFilesViewModelProvider.notifier)
-                        .importFiles(csvData);
-                  }
-                },
-              ),
-            ),
           ],
-        ));
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _loadFile(),
+        child: const Icon(Icons.upload_file_outlined),
+      ),
+    );
+  }
+
+  void _loadFile() async {
+    FilePickerResult? result;
+    result = await ref.read(csvFilesViewModelProvider.notifier).getFiles();
+    if (result != null) {
+      final csvData = await _openImportSettingsDialog(result.files
+          .map((file) => CsvFileData(file, CsvImportSettings()))
+          .toList());
+      ref.read(csvFilesViewModelProvider.notifier).importFiles(csvData);
+    }
   }
 
   Future<List<CsvFileData>> _openImportSettingsDialog(
