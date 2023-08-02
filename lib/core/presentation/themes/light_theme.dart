@@ -7,6 +7,8 @@ class TColors {
   static const gunmetal = Color(0xFF0A2E36);
   static const drakGreen = Color(0xFF036D19);
 
+  static const grey = Color(0xFFB8B8B8);
+
   static const Map<int, Color> color = {
     50: Color.fromRGBO(20, 204, 96, .1),
     100: Color.fromRGBO(20, 204, 96, .2),

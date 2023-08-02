@@ -1,11 +1,13 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/core/domain/extensions/reverse_map_extension.dart';
+import 'package:expense_categoriser/core/presentation/ui/button.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
+import 'package:expense_categoriser/features/csv_files/presentation/ui/card.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,11 +37,31 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
         child: Column(
           children: [
             for (var fileData in csvFilesData)
-              MaterialButton(
-                  child: Text(fileData.file.name),
-                  onPressed: () => ref
-                      .read(csvFilesViewModelProvider.notifier)
-                      .removeFile(fileData)),
+              TrCard(
+                header: Text(fileData.file.name),
+                footer: Row(
+                  children: [
+                    Expanded(
+                      child: TrButton(
+                        onPressed: () => ref
+                            .read(csvFilesViewModelProvider.notifier)
+                            .removeFile(fileData),
+                        child: const Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.delete),
+                              Text(
+                                'Remove',
+                              )
+                            ]),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            // MaterialButton(
+            //     child: Text(fileData.file.name),
           ],
         ),
       ),
