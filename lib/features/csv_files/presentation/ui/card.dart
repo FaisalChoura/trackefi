@@ -10,7 +10,7 @@ class TrCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
+      width: 250,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
           color: Colors.transparent,

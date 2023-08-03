@@ -1,0 +1,4 @@
+enum TrButtonStyle {
+  primary,
+  secondary,
+}

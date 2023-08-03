@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalListMapper<K, T> extends StatefulWidget {
@@ -35,41 +36,48 @@ class _HorizontalListMapperState<K, T>
       final mappedHeaderValue = widget.headerValueMap[header];
 
       if (mappedHeaderValue != null) {
-        columnList.add(Column(
-          children: [
-            Text(header),
-            DropdownButton(
-                value: selectedValues[mappedHeaderValue],
-                items: [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text(''),
-                  ),
-                  for (var option in widget.options)
-                    DropdownMenuItem(
-                      value: option.value,
-                      enabled: _isOptionEnabled(option.value),
-                      child: Text(option.label),
-                    ),
-                ],
-                onChanged: (value) {
-                  if (value == null) {
-                    setState(() {
-                      selectedValues.remove(mappedHeaderValue);
+        columnList.add(Flexible(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TrSelectField(
+                    label: header,
+                    value: selectedValues[mappedHeaderValue],
+                    items: [
+                      const DropdownMenuItem(
+                        value: null,
+                        child: Text(''),
+                      ),
+                      for (var option in widget.options)
+                        DropdownMenuItem(
+                          value: option.value,
+                          enabled: _isOptionEnabled(option.value),
+                          child: Text(option.label),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) {
+                        setState(() {
+                          selectedValues.remove(mappedHeaderValue);
 
-                      widget.onChanged(selectedValues);
-                    });
-                    return;
-                  }
-                  setState(() {
-                    final tempValues = {...selectedValues};
-                    tempValues[mappedHeaderValue] = value;
-                    selectedValues = tempValues;
+                          widget.onChanged(selectedValues);
+                        });
+                        return;
+                      }
+                      setState(() {
+                        final tempValues = {...selectedValues};
+                        tempValues[mappedHeaderValue] = value;
+                        selectedValues = tempValues;
 
-                    widget.onChanged(selectedValues);
-                  });
-                })
-          ],
+                        widget.onChanged(selectedValues);
+                      });
+                    })
+              ],
+            ),
+          ),
         ));
       }
     }

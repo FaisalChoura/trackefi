@@ -1,6 +1,10 @@
+import 'package:expense_categoriser/core/domain/enums/button_styles.dart';
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/core/domain/extensions/reverse_map_extension.dart';
+import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
+import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
@@ -34,30 +38,60 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
       body: Padding(
         padding:
             const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 24),
-        child: Column(
+        child: Wrap(
+          direction: Axis.vertical,
           children: [
+            const Text(
+              'CSV Files',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             for (var fileData in csvFilesData)
-              TrCard(
-                header: Text(fileData.file.name),
-                footer: Row(
-                  children: [
-                    Expanded(
-                      child: TrButton(
-                        onPressed: () => ref
-                            .read(csvFilesViewModelProvider.notifier)
-                            .removeFile(fileData),
-                        child: const Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.delete),
-                              Text(
-                                'Remove',
-                              )
-                            ]),
-                      ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8, top: 16),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 140,
+                  ),
+                  child: TrCard(
+                    header: Row(
+                      children: [
+                        const Icon(Icons.file_present),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          fileData.file.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                  ],
+                    footer: Row(
+                      children: [
+                        Expanded(
+                          child: TrButton(
+                            style: TrButtonStyle.secondary,
+                            onPressed: () => ref
+                                .read(csvFilesViewModelProvider.notifier)
+                                .removeFile(fileData),
+                            child: const Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.delete,
+                                    size: 16,
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    'Remove',
+                                  )
+                                ]),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               )
             // MaterialButton(
@@ -130,161 +164,276 @@ class _CsvImportsSettingsDialogState
   @override
   Widget build(BuildContext context) {
     final fileData = widget.filesData[0];
-    return Form(
-      key: _formKey,
-      child: Column(children: [
-        TextFormField(
-          decoration: const InputDecoration(label: Text('Field Separator')),
-          controller: fieldDelimiterController,
-          maxLength: 1,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'This field cannot be empty';
-            }
-            return null;
-          },
-          onChanged: (value) {
-            if (value.isNotEmpty) {
-              setState(() {
-                fileData.importSettings.fieldDelimiter = value;
-              });
-            }
-          },
-        ),
-        TextFormField(
-          decoration: const InputDecoration(label: Text('Date Separator')),
-          controller: dateSeparatorController,
-          maxLength: 1,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'This field cannot be empty';
-            }
-            return null;
-          },
-          onChanged: (value) {
-            if (value.isNotEmpty) {
-              setState(() {
-                fileData.importSettings.dateSeparator = value;
-              });
-            }
-          },
-        ),
-        DropdownButton(
-            value: numberingStyle,
-            items: const [
-              DropdownMenuItem(
-                value: NumberingStyle.eu,
-                child: Text('EU'),
-              ),
-              DropdownMenuItem(
-                value: NumberingStyle.us,
-                child: Text('US'),
-              ),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  numberingStyle = value;
-                  fileData.importSettings.numberStyle = value;
-                });
-              }
-            }),
-        DropdownButton(
-            value: expenseSign,
-            items: const [
-              DropdownMenuItem(
-                value: ExpenseSignEnum.negative,
-                child: Text('Negative'),
-              ),
-              DropdownMenuItem(
-                value: ExpenseSignEnum.positive,
-                child: Text('Positive'),
-              ),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  expenseSign = value;
-                  fileData.importSettings.expenseSign = expenseSign;
-                });
-              }
-            }),
-        DropdownButton(
-            value: dateFormat,
-            items: const [
-              DropdownMenuItem(
-                value: DateFormatEnum.ddmmyyyy,
-                child: Text('DDMMYYYY'),
-              ),
-              DropdownMenuItem(
-                value: DateFormatEnum.mmddyyyy,
-                child: Text('MMDDYYYY'),
-              ),
-              DropdownMenuItem(
-                value: DateFormatEnum.yyyymmdd,
-                child: Text('YYYYMMDD'),
-              ),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  dateFormat = value;
-                  fileData.importSettings.dateFormat = value;
-                });
-              }
-            }),
-        FutureBuilder(
-            future: ref
-                .read(csvFilesViewModelProvider.notifier)
-                .getHeaderAndFirstRow(fileData),
-            builder: (context, snapshot) {
-              if (snapshot.error != null) {
-                return Text(snapshot.error.toString());
-              }
-              if (snapshot.data != null) {
-                final headerList = snapshot.data!.headerRow;
-                final firstDataRow = snapshot.data!.firstRow;
-                return Column(
-                  children: [
-                    Row(
-                      children: [for (var col in firstDataRow) Text("$col |")],
+    return Container(
+      height: 500,
+      width: 500,
+      padding: const EdgeInsets.all(24.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Wrap(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      'Import Settings',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
-                    HorizontalListMapper<int, UsableCsvFields>(
-                      headerValueMap: headerList.asReverseMap(),
-                      options: [
-                        HorizontalListMapperOption<UsableCsvFields>(
-                            label: 'Description',
-                            value: UsableCsvFields.description),
-                        HorizontalListMapperOption<UsableCsvFields>(
-                            label: 'Date', value: UsableCsvFields.date),
-                        HorizontalListMapperOption<UsableCsvFields>(
-                            label: 'Amount', value: UsableCsvFields.amount),
-                      ],
-                      onChanged: (value) {
-                        fieldIndexes = FieldIndexes.fromMap(value);
-                      },
-                    )
-                  ],
-                );
-              }
-              return Container();
-            }),
-        MaterialButton(
-            child: const Text('Done'),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                final importSettings = CsvImportSettings();
-                importSettings.fieldIndexes = fieldIndexes;
-                importSettings.fieldDelimiter = fieldDelimiterController.text;
-                importSettings.numberStyle = numberingStyle;
-                importSettings.dateFormat = dateFormat;
-                importSettings.dateSeparator = dateSeparatorController.text;
-                importSettings.expenseSign = expenseSign;
-                Navigator.of(context)
-                    .pop([CsvFileData(fileData.file, importSettings)]);
-              }
-            })
-      ]),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: TrTextField(
+                          label: 'Field Separator',
+                          controller: fieldDelimiterController,
+                          maxLength: 1,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'This field cannot be empty';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                fileData.importSettings.fieldDelimiter = value;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: TrTextField(
+                          label: 'Date Separator',
+                          controller: dateSeparatorController,
+                          maxLength: 1,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'This field cannot be empty';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                fileData.importSettings.dateSeparator = value;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: TrSelectField(
+                              label: 'Numbering Style',
+                              value: numberingStyle,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: NumberingStyle.eu,
+                                  child: Text('EU'),
+                                ),
+                                DropdownMenuItem(
+                                  value: NumberingStyle.us,
+                                  child: Text('US'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    numberingStyle = value;
+                                    fileData.importSettings.numberStyle = value;
+                                  });
+                                }
+                              }),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: TrSelectField(
+                              label: 'Expenses Sign',
+                              value: expenseSign,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: ExpenseSignEnum.negative,
+                                  child: Text('Negative'),
+                                ),
+                                DropdownMenuItem(
+                                  value: ExpenseSignEnum.positive,
+                                  child: Text('Positive'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    expenseSign = value;
+                                    fileData.importSettings.expenseSign =
+                                        expenseSign;
+                                  });
+                                }
+                              }),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: TrSelectField(
+                              label: 'Date Format',
+                              value: dateFormat,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: DateFormatEnum.ddmmyyyy,
+                                  child: Text('DDMMYYYY'),
+                                ),
+                                DropdownMenuItem(
+                                  value: DateFormatEnum.mmddyyyy,
+                                  child: Text('MMDDYYYY'),
+                                ),
+                                DropdownMenuItem(
+                                  value: DateFormatEnum.yyyymmdd,
+                                  child: Text('YYYYMMDD'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    dateFormat = value;
+                                    fileData.importSettings.dateFormat = value;
+                                  });
+                                }
+                              }),
+                        )
+                      ]),
+                  FutureBuilder(
+                      future: ref
+                          .read(csvFilesViewModelProvider.notifier)
+                          .getHeaderAndFirstRow(fileData),
+                      builder: (context, snapshot) {
+                        if (snapshot.error != null) {
+                          return Text(snapshot.error.toString());
+                        }
+                        if (snapshot.data != null) {
+                          final headerList = snapshot.data!.headerRow;
+                          final firstDataRow = snapshot.data!.firstRow;
+                          return Column(
+                            children: [
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              // TODO add text to explain what this is
+                              Table(
+                                border: TableBorder.all(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                    bottom: Radius.circular(12),
+                                  ),
+                                ),
+                                columnWidths: const <int, TableColumnWidth>{
+                                  0: IntrinsicColumnWidth(),
+                                  1: FlexColumnWidth(),
+                                  2: FixedColumnWidth(64),
+                                },
+                                defaultVerticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                children: <TableRow>[
+                                  TableRow(
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      color: TColors.grey,
+                                    ),
+                                    children: <Widget>[
+                                      for (var col in headerList)
+                                        TableCell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(col),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: <Widget>[
+                                      for (var col in firstDataRow)
+                                        TableCell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(col),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              HorizontalListMapper<int, UsableCsvFields>(
+                                headerValueMap: headerList.asReverseMap(),
+                                options: [
+                                  HorizontalListMapperOption<UsableCsvFields>(
+                                      label: 'Description',
+                                      value: UsableCsvFields.description),
+                                  HorizontalListMapperOption<UsableCsvFields>(
+                                      label: 'Date',
+                                      value: UsableCsvFields.date),
+                                  HorizontalListMapperOption<UsableCsvFields>(
+                                      label: 'Amount',
+                                      value: UsableCsvFields.amount),
+                                ],
+                                onChanged: (value) {
+                                  fieldIndexes = FieldIndexes.fromMap(value);
+                                },
+                              )
+                            ],
+                          );
+                        }
+                        return Container();
+                      })
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TrButton(
+                        child: const Text('Done'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            final importSettings = CsvImportSettings();
+                            importSettings.fieldIndexes = fieldIndexes;
+                            importSettings.fieldDelimiter =
+                                fieldDelimiterController.text;
+                            importSettings.numberStyle = numberingStyle;
+                            importSettings.dateFormat = dateFormat;
+                            importSettings.dateSeparator =
+                                dateSeparatorController.text;
+                            importSettings.expenseSign = expenseSign;
+                            Navigator.of(context).pop(
+                                [CsvFileData(fileData.file, importSettings)]);
+                          }
+                        }),
+                  ),
+                ],
+              )
+            ]),
+      ),
     );
   }
 }
