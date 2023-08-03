@@ -29,10 +29,6 @@ class AppMenu extends ConsumerWidget {
         icon: Icons.bar_chart_outlined,
         title: ScreenRoutes.reports,
       ),
-      MenuItem(
-        icon: Icons.list,
-        title: ScreenRoutes.reportsList,
-      ),
     ];
     return Scaffold(
       body: Padding(
