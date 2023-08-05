@@ -33,36 +33,57 @@ class ReportsListScreen extends ConsumerWidget {
         ]),
       ),
       key: const Key('1'),
-      appBar: AppBar(title: const Text('Reports List')),
       body: Consumer(builder: (context, ref, child) {
         final reportsList = ref.watch(reportsListStoreProvider);
         final viewModel = ref.watch(reportsListViewModel);
         return Container(
-          child: viewModel.maybeWhen(
-            data: (data) => ListView.builder(
-                itemCount: reportsList.length,
-                itemBuilder: (context, index) {
-                  final report = reportsList[index];
-                  return ListTile(
-                    title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Report: ${report.id}'),
-                          Text(report.createdAt.toUtc().toString())
-                        ]),
-                    // TODO sort out routing for side menu
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            ReportBreakdownScreen(report: report))),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => ref
-                          .read(reportsListViewModel.notifier)
-                          .removeReport(report.id),
-                    ),
-                  );
-                }),
-            orElse: () => const Center(child: CircularProgressIndicator()),
+          padding:
+              const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 36),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Reports',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Expanded(
+                child: viewModel.maybeWhen(
+                  data: (data) => ListView.builder(
+                      itemCount: reportsList.length,
+                      itemBuilder: (context, index) {
+                        final report = reportsList[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: ListTile(
+                            title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Report: ${report.id}'),
+                                  Text(report.createdAt.toUtc().toString())
+                                ]),
+                            // TODO sort out routing for side menu
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ReportBreakdownScreen(report: report))),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => ref
+                                  .read(reportsListViewModel.notifier)
+                                  .removeReport(report.id),
+                            ),
+                          ),
+                        );
+                      }),
+                  orElse: () =>
+                      const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+            ],
           ),
         );
       }),
@@ -74,6 +95,10 @@ class ReportsListScreen extends ConsumerWidget {
     var categorisedTransactions = await ref
         .read(reportsListViewModel.notifier)
         .categoriseTransactions(csvFiles);
+
+    if (categorisedTransactions.isEmpty) {
+      return;
+    }
 
     if (ref
         .read(reportsListViewModel.notifier)
@@ -124,15 +149,54 @@ class ReportsListScreen extends ConsumerWidget {
   }
 }
 
-class ReportBreakdownScreen extends StatelessWidget {
+class ReportBreakdownScreen extends ConsumerWidget {
   const ReportBreakdownScreen({super.key, required this.report});
   final Report report;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: Text('Report: ${report.id}')),
-      body: Center(child: ReportBreakdown(report: report)),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    iconSize: 35,
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.chevron_left,
+                    )),
+                const SizedBox(
+                  width: 16,
+                ),
+                Text(
+                  'Report: ${report.id}',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            SingleChildScrollView(
+                child: Column(
+              children: [
+                ReportBreakdown(report: report),
+                report.id < 0
+                    ? MaterialButton(
+                        child: const Text('Save Report'),
+                        onPressed: () => ref
+                            .read(reportsListViewModel.notifier)
+                            .putReport(report),
+                      )
+                    : Container()
+              ],
+            )),
+          ],
+        ),
+      ),
     );
   }
 }
