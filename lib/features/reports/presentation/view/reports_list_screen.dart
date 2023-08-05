@@ -1,5 +1,6 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/features/categories/presentaion/viewmodel/categories_viewmodel.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/data/data_module.dart';
@@ -7,7 +8,7 @@ import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
-import 'package:expense_categoriser/features/reports/presentation/view/report_screen.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/uncategorised_item_row.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/reports_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -198,5 +199,102 @@ class ReportBreakdownScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class UncategorisedItemsDialog extends ConsumerStatefulWidget {
+  const UncategorisedItemsDialog({
+    super.key,
+    required this.uncategorisedTransactions,
+  });
+
+  final List<Transaction>? uncategorisedTransactions;
+
+  @override
+  ConsumerState<UncategorisedItemsDialog> createState() =>
+      _UncategorisedItemsDialogState();
+}
+
+class _UncategorisedItemsDialogState
+    extends ConsumerState<UncategorisedItemsDialog> {
+  List<Transaction> transactions = [];
+  Map<int, UncategorisedRowData> updatedRowCategoryData = {};
+
+  @override
+  void initState() {
+    transactions = widget.uncategorisedTransactions ?? [];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ref.watch(categoriesViewModelStateNotifierProvider).maybeWhen(
+        data: (categories) => SizedBox(
+              height: 600,
+              width: 800,
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Unknown keywords mapper',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < transactions.length; i++)
+                              UncategorisedItemRow(
+                                transaction: transactions[i],
+                                categories: categories,
+                                onChanged: (categoryData) {
+                                  updatedRowCategoryData[i] = categoryData;
+                                },
+                              )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TrButton(
+                            onPressed: () => Navigator.of(context).pop(
+                                groupRowData(
+                                    updatedRowCategoryData.values.toList())),
+                            child: const Text('Done'),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+        orElse: () =>
+            const Expanded(child: Center(child: CircularProgressIndicator())));
+  }
+
+  List<UncategorisedRowData> groupRowData(
+      List<UncategorisedRowData> ungroupedList) {
+    Map<String, UncategorisedRowData> groupedMap = {};
+    for (var item in ungroupedList) {
+      if (groupedMap[item.category.name] != null) {
+        final existingItem = groupedMap[item.category.name]!;
+        existingItem.keywords = [...existingItem.keywords, ...item.keywords];
+      } else {
+        groupedMap[item.category.name] = item;
+      }
+    }
+    return groupedMap.values.toList();
   }
 }
