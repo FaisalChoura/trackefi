@@ -3,6 +3,7 @@ import 'package:expense_categoriser/features/reports/domain/usecase/build_report
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/get_all_reports_usecase.dart';
+import 'package:expense_categoriser/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/remove_report_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,3 +39,7 @@ final removeReportUseCaseProvider =
           ref.watch(reportsRepositoryProvider),
           ref.watch(reportsListStoreRepositoryProvider),
         ));
+
+final moveTransactionBetweenCategorySnapshots =
+    Provider<MoveTransactionBetweenCategorySnapshots>(
+        (ref) => MoveTransactionBetweenCategorySnapshots());

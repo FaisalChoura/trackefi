@@ -14,8 +14,8 @@
 - ~~Basic UI / Error Handling~~
 - ~~Handle positive values~~
 - UI
-- Multiple files
 - Update default import settings
+- Multiple files
 - Report analytics
 - Export report
 - Search and filter reports

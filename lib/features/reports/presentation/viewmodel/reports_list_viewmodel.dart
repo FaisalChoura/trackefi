@@ -9,6 +9,7 @@ import 'package:expense_categoriser/features/reports/domain/usecase/build_report
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/get_all_reports_usecase.dart';
+import 'package:expense_categoriser/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/remove_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
@@ -25,18 +26,20 @@ final reportsListViewModel =
             ref.watch(convertCsvFileUseCaseProvider),
             ref.watch(categoriseTransactionsUseCaseProvider),
             ref.watch(updateCategoriesFromRowDataProvider),
-            ref.watch(putReportUseCaseProvider)));
+            ref.watch(putReportUseCaseProvider),
+            ref.watch(moveTransactionBetweenCategorySnapshots)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
-    this._getAllReportsUseCase,
-    this._removeReportUseCase,
-    this._buildReportUseCase,
-    this._convertCsvFileUseCase,
-    this._categoriseTransactionsUseCase,
-    this._updateCategoriesFromRowData,
-    this._putReportUseCase,
-  ) : super(const AsyncValue.data([])) {
+      this._getAllReportsUseCase,
+      this._removeReportUseCase,
+      this._buildReportUseCase,
+      this._convertCsvFileUseCase,
+      this._categoriseTransactionsUseCase,
+      this._updateCategoriesFromRowData,
+      this._putReportUseCase,
+      this._moveTransactionBetweenCategorySnapshots)
+      : super(const AsyncValue.data([])) {
     getList();
   }
 
@@ -47,6 +50,8 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   final CategoriseTransactionsUseCase _categoriseTransactionsUseCase;
   final UpdateCategoriesFromRowData _updateCategoriesFromRowData;
   final PutReportUseCase _putReportUseCase;
+  final MoveTransactionBetweenCategorySnapshots
+      _moveTransactionBetweenCategorySnapshots;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -100,5 +105,19 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
 
   Future<void> putReport(Report report) async {
     await _putReportUseCase.execute(report);
+  }
+
+  List<ReportCategorySnapshot> moveTransactionToCategory(
+    ReportCategorySnapshot fromCategory,
+    ReportCategorySnapshot toCategory,
+    Transaction transaction,
+    List<ReportCategorySnapshot> categorySnapshots,
+  ) {
+    return _moveTransactionBetweenCategorySnapshots.execute(
+      fromCategory,
+      toCategory,
+      transaction,
+      categorySnapshots,
+    );
   }
 }

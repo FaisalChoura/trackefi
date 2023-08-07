@@ -7,6 +7,7 @@ import 'package:expense_categoriser/features/reports/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/domain/model/uncategories_row_data.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/uncategorised_item_row.dart';
 import 'package:expense_categoriser/features/reports/presentation/viewmodel/reports_list_viewmodel.dart';
@@ -126,6 +127,9 @@ class ReportsListScreen extends ConsumerWidget {
       categorisedTransactions = await ref
           .read(reportsListViewModel.notifier)
           .categoriseTransactions(csvFiles);
+
+      categorisedTransactions = await _showAndEditCategorisedTransactions(
+          categorisedTransactions, context);
     }
     final report = ref
         .read(reportsListViewModel.notifier)
@@ -147,6 +151,22 @@ class ReportsListScreen extends ConsumerWidget {
           },
         ) ??
         [];
+  }
+
+  Future<List<ReportCategorySnapshot>> _showAndEditCategorisedTransactions(
+      List<ReportCategorySnapshot> categories, BuildContext context) async {
+    // TODO extract dialog into TrDialog to use in app
+    return await showDialog<List<ReportCategorySnapshot>>(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: EditableCategorisedTransactionsList(
+                categorySnapshots: categories,
+              ),
+            );
+          },
+        ) ??
+        categories;
   }
 }
 

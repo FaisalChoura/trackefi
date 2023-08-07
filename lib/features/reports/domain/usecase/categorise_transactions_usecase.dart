@@ -61,6 +61,16 @@ class CategoriseTransactionsUseCase {
         categoriesMap['Uncategorised']!.addTransaction(transaction);
       }
     }
+
+    // clears out empty categories
+    // for (var i = 0; i < categoriesMap.values.length; i++) {
+    //   final category = categoriesMap.values.toList()[i];
+    //   final key = categoriesMap.keys.toList()[i];
+    //   if (category.transactions.isEmpty) {
+    //     categoriesMap.remove(key);
+    //   }
+    // }
+
     return categoriesMap.values.toList();
   }
 
