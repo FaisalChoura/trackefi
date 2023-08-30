@@ -38,6 +38,15 @@ class FieldIndexes {
     }
     return fieldIndexes;
   }
+
+  Map<int, UsableCsvFields> toMap() {
+    Map<int, UsableCsvFields> map = {};
+    map[dateField] = UsableCsvFields.date;
+    map[amountField] = UsableCsvFields.amount;
+    map[descriptionField] = UsableCsvFields.description;
+
+    return map;
+  }
 }
 
 /// Fields that are read and supported in the application

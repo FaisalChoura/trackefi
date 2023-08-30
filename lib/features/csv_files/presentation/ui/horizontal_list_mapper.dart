@@ -5,11 +5,13 @@ class HorizontalListMapper<K, T> extends StatefulWidget {
   final Map<String, K> headerValueMap;
   final List<HorizontalListMapperOption<T>> options;
   final ValueChanged<Map<K, T>> onChanged;
+  final Map<K, T>? value;
   const HorizontalListMapper({
     Key? key,
     required this.headerValueMap,
     required this.options,
     required this.onChanged,
+    this.value,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,13 @@ class HorizontalListMapper<K, T> extends StatefulWidget {
 
 class _HorizontalListMapperState<K, T>
     extends State<HorizontalListMapper<K, T>> {
-  Map<K, T> selectedValues = {};
+  late Map<K, T> selectedValues;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValues = widget.value ?? {};
+  }
 
   @override
   Widget build(BuildContext context) {

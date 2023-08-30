@@ -50,7 +50,7 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                 padding: const EdgeInsets.only(right: 8, top: 16),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    maxHeight: 140,
+                    maxHeight: 200,
                   ),
                   child: TrCard(
                     header: Row(
@@ -65,30 +65,63 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                         ),
                       ],
                     ),
-                    footer: Row(
+                    footer: Column(
                       children: [
-                        Expanded(
-                          child: TrButton(
-                            style: TrButtonStyle.secondary,
-                            onPressed: () => ref
-                                .read(csvFilesViewModelProvider.notifier)
-                                .removeFile(fileData),
-                            child: const Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                    size: 16,
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Text(
-                                    'Remove',
-                                  )
-                                ]),
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TrButton(
+                                style: TrButtonStyle.secondary,
+                                onPressed: () => ref
+                                    .read(csvFilesViewModelProvider.notifier)
+                                    .removeFile(fileData),
+                                child: const Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delete,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        'Remove',
+                                      )
+                                    ]),
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TrButton(
+                                style: TrButtonStyle.secondary,
+                                onPressed: () => _updateFile(fileData),
+                                child: const Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        'Edit Settings',
+                                      )
+                                    ]),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -115,6 +148,11 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
           .toList());
       ref.read(csvFilesViewModelProvider.notifier).importFiles(csvData);
     }
+  }
+
+  void _updateFile(CsvFileData fileData) async {
+    final csvData = await _openImportSettingsDialog([fileData]);
+    ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData[0]);
   }
 
   Future<List<CsvFileData>> _openImportSettingsDialog(
@@ -156,14 +194,24 @@ class _CsvImportsSettingsDialogState
 
   @override
   void initState() {
+    final importSettings = widget.filesData[0].importSettings;
+
     super.initState();
-    fieldDelimiterController.text = ',';
-    dateSeparatorController.text = '/';
+    fieldDelimiterController.text = importSettings.fieldDelimiter.isEmpty
+        ? ','
+        : importSettings.fieldDelimiter;
+    dateSeparatorController.text = importSettings.dateSeparator.isEmpty
+        ? '/'
+        : importSettings.dateSeparator;
+    numberingStyle = importSettings.numberStyle;
+    expenseSign = importSettings.expenseSign;
+    dateFormat = importSettings.dateFormat;
   }
 
   @override
   Widget build(BuildContext context) {
     final fileData = widget.filesData[0];
+
     return Container(
       height: 500,
       width: 500,
@@ -387,6 +435,8 @@ class _CsvImportsSettingsDialogState
                               ),
                               HorizontalListMapper<int, UsableCsvFields>(
                                 headerValueMap: headerList.asReverseMap(),
+                                value: fileData.importSettings.fieldIndexes
+                                    .toMap(),
                                 options: [
                                   HorizontalListMapperOption<UsableCsvFields>(
                                       label: 'Description',
