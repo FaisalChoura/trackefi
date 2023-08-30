@@ -13,8 +13,8 @@
 - ~~Persist reports~~
 - ~~Basic UI / Error Handling~~
 - ~~Handle positive values~~
-- UI
-- Update default import settings
+- ~~UI~~
+- ~~Update default import settings~~
 - Multiple files
 - Report analytics
 - Export report
