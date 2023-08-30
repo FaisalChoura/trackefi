@@ -206,6 +206,7 @@ class _CsvImportsSettingsDialogState
     numberingStyle = importSettings.numberStyle;
     expenseSign = importSettings.expenseSign;
     dateFormat = importSettings.dateFormat;
+    fieldIndexes = importSettings.fieldIndexes;
   }
 
   @override
@@ -435,8 +436,7 @@ class _CsvImportsSettingsDialogState
                               ),
                               HorizontalListMapper<int, UsableCsvFields>(
                                 headerValueMap: headerList.asReverseMap(),
-                                value: fileData.importSettings.fieldIndexes
-                                    .toMap(),
+                                value: fieldIndexes.toMap(),
                                 options: [
                                   HorizontalListMapperOption<UsableCsvFields>(
                                       label: 'Description',
@@ -449,7 +449,9 @@ class _CsvImportsSettingsDialogState
                                       value: UsableCsvFields.amount),
                                 ],
                                 onChanged: (value) {
-                                  fieldIndexes = FieldIndexes.fromMap(value);
+                                  setState(() {
+                                    fieldIndexes = FieldIndexes.fromMap(value);
+                                  });
                                 },
                               )
                             ],

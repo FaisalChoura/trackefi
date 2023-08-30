@@ -17,7 +17,9 @@ class CsvFilesStore extends StateNotifier<List<CsvFileData>> {
         state.firstWhere((f) => f.file.path == fileData.file.path);
     int index = state.indexOf(fileToBeReplaced);
 
-    state[index] = fileData;
-    state = state;
+    final temparr = [...state];
+
+    temparr[index] = fileData;
+    state = temparr;
   }
 }
