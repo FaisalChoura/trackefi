@@ -13,9 +13,9 @@
 - ~~Persist reports~~
 - ~~Basic UI / Error Handling~~
 - ~~Handle positive values~~
-- UI
+- ~~UI~~
+- ~~Update default import settings~~
 - Multiple files
-- Update default import settings
 - Report analytics
 - Export report
 - Search and filter reports

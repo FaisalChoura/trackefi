@@ -1,4 +1,8 @@
+import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
+import 'package:expense_categoriser/features/categories/presentaion/ui/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/category.dart';
@@ -6,91 +10,131 @@ import '../category_keyword_field.dart';
 import '../viewmodel/categories_viewmodel.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-final showNewCategoryField = StateProvider<bool>((ref) => false);
 final selectedCategoryId = StateProvider<int>((ref) => 0);
 
 class CategoriesScreen extends ConsumerWidget {
-  const CategoriesScreen({super.key});
+  final TextEditingController categoryNameController = TextEditingController();
+  CategoriesScreen({super.key});
 
   void changeColor(Color color) {}
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Categories'),
-          actions: [
-            IconButton(
-                onPressed: () => _openNewCategoryInput(ref),
-                icon: const Icon(Icons.add))
-          ],
-        ),
-        body: Row(
-          children: [
-            CategoriesList(),
-            Container(width: 0.5, color: Colors.grey),
-            const CategoryDetails(),
-          ],
-        ));
+      extendBodyBehindAppBar: true,
+      body: Row(
+        children: [
+          const CategoriesList(),
+          Container(width: 0.5, color: Colors.grey),
+          const Expanded(child: CategoryDetails()),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _openNewCategoryDialog(context, ref),
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 
-  _openNewCategoryInput(WidgetRef ref) {
-    ref.read(showNewCategoryField.notifier).state = true;
+  _openNewCategoryDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => _newCategoryBuilder(context, ref),
+    );
+  }
+
+  _newCategoryBuilder(BuildContext context, WidgetRef ref) {
+    return NewCategoryDialog(categoryNameController: categoryNameController);
+  }
+}
+
+class NewCategoryDialog extends ConsumerWidget {
+  const NewCategoryDialog({
+    super.key,
+    required this.categoryNameController,
+  });
+
+  final TextEditingController categoryNameController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Dialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10.0), bottom: Radius.circular(10))),
+      child: CallbackShortcuts(
+        bindings: <ShortcutActivator, VoidCallback>{
+          const SingleActivator(LogicalKeyboardKey.enter): () =>
+              _addCategory(context, ref)
+        },
+        child: Container(
+          height: 170,
+          width: 400,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'New Category',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TrTextField(
+                controller: categoryNameController,
+                autofocus: true,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              TrButton(
+                onPressed: () => _addCategory(context, ref),
+                child: const Text('Add Category'),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _addCategory(BuildContext context, WidgetRef ref) {
+    ref
+        .read(categoriesViewModelStateNotifierProvider.notifier)
+        .addCategory(Category(categoryNameController.text, []));
+    categoryNameController.clear();
+    Navigator.of(context).pop();
   }
 }
 
 class CategoriesList extends ConsumerWidget {
-  final TextEditingController categoryNameController = TextEditingController();
-
-  CategoriesList({super.key});
+  const CategoriesList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool showField = ref.watch(showNewCategoryField);
+    final selectedId = ref.watch(selectedCategoryId);
     return ref.watch(categoriesViewModelStateNotifierProvider).maybeWhen(
-        data: (content) => _buildCategoriesView(showField, ref, content),
+        data: (content) => _buildCategoriesView(ref, content, selectedId),
         orElse: () =>
             const Expanded(child: Center(child: CircularProgressIndicator())));
   }
 
-  SizedBox _buildCategoriesView(
-      bool showField, WidgetRef ref, List<Category> categories) {
-    return SizedBox(
-        width: 180,
+  Container _buildCategoriesView(
+      WidgetRef ref, List<Category> categories, int selectedId) {
+    return Container(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        width: 220,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            showField
-                ? Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: categoryNameController,
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                ref
-                                    .read(
-                                        categoriesViewModelStateNotifierProvider
-                                            .notifier)
-                                    .addCategory(Category(
-                                        categoryNameController.text, []));
-                                _closeNewCategoryInput(ref);
-                              },
-                              icon: const Icon(Icons.check),
-                            ),
-                            IconButton(
-                              onPressed: () => _closeNewCategoryInput(ref),
-                              icon: const Icon(Icons.close),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                : Container(),
+            const Padding(
+              padding: EdgeInsets.only(top: 36, bottom: 16, left: 8, right: 8),
+              child: Text(
+                'Categories',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: categories.length,
@@ -100,16 +144,13 @@ class CategoriesList extends ConsumerWidget {
                         "${categories[index].name} ${categories[index].keywords.length}"),
                     onTap: () => ref.read(selectedCategoryId.notifier).state =
                         categories[index].id,
+                    selected: selectedId == categories[index].id,
                   );
                 }),
               ),
             ),
           ],
         ));
-  }
-
-  _closeNewCategoryInput(WidgetRef ref) {
-    ref.read(showNewCategoryField.notifier).state = false;
   }
 }
 
@@ -122,6 +163,7 @@ class CategoryDetails extends ConsumerStatefulWidget {
 
 class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
   Color currentColor = const Color(0xff443a49);
+  final categoryKeywordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -134,43 +176,112 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             final category = snapshot.data!;
-            return Column(
-              children: [
-                ColorDisplay(
-                    pickerColor: category.colorValues != null
-                        ? category.colorValues!.toColor()
-                        : currentColor),
-                IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => ref
-                        .read(categoriesViewModelStateNotifierProvider.notifier)
-                        .deleteCategory(category.id)),
-                Text(category.name),
-                CategoryKeywordField(
-                  category: category,
-                  onChange: (String addedCategory) {
-                    category.keywords = [...category.keywords, addedCategory];
-                    ref
-                        .read(categoriesViewModelStateNotifierProvider.notifier)
-                        .updateCategory(category);
-                  },
-                ),
-                for (var keyword in category.keywords)
-                  MaterialButton(
-                      child: Text(keyword),
-                      onPressed: () {
-                        category.removeKeyword(keyword);
-                        ref
-                            .read(categoriesViewModelStateNotifierProvider
-                                .notifier)
-                            .updateCategory(category);
-                      }),
-                MaterialButton(
-                    child: const Text('select color'),
-                    onPressed: () {
-                      _setNewCategoryColor(currentColor, category);
-                    }),
-              ],
+            return Padding(
+              padding: const EdgeInsets.only(
+                  top: 36, left: 24, right: 24, bottom: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Wrap(
+                        children: [
+                          Text(
+                            category.name,
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          ColorDisplay(
+                            pickerColor: category.colorValues != null
+                                ? category.colorValues!.toColor()
+                                : currentColor,
+                            onTap: () =>
+                                _setNewCategoryColor(currentColor, category),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => ref
+                              .read(categoriesViewModelStateNotifierProvider
+                                  .notifier)
+                              .deleteCategory(category.id)),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Wrap(
+                    children: [
+                      CategoryKeywordField(
+                        category: category,
+                        controller: categoryKeywordController,
+                        onChange: (String addedKeyword) {
+                          category.keywords = [
+                            ...category.keywords,
+                            addedKeyword
+                          ];
+                          ref
+                              .read(categoriesViewModelStateNotifierProvider
+                                  .notifier)
+                              .updateCategory(category);
+                        },
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      TrButton(
+                        onPressed: () {
+                          final addedKeyword = categoryKeywordController.text;
+                          category.keywords = [
+                            ...category.keywords,
+                            addedKeyword
+                          ];
+                          ref
+                              .read(categoriesViewModelStateNotifierProvider
+                                  .notifier)
+                              .updateCategory(category);
+                          categoryKeywordController.clear();
+                        },
+                        child: const Text('Add Keyword'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  const Text(
+                    'Use a comma "," or press the "Add Keyword" button to insert a new keyword into this category',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Wrap(
+                    children: [
+                      for (var keyword in category.keywords)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8, bottom: 8),
+                          child: Tag(
+                              title: keyword,
+                              color: const Color.fromARGB(70, 20, 204, 97),
+                              onClose: () {
+                                category.removeKeyword(keyword);
+                                ref
+                                    .read(
+                                        categoriesViewModelStateNotifierProvider
+                                            .notifier)
+                                    .updateCategory(category);
+                              }),
+                        )
+                    ],
+                  ),
+                ],
+              ),
             );
           }
           return Container();
@@ -219,16 +330,24 @@ class ColorDisplay extends StatelessWidget {
   const ColorDisplay({
     super.key,
     required this.pickerColor,
+    required this.onTap,
   });
 
   final Color pickerColor;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 50,
-      color: pickerColor,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 36,
+        width: 36,
+        decoration: BoxDecoration(
+          color: pickerColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
     );
   }
 }

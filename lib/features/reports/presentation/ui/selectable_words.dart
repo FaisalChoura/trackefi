@@ -1,3 +1,5 @@
+import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
+import 'package:expense_categoriser/core/presentation/ui/button.dart';
 import 'package:flutter/material.dart';
 import '../../domain/model/selectable_word_item.dart';
 
@@ -17,22 +19,51 @@ class SelectableWords extends StatefulWidget {
 
 class _SelectableWordsState extends State<SelectableWords> {
   Map<int, SelectableWordItem> selectedWordItems = {};
+  late List<SelectableWordItem> selectableList;
+
+  @override
+  void initState() {
+    super.initState();
+    selectableList = _getKeywordsFromString(widget.value, ' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 300,
+      width: 400,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var item in _getKeywordsFromString(widget.value, ' '))
-              MaterialButton(
-                onPressed: () => _toggleSelectedWordItem(item),
-                color: selectedWordItems[item.id] != null
-                    ? Colors.blue
-                    : Colors.white,
-                child: Text(item.keyword),
-              )
+            (selectedWordItems.length > 1)
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TrButton(
+                      onPressed: () => _mergeKeywords(),
+                      child: const Text('Merge'),
+                    ),
+                  )
+                : Container(),
+            for (var item in selectableList)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: MaterialButton(
+                  elevation: 0,
+                  hoverElevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: TColors.mainGreen),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(10.0),
+                      bottom: Radius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => _toggleSelectedWordItem(item),
+                  color: selectedWordItems[item.id] != null
+                      ? TColors.mainGreen
+                      : Colors.white,
+                  child: Text(item.keyword),
+                ),
+              ),
           ],
         ),
       ),
@@ -41,7 +72,8 @@ class _SelectableWordsState extends State<SelectableWords> {
 
   List<SelectableWordItem> _getKeywordsFromString(
       String value, Pattern splitBy) {
-    final mappedValues = value.split(splitBy).asMap();
+    final mappedValues =
+        value.split(splitBy).where((word) => word.isNotEmpty).toList().asMap();
     return mappedValues.keys.map((key) {
       return SelectableWordItem(key, mappedValues[key] ?? '');
     }).toList();
@@ -59,5 +91,30 @@ class _SelectableWordsState extends State<SelectableWords> {
 
       widget.onChanged(selectedWordItems.values.toList());
     });
+  }
+
+  void _mergeKeywords() {
+    final mergedKeyword =
+        selectedWordItems.values.map((wordItem) => wordItem.keyword).join(' ');
+
+    final firstMergedIndex = selectedWordItems.keys.toList().first;
+
+    setState(() {
+      selectableList[firstMergedIndex] =
+          SelectableWordItem(firstMergedIndex, mergedKeyword);
+
+      int removedCount = 0;
+      for (var i = firstMergedIndex + 1;
+          i <= selectedWordItems.keys.length - 1;
+          i++) {
+        final index = selectedWordItems.keys.toList()[i - removedCount];
+        selectableList.removeAt(index);
+        removedCount += 1;
+      }
+    });
+
+    selectedWordItems.clear();
+    selectedWordItems[0] = SelectableWordItem(0, mergedKeyword);
+    widget.onChanged(selectedWordItems.values.toList());
   }
 }

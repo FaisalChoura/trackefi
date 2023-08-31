@@ -13,19 +13,60 @@ class ReportBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO add list off all transactions with dates
-    return Row(
-      children: [
-        CategoriesPieChart(
-          categories: report.categories,
-        ),
-        SpendingPerTransactionList(
-          transactions: report.expenseTransactions,
-        ),
-        CostlyDatesBarChart(
-          dateCount: 5,
-          transactions: report.expenseTransactions,
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    'Expenses',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    report.expenses.toString(),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                width: 128,
+              ),
+              Column(
+                children: [
+                  const Text(
+                    'Income',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    report.income.toString(),
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 32,
+          ),
+          Wrap(
+            direction: Axis.horizontal,
+            children: [
+              CategoriesPieChart(
+                categories: report.categories,
+              ),
+              SpendingPerTransactionList(
+                transactions: report.expenseTransactions,
+              ),
+              CostlyDatesBarChart(
+                dateCount: 5,
+                transactions: report.expenseTransactions,
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -44,21 +85,32 @@ class CostlyDatesBarChart extends StatelessWidget {
     return SizedBox(
       height: 400,
       width: 400,
-      child: BarChart(
-        BarChartData(
-            barGroups: generateBarGroups(_groupTransactionsByDateMap()),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 30,
-                  getTitlesWidget: getTitles,
-                ),
-              ),
-            )),
-        swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-        swapAnimationCurve: Curves.linear, // Optional
+      child: Column(
+        children: [
+          const Text(
+            'Most expensive dates',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                  barGroups: generateBarGroups(_groupTransactionsByDateMap()),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        getTitlesWidget: getTitles,
+                      ),
+                    ),
+                  )),
+              swapAnimationDuration:
+                  const Duration(milliseconds: 150), // Optional
+              swapAnimationCurve: Curves.linear, // Optional
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -154,15 +206,25 @@ class SpendingPerTransactionList extends StatelessWidget {
     return SizedBox(
       height: 400,
       width: 400,
-      child: ListView.builder(
-          itemCount: groupedTransactionsNames.length,
-          itemBuilder: (context, i) {
-            final name = groupedTransactionsNames[i];
-            return ListTile(
-              title: Text(name),
-              subtitle: Text(groupedTransactionsMap[name].toString()),
-            );
-          }),
+      child: Column(
+        children: [
+          const Text(
+            'Expenses by transaction',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: ListView.builder(
+                itemCount: groupedTransactionsNames.length,
+                itemBuilder: (context, i) {
+                  final name = groupedTransactionsNames[i];
+                  return ListTile(
+                    title: Text(name),
+                    subtitle: Text(groupedTransactionsMap[name].toString()),
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -173,34 +235,45 @@ class CategoriesPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 16,
-        ),
-        for (var category in categories)
-          Indicator(
-            color: category.colorValues != null
-                ? category.colorValues!.toColor()
-                : Colors.purple,
-            text: "${category.name}: ${category.totalExpenses}",
-            isSquare: true,
+    final usedCategories =
+        categories.where((category) => category.totalExpenses > 0);
+    return SizedBox(
+      height: 400,
+      width: 400,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Expenses by Category',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-        const SizedBox(
-          height: 16,
-        ),
-        SizedBox(
-          height: 300,
-          width: 400,
-          child: PieChart(
-            PieChartData(
-                centerSpaceRadius: 125,
-                borderData: FlBorderData(show: false),
-                sectionsSpace: 1,
-                sections: _generateChartData(categories)),
+          const SizedBox(
+            height: 16,
           ),
-        ),
-      ],
+          Container(
+            height: 200,
+            width: 300,
+            child: PieChart(
+              PieChartData(
+                  centerSpaceRadius: 75,
+                  borderData: FlBorderData(show: false),
+                  sectionsSpace: 1,
+                  sections: _generateChartData(categories)),
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          for (var category in usedCategories)
+            Indicator(
+              color: category.colorValues != null
+                  ? category.colorValues!.toColor()
+                  : Colors.purple,
+              text: "${category.name}: ${category.totalExpenses}",
+              isSquare: true,
+            ),
+        ],
+      ),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,37 +36,46 @@ class _UncategorisedItemRowState extends ConsumerState<UncategorisedItemRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SelectableWords(
-          value: widget.transaction.name,
-          onChanged: (values) {
-            setState(() {
-              selectedWords = values;
-            });
-            widget.onChanged(_onChangeData());
-          },
-        ),
-        DropdownButton(
-            value: selectedCategory.id,
-            items: widget.categories
-                .map(
-                  (category) => DropdownMenuItem(
-                    value: category.id,
-                    child: Text(category.name),
-                  ),
-                )
-                .toList(),
-            onChanged: (val) {
-              setState(() {
-                selectedCategory = widget.categories
-                    .where((element) => element.id == val!)
-                    .first;
-              });
-              widget.onChanged(_onChangeData());
-            }),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            flex: 3,
+            child: SelectableWords(
+              value: widget.transaction.name,
+              onChanged: (values) {
+                setState(() {
+                  selectedWords = values;
+                });
+                widget.onChanged(_onChangeData());
+              },
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: TrSelectField(
+                value: selectedCategory.id,
+                items: widget.categories
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category.id,
+                        child: Text(category.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (val) {
+                  setState(() {
+                    selectedCategory = widget.categories
+                        .where((element) => element.id == val!)
+                        .first;
+                  });
+                  widget.onChanged(_onChangeData());
+                }),
+          ),
+        ],
+      ),
     );
   }
 

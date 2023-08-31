@@ -1,14 +1,17 @@
+import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalListMapper<K, T> extends StatefulWidget {
   final Map<String, K> headerValueMap;
   final List<HorizontalListMapperOption<T>> options;
   final ValueChanged<Map<K, T>> onChanged;
+  final Map<K, T>? value;
   const HorizontalListMapper({
     Key? key,
     required this.headerValueMap,
     required this.options,
     required this.onChanged,
+    this.value,
   }) : super(key: key);
 
   @override
@@ -18,7 +21,13 @@ class HorizontalListMapper<K, T> extends StatefulWidget {
 
 class _HorizontalListMapperState<K, T>
     extends State<HorizontalListMapper<K, T>> {
-  Map<K, T> selectedValues = {};
+  late Map<K, T> selectedValues;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValues = widget.value ?? {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,41 +44,48 @@ class _HorizontalListMapperState<K, T>
       final mappedHeaderValue = widget.headerValueMap[header];
 
       if (mappedHeaderValue != null) {
-        columnList.add(Column(
-          children: [
-            Text(header),
-            DropdownButton(
-                value: selectedValues[mappedHeaderValue],
-                items: [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text(''),
-                  ),
-                  for (var option in widget.options)
-                    DropdownMenuItem(
-                      value: option.value,
-                      enabled: _isOptionEnabled(option.value),
-                      child: Text(option.label),
-                    ),
-                ],
-                onChanged: (value) {
-                  if (value == null) {
-                    setState(() {
-                      selectedValues.remove(mappedHeaderValue);
+        columnList.add(Flexible(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TrSelectField(
+                    label: header,
+                    value: selectedValues[mappedHeaderValue],
+                    items: [
+                      const DropdownMenuItem(
+                        value: null,
+                        child: Text(''),
+                      ),
+                      for (var option in widget.options)
+                        DropdownMenuItem(
+                          value: option.value,
+                          enabled: _isOptionEnabled(option.value),
+                          child: Text(option.label),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) {
+                        setState(() {
+                          selectedValues.remove(mappedHeaderValue);
 
-                      widget.onChanged(selectedValues);
-                    });
-                    return;
-                  }
-                  setState(() {
-                    final tempValues = {...selectedValues};
-                    tempValues[mappedHeaderValue] = value;
-                    selectedValues = tempValues;
+                          widget.onChanged(selectedValues);
+                        });
+                        return;
+                      }
+                      setState(() {
+                        final tempValues = {...selectedValues};
+                        tempValues[mappedHeaderValue] = value;
+                        selectedValues = tempValues;
 
-                    widget.onChanged(selectedValues);
-                  });
-                })
-          ],
+                        widget.onChanged(selectedValues);
+                      });
+                    })
+              ],
+            ),
+          ),
         ));
       }
     }

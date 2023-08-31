@@ -16,4 +16,9 @@ class CsvFilesRepositoryImpl implements CsvFilesRepository {
   void removeFile(CsvFileData fileData) {
     _store.removeFile(fileData);
   }
+
+  @override
+  void updateFile(CsvFileData fileData) {
+    _store.updateFile(fileData);
+  }
 }
