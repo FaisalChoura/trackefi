@@ -30,7 +30,7 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
 
   Future<FilePickerResult?> getFiles() async {
     try {
-      final result = await FilePicker.platform.pickFiles();
+      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
       if (result != null) {
         _checkFileType(result.files);
       }

@@ -143,26 +143,28 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
     FilePickerResult? result;
     result = await ref.read(csvFilesViewModelProvider.notifier).getFiles();
     if (result != null) {
-      final csvData = await _openImportSettingsDialog(result.files
-          .map((file) => CsvFileData(file, CsvImportSettings()))
-          .toList());
-      ref.read(csvFilesViewModelProvider.notifier).importFiles(csvData);
+      List<CsvFileData> csvDataList = [];
+      for (var i = 0; i < result.files.length; i++) {
+        final file = result.files[i];
+        final csvFileData = CsvFileData(file, CsvImportSettings());
+        csvDataList.add(await _openImportSettingsDialog(csvFileData));
+      }
+      ref.read(csvFilesViewModelProvider.notifier).importFiles(csvDataList);
     }
   }
 
   void _updateFile(CsvFileData fileData) async {
-    final csvData = await _openImportSettingsDialog([fileData]);
-    ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData[0]);
+    final csvData = await _openImportSettingsDialog(fileData);
+    ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData);
   }
 
-  Future<List<CsvFileData>> _openImportSettingsDialog(
-      List<CsvFileData> filesData) async {
-    return await showDialog<List<CsvFileData>>(
+  Future<CsvFileData> _openImportSettingsDialog(CsvFileData filesData) async {
+    return await showDialog(
           context: context,
           builder: (BuildContext context) {
             return Dialog(
               child: CsvImportsSettingsDialog(
-                filesData: filesData,
+                fileData: filesData,
               ),
             );
           },
@@ -172,10 +174,10 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
 }
 
 class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
-  const CsvImportsSettingsDialog({Key? key, required this.filesData})
+  const CsvImportsSettingsDialog({Key? key, required this.fileData})
       : super(key: key);
 
-  final List<CsvFileData> filesData;
+  final CsvFileData fileData;
 
   @override
   ConsumerState<CsvImportsSettingsDialog> createState() =>
@@ -194,7 +196,7 @@ class _CsvImportsSettingsDialogState
 
   @override
   void initState() {
-    final importSettings = widget.filesData[0].importSettings;
+    final importSettings = widget.fileData.importSettings;
 
     super.initState();
     fieldDelimiterController.text = importSettings.fieldDelimiter.isEmpty
@@ -211,7 +213,7 @@ class _CsvImportsSettingsDialogState
 
   @override
   Widget build(BuildContext context) {
-    final fileData = widget.filesData[0];
+    final fileData = widget.fileData;
 
     return Container(
       height: 500,
@@ -478,7 +480,7 @@ class _CsvImportsSettingsDialogState
                                 dateSeparatorController.text;
                             importSettings.expenseSign = expenseSign;
                             Navigator.of(context).pop(
-                                [CsvFileData(fileData.file, importSettings)]);
+                                CsvFileData(fileData.file, importSettings));
                           }
                         }),
                   ),
