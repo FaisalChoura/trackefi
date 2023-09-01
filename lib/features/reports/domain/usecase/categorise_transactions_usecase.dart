@@ -20,7 +20,7 @@ class CategoriseTransactionsUseCase {
     _categories = await _categoriesRepository.getAllCategories();
   }
 
-  Future<List<ReportCategorySnapshot>> execute(
+  Future<Map<String, ReportCategorySnapshot>> execute(
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
     // get updated list of categories
     await _getCategories();
@@ -71,7 +71,7 @@ class CategoriseTransactionsUseCase {
     //   }
     // }
 
-    return categoriesMap.values.toList();
+    return categoriesMap;
   }
 
   Category? _findCategory(String description) {

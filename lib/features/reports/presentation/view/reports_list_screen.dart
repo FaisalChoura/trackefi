@@ -109,12 +109,17 @@ class ReportsListScreen extends ConsumerWidget {
 
       final dataToBeUnique = <Transaction>[];
       var enteredMap = <String, bool?>{};
-      for (var transaction in categorisedTransactions[0].expensesTransactions) {
-        if (enteredMap[transaction.name] == null) {
-          dataToBeUnique.add(transaction);
-          enteredMap.putIfAbsent(transaction.name, () => true);
+
+      for (var categorisedTransactionBatch in categorisedTransactions) {
+        for (var transaction
+            in categorisedTransactionBatch.expensesTransactions) {
+          if (enteredMap[transaction.name] == null) {
+            dataToBeUnique.add(transaction);
+            enteredMap.putIfAbsent(transaction.name, () => true);
+          }
         }
       }
+
       updatedCategoryData =
           await _handleUncategorisedTransactions(dataToBeUnique, context);
 
