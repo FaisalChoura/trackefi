@@ -45,9 +45,9 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
               'CSV Files',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            for (var fileData in csvFilesData)
-              Row(
-                children: [
+            Row(
+              children: [
+                for (var fileData in csvFilesData)
                   Padding(
                     padding: const EdgeInsets.only(right: 8, top: 16),
                     child: ConstrainedBox(
@@ -130,9 +130,9 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
+                  )
+              ],
+            )
             // MaterialButton(
             //     child: Text(fileData.file.name),
           ],
