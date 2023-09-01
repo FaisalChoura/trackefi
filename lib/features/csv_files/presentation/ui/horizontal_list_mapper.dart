@@ -47,7 +47,7 @@ class _HorizontalListMapperState<K, T>
         columnList.add(Flexible(
           flex: 1,
           child: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 4.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
