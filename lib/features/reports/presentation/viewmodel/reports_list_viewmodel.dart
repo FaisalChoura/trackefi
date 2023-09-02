@@ -80,14 +80,31 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
         throw IncorrectFeildSeparatorException();
       }
 
-      return
-          // TODO handle multiple files
-          await _categoriseTransactionsUseCase.execute(
-              filesList[0]!, filesData[0].importSettings);
+      List<Map<String, ReportCategorySnapshot>> categorySnapshots = [];
+
+      for (var i = 0; i < filesData.length; i++) {
+        final categoriesMap = await _categoriseTransactionsUseCase.execute(
+            filesList[i]!, filesData[i].importSettings);
+        categorySnapshots.add(categoriesMap);
+      }
+
+      return _mergeCatengorySnapshots(categorySnapshots);
     } catch (e, s) {
       state = AsyncValue.error(e, s);
       return [];
     }
+  }
+
+  List<ReportCategorySnapshot> _mergeCatengorySnapshots(
+      List<Map<String, ReportCategorySnapshot>> listMap) {
+    List<String> categoryNames = listMap[0].keys.toList();
+    for (var categoryName in categoryNames) {
+      for (var i = 1; i < listMap.length; i++) {
+        listMap[0][categoryName]!.merge(listMap[i][categoryName]!);
+      }
+    }
+
+    return listMap[0].values.toList();
   }
 
   bool hasUncategorisedTransactions(

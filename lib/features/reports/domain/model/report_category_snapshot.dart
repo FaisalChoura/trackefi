@@ -50,6 +50,19 @@ class ReportCategorySnapshot {
     expensesTransactions.remove(transaction);
     totalExpenses = totalExpenses - transaction.amount;
   }
+
+  void merge(ReportCategorySnapshot mergedCategorySnapshot) {
+    incomeTransactions = [
+      ...incomeTransactions,
+      ...mergedCategorySnapshot.incomeTransactions
+    ];
+    expensesTransactions = [
+      ...expensesTransactions,
+      ...mergedCategorySnapshot.expensesTransactions
+    ];
+    totalIncome = totalIncome + mergedCategorySnapshot.totalIncome;
+    totalExpenses = totalExpenses + mergedCategorySnapshot.totalExpenses;
+  }
 }
 
 @embedded

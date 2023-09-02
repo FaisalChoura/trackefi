@@ -15,7 +15,8 @@
 - ~~Handle positive values~~
 - ~~UI~~
 - ~~Update default import settings~~
-- Multiple files
+- ~~Multiple files~~
+- Fine tuning for alpha release
 - Report analytics
 - Export report
 - Search and filter reports

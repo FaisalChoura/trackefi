@@ -20,7 +20,7 @@ class CategoriseTransactionsUseCase {
     _categories = await _categoriesRepository.getAllCategories();
   }
 
-  Future<List<ReportCategorySnapshot>> execute(
+  Future<Map<String, ReportCategorySnapshot>> execute(
       List<List<dynamic>> data, CsvImportSettings importSettings) async {
     // get updated list of categories
     await _getCategories();
@@ -39,8 +39,14 @@ class CategoriseTransactionsUseCase {
 
     for (var i = 1; i < data.length; i++) {
       List<dynamic> row = data[i];
-      double transactionAmount = _parseNumberStyle(importSettings.numberStyle,
-          row[importSettings.fieldIndexes.amountField]);
+      double transactionAmount;
+      if (row[importSettings.fieldIndexes.amountField] is double ||
+          row[importSettings.fieldIndexes.amountField] is int) {
+        transactionAmount = row[importSettings.fieldIndexes.amountField];
+      } else {
+        transactionAmount = _parseNumberStyle(importSettings.numberStyle,
+            row[importSettings.fieldIndexes.amountField]);
+      }
 
       String formatedDate = _formatDate(
           row[importSettings.fieldIndexes.dateField], importSettings);
@@ -71,7 +77,7 @@ class CategoriseTransactionsUseCase {
     //   }
     // }
 
-    return categoriesMap.values.toList();
+    return categoriesMap;
   }
 
   Category? _findCategory(String description) {

@@ -52,38 +52,33 @@ class ReportsListScreen extends ConsumerWidget {
                 height: 16,
               ),
               Expanded(
-                child: viewModel.maybeWhen(
-                  data: (data) => ListView.builder(
-                      itemCount: reportsList.length,
-                      itemBuilder: (context, index) {
-                        final report = reportsList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: ListTile(
-                            title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Report: ${report.id}'),
-                                  Text(report.createdAt.toUtc().toString())
-                                ]),
-                            // TODO sort out routing for side menu
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ReportBreakdownScreen(report: report))),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => ref
-                                  .read(reportsListViewModel.notifier)
-                                  .removeReport(report.id),
-                            ),
+                child: ListView.builder(
+                    itemCount: reportsList.length,
+                    itemBuilder: (context, index) {
+                      final report = reportsList[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ListTile(
+                          title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Report: ${report.id}'),
+                                Text(report.createdAt.toUtc().toString())
+                              ]),
+                          // TODO sort out routing for side menu
+                          onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ReportBreakdownScreen(report: report))),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => ref
+                                .read(reportsListViewModel.notifier)
+                                .removeReport(report.id),
                           ),
-                        );
-                      }),
-                  orElse: () =>
-                      const Center(child: CircularProgressIndicator()),
-                ),
+                        ),
+                      );
+                    }),
               ),
             ],
           ),
@@ -109,12 +104,17 @@ class ReportsListScreen extends ConsumerWidget {
 
       final dataToBeUnique = <Transaction>[];
       var enteredMap = <String, bool?>{};
-      for (var transaction in categorisedTransactions[0].expensesTransactions) {
-        if (enteredMap[transaction.name] == null) {
-          dataToBeUnique.add(transaction);
-          enteredMap.putIfAbsent(transaction.name, () => true);
+
+      for (var categorisedTransactionBatch in categorisedTransactions) {
+        for (var transaction
+            in categorisedTransactionBatch.expensesTransactions) {
+          if (enteredMap[transaction.name] == null) {
+            dataToBeUnique.add(transaction);
+            enteredMap.putIfAbsent(transaction.name, () => true);
+          }
         }
       }
+
       updatedCategoryData =
           await _handleUncategorisedTransactions(dataToBeUnique, context);
 
