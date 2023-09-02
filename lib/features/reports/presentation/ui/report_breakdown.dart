@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
-import 'package:expense_categoriser/features/reports/presentation/ui/indicator.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/category_pie_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -226,69 +226,5 @@ class SpendingPerTransactionList extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class CategoriesPieChart extends StatelessWidget {
-  const CategoriesPieChart({super.key, required this.categories});
-  final List<ReportCategorySnapshot> categories;
-
-  @override
-  Widget build(BuildContext context) {
-    final usedCategories =
-        categories.where((category) => category.totalExpenses > 0);
-    return SizedBox(
-      height: 400,
-      width: 400,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            'Expenses by Category',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Container(
-            height: 200,
-            width: 300,
-            child: PieChart(
-              PieChartData(
-                  centerSpaceRadius: 75,
-                  borderData: FlBorderData(show: false),
-                  sectionsSpace: 1,
-                  sections: _generateChartData(categories)),
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          for (var category in usedCategories)
-            Indicator(
-              color: category.colorValues != null
-                  ? category.colorValues!.toColor()
-                  : Colors.purple,
-              text: "${category.name}: ${category.totalExpenses}",
-              isSquare: true,
-            ),
-        ],
-      ),
-    );
-  }
-
-  List<PieChartSectionData> _generateChartData(
-      List<ReportCategorySnapshot> categories) {
-    return categories
-        .map(
-          (category) => PieChartSectionData(
-              color: category.colorValues != null
-                  ? category.colorValues!.toColor()
-                  : Colors.purple,
-              value: double.parse(category.totalExpenses.toString()),
-              radius: 30,
-              showTitle: false),
-        )
-        .toList();
   }
 }

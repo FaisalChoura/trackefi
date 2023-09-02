@@ -37,7 +37,6 @@ class ReportsListScreen extends ConsumerWidget {
       key: const Key('1'),
       body: Consumer(builder: (context, ref, child) {
         final reportsList = ref.watch(reportsListStoreProvider);
-        final viewModel = ref.watch(reportsListViewModel);
         return Container(
           padding:
               const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 36),

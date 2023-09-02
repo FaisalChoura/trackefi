@@ -6,6 +6,7 @@ class TColors {
   static const accentGreen = Color(0xFF23FB67);
   static const gunmetal = Color(0xFF0A2E36);
   static const drakGreen = Color(0xFF036D19);
+  static const silver = Color(0xFFF5F5F5);
 
   static const grey = Color(0xFFB8B8B8);
 
@@ -26,6 +27,7 @@ class TColors {
 }
 
 final lightTheme = ThemeData(
+    scaffoldBackgroundColor: TColors.silver,
     primarySwatch: TColors.materialGreen,
     hoverColor: const Color(0x1A14CC60),
     splashColor: const Color(0x4014CC60),
