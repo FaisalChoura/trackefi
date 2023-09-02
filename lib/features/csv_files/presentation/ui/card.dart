@@ -7,6 +7,7 @@ class TrCard extends StatelessWidget {
   final Widget? footer;
   const TrCard({super.key, this.header, this.body, this.footer});
 
+  // TODO remove this card
   @override
   Widget build(BuildContext context) {
     return Container(

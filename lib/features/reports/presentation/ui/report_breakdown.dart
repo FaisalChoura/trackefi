@@ -1,9 +1,11 @@
 import 'dart:collection';
 
 import 'package:expense_categoriser/core/presentation/ui/card.dart';
+import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/category_pie_chart.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/spending_per_transaction.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -72,13 +74,16 @@ class ReportBreakdown extends StatelessWidget {
               CategoriesPieChart(
                 categories: report.categories,
               ),
+              const SizedBox(
+                width: 32,
+              ),
               SpendingPerTransactionList(
                 transactions: report.expenseTransactions,
               ),
-              CostlyDatesBarChart(
-                dateCount: 5,
-                transactions: report.expenseTransactions,
-              )
+              // CostlyDatesBarChart(
+              //   dateCount: 5,
+              //   transactions: report.expenseTransactions,
+              // )
             ],
           ),
         ],
@@ -194,53 +199,5 @@ class CostlyDatesBarChart extends StatelessWidget {
     final month = date.month < 10 ? "0${date.month}" : "${date.month}";
     final day = date.day < 10 ? "0${date.day}" : "${date.day}";
     return "${date.year}-$month-$day";
-  }
-}
-
-class SpendingPerTransactionList extends StatelessWidget {
-  const SpendingPerTransactionList({super.key, required this.transactions});
-  final List<Transaction> transactions;
-
-  Map<String, double> groupedTransactionByNameMap() {
-    final groupedTransactions = <String, double>{};
-    for (var transaction in transactions) {
-      if (groupedTransactions[transaction.name] != null) {
-        groupedTransactions[transaction.name] = double.parse(
-            (groupedTransactions[transaction.name]! + transaction.amount)
-                .toStringAsFixed(2));
-      } else {
-        groupedTransactions[transaction.name] = transaction.amount;
-      }
-    }
-    return groupedTransactions;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final groupedTransactionsMap = groupedTransactionByNameMap();
-    final groupedTransactionsNames = groupedTransactionsMap.keys.toList();
-    return SizedBox(
-      height: 400,
-      width: 400,
-      child: Column(
-        children: [
-          const Text(
-            'Expenses by transaction',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: groupedTransactionsNames.length,
-                itemBuilder: (context, i) {
-                  final name = groupedTransactionsNames[i];
-                  return ListTile(
-                    title: Text(name),
-                    subtitle: Text(groupedTransactionsMap[name].toString()),
-                  );
-                }),
-          ),
-        ],
-      ),
-    );
   }
 }
