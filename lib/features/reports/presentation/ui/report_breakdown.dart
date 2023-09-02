@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:expense_categoriser/core/presentation/ui/card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/category_pie_chart.dart';
@@ -14,44 +15,59 @@ class ReportBreakdown extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO add list off all transactions with dates
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(46),
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                children: [
-                  const Text(
-                    'Expenses',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Expanded(
+                child: TrCard(
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Expenses',
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        report.expenses.toString(),
+                        style: const TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  Text(
-                    report.expenses.toString(),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(
-                width: 128,
+                width: 32,
               ),
-              Column(
-                children: [
-                  const Text(
-                    'Income',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Expanded(
+                child: TrCard(
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Income',
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        report.income.toString(),
+                        style: const TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  Text(
-                    report.income.toString(),
-                  ),
-                ],
-              )
+                ),
+              ),
             ],
           ),
           const SizedBox(
             height: 32,
           ),
-          Wrap(
-            direction: Axis.horizontal,
+          Row(
             children: [
               CategoriesPieChart(
                 categories: report.categories,
