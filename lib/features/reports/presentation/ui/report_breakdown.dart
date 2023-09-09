@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/card.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
@@ -124,8 +125,8 @@ class DailySpendLineGraph extends StatelessWidget {
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 40,
-                  // getTitlesWidget: leftTitleWidgets,
+                  reservedSize: 35,
+                  getTitlesWidget: leftTitleWidgets,
                 ),
               ),
               bottomTitles: AxisTitles(
@@ -146,7 +147,10 @@ class DailySpendLineGraph extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                dotData: FlDotData(show: false),
+                color: TColors.accentGreen,
+                dotData: FlDotData(
+                  show: false,
+                ),
                 spots: generateLineSpots(_groupTransactionsByDateMap()),
                 isCurved: true,
               )
@@ -180,6 +184,19 @@ class DailySpendLineGraph extends StatelessWidget {
       axisSide: meta.axisSide,
       child: Text(
         shortDate,
+        style: style,
+      ),
+    );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
+
+    return SideTitleWidget(
+      space: 2,
+      axisSide: meta.axisSide,
+      child: Text(
+        meta.formattedValue,
         style: style,
       ),
     );
