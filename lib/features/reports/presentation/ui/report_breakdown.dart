@@ -70,12 +70,13 @@ class ReportBreakdown extends StatelessWidget {
             height: 32,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CategoriesPieChart(
                 categories: report.categories,
               ),
               const SizedBox(
-                width: 32,
+                width: 16,
               ),
               SpendingPerTransactionList(
                 transactions: report.expenseTransactions,
@@ -84,11 +85,135 @@ class ReportBreakdown extends StatelessWidget {
               //   dateCount: 5,
               //   transactions: report.expenseTransactions,
               // )
+              const SizedBox(
+                width: 16,
+              ),
+              DailySpendLineGraph(
+                transactions: report.expenseTransactions,
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+class DailySpendLineGraph extends StatelessWidget {
+  final List<Transaction> transactions;
+
+  const DailySpendLineGraph({super.key, required this.transactions});
+
+  @override
+  Widget build(BuildContext context) {
+    return TrExtraInfoCard(
+      onButtonClick: () {},
+      title: 'Daily spend',
+      child: SizedBox(
+        child: LineChart(
+          LineChartData(
+            gridData: FlGridData(show: false),
+            titlesData: FlTitlesData(
+              show: true,
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40,
+                  // getTitlesWidget: leftTitleWidgets,
+                ),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 20,
+                  // TODO interval should be related to length of data
+                  interval: 7,
+                  getTitlesWidget: bottomTitleWidgets,
+                ),
+              ),
+            ),
+            borderData: FlBorderData(
+              border: const Border(
+                bottom: BorderSide(color: Colors.black),
+                left: BorderSide(color: Colors.black),
+              ),
+            ),
+            lineBarsData: [
+              LineChartBarData(
+                dotData: FlDotData(show: false),
+                spots: generateLineSpots(_groupTransactionsByDateMap()),
+                isCurved: true,
+              )
+            ],
+          ),
+          swapAnimationDuration: Duration(milliseconds: 150), // Optional
+          swapAnimationCurve: Curves.linear, // Optional
+        ),
+      ),
+    );
+  }
+
+  List<FlSpot> generateLineSpots(Map<String, double> map) {
+    final list = <FlSpot>[];
+    for (var i = 0; i < map.values.length; i++) {
+      list.add(FlSpot(i.toDouble(), map.values.toList()[i]));
+    }
+    return list;
+  }
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
+
+    final dates = _groupTransactionsByDateMap().keys.toList();
+
+    final splitDate = dates[value.toInt()].split('-');
+    final shortDate = "${splitDate[1]}/${splitDate[2]}";
+
+    return SideTitleWidget(
+      space: 4,
+      axisSide: meta.axisSide,
+      child: Text(
+        shortDate,
+        style: style,
+      ),
+    );
+  }
+
+  Map<String, double> _groupTransactionsByDateMap() {
+    final groupedTransactions = <String, double>{};
+    for (var transaction in transactions) {
+      final dateString = _dateString(transaction.date);
+      if (groupedTransactions[dateString] != null) {
+        groupedTransactions[dateString] = double.parse(
+            (groupedTransactions[dateString]! + transaction.amount)
+                .toStringAsFixed(2));
+      } else {
+        groupedTransactions[dateString] = transaction.amount;
+      }
+    }
+
+    var sortedMapByAmount = Map.fromEntries(groupedTransactions.entries.toList()
+      ..sort((e1, e2) => e2.value.compareTo(e1.value)));
+
+    var sortedMapByDate =
+        SplayTreeMap<String, double>.from(sortedMapByAmount, (key1, key2) {
+      final date1 = DateTime.parse(key1);
+      final date2 = DateTime.parse(key2);
+      return date1.compareTo(date2);
+    });
+    return sortedMapByDate;
+  }
+
+  String _dateString(DateTime date) {
+    final month = date.month < 10 ? "0${date.month}" : "${date.month}";
+    final day = date.day < 10 ? "0${date.day}" : "${date.day}";
+    return "${date.year}-$month-$day";
   }
 }
 

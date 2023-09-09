@@ -16,7 +16,7 @@ class TrExtraInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         height: 250,
-        width: 400,
+        width: 390,
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
