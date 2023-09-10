@@ -17,7 +17,7 @@
 - ~~Update default import settings~~
 - ~~Multiple files~~
 - Fine tuning for alpha release
-  - Reports page
+  - ~~Reports page~~
   - Date range for report generation
   - Currency selection and conversion
 - Create tags

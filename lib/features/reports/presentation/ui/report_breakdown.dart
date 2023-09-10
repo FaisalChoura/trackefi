@@ -1,11 +1,13 @@
 import 'dart:collection';
 
 import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
+import 'package:expense_categoriser/core/presentation/ui/accordion.dart';
 import 'package:expense_categoriser/core/presentation/ui/card.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/category_pie_chart.dart';
+import 'package:expense_categoriser/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/spending_per_transaction.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -17,85 +19,160 @@ class ReportBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO add list off all transactions with dates
-    return Padding(
-      padding: const EdgeInsets.all(46),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return SizedBox(
+      height: 700,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(46),
+          child: Column(
             children: [
-              Expanded(
-                child: TrCard(
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Expenses',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TrCard(
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Expenses',
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            report.expenses.toString(),
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        report.expenses.toString(),
-                        style: const TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    width: 32,
+                  ),
+                  Expanded(
+                    child: TrCard(
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Income',
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            report.income.toString(),
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
-                width: 32,
+                height: 32,
               ),
-              Expanded(
-                child: TrCard(
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Income',
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        report.income.toString(),
-                        style: const TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CategoriesPieChart(
+                    categories: report.categories,
                   ),
-                ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  SpendingPerTransactionList(
+                    transactions: report.expenseTransactions,
+                  ),
+                  // CostlyDatesBarChart(
+                  //   dateCount: 5,
+                  //   transactions: report.expenseTransactions,
+                  // )
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  DailySpendLineGraph(
+                    transactions: report.expenseTransactions,
+                  ),
+                ],
+              ),
+              GroupedTransactionsByCategory(
+                categorySnapshots: report.categories,
               ),
             ],
           ),
-          const SizedBox(
-            height: 32,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CategoriesPieChart(
-                categories: report.categories,
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              SpendingPerTransactionList(
-                transactions: report.expenseTransactions,
-              ),
-              // CostlyDatesBarChart(
-              //   dateCount: 5,
-              //   transactions: report.expenseTransactions,
-              // )
-              const SizedBox(
-                width: 16,
-              ),
-              DailySpendLineGraph(
-                transactions: report.expenseTransactions,
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  // TODO duplicated
+  List<CategorySnapshotItem> generateItems(
+      List<ReportCategorySnapshot> categorySnapshots) {
+    final numberOfItems = categorySnapshots.length;
+    return List<CategorySnapshotItem>.generate(numberOfItems, (int index) {
+      return CategorySnapshotItem(
+        categorySnapshot: categorySnapshots[index],
+      );
+    });
+  }
+}
+
+class GroupedTransactionsByCategory extends StatelessWidget {
+  final List<ReportCategorySnapshot> categorySnapshots;
+  const GroupedTransactionsByCategory(
+      {super.key, required this.categorySnapshots});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Transactions',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        TrAccordion(
+          items: generateItems(categorySnapshots).map((item) {
+            return TrAccordionItem(
+                id: item.categorySnapshot.id,
+                leading: Text(item.categorySnapshot.name),
+                trailing: Wrap(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: Text('- ${item.categorySnapshot.totalExpenses}'),
+                    ),
+                    Text('+ ${item.categorySnapshot.totalIncome}'),
+                  ],
+                ),
+                subItems: item.categorySnapshot.transactions
+                    .map(
+                      (transaction) => Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16.0, right: 16, top: 8, bottom: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                                width: 150,
+                                child: Text(transaction.name.toString())),
+                            Text(transaction.amount.toString()),
+                            Text(transaction.date.toString().split(' ')[0]),
+                          ],
+                        ),
+                      ),
+                    )
+                    .toList());
+          }).toList(),
+        ),
+      ],
     );
   }
 }
