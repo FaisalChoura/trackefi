@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
+import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
 import 'package:expense_categoriser/features/categories/presentaion/viewmodel/categories_viewmodel.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
@@ -62,9 +63,8 @@ class ReportsListScreen extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Report: ${report.id}'),
-                                Text(report.createdAt.toUtc().toString())
+                                Text(TrHelpers.dateString(report.createdAt))
                               ]),
-                          // TODO sort out routing for side menu
                           onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) =>
