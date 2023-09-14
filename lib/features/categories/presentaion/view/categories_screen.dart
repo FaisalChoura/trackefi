@@ -1,4 +1,5 @@
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
 import 'package:expense_categoriser/features/categories/presentaion/ui/tag.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +38,7 @@ class CategoriesScreen extends ConsumerWidget {
   }
 
   _openNewCategoryDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => _newCategoryBuilder(context, ref),
-    );
+    showTrDialog(context, _newCategoryBuilder(context, ref));
   }
 
   _newCategoryBuilder(BuildContext context, WidgetRef ref) {
@@ -58,42 +56,37 @@ class NewCategoryDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Dialog(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(10.0), bottom: Radius.circular(10))),
-      child: CallbackShortcuts(
-        bindings: <ShortcutActivator, VoidCallback>{
-          const SingleActivator(LogicalKeyboardKey.enter): () =>
-              _addCategory(context, ref)
-        },
-        child: Container(
-          height: 170,
-          width: 400,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'New Category',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TrTextField(
-                controller: categoryNameController,
-                autofocus: true,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TrButton(
-                onPressed: () => _addCategory(context, ref),
-                child: const Text('Add Category'),
-              )
-            ],
-          ),
+    return CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.enter): () =>
+            _addCategory(context, ref)
+      },
+      child: Container(
+        height: 170,
+        width: 400,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'New Category',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TrTextField(
+              controller: categoryNameController,
+              autofocus: true,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TrButton(
+              onPressed: () => _addCategory(context, ref),
+              child: const Text('Add Category'),
+            )
+          ],
         ),
       ),
     );
@@ -290,29 +283,26 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
 
   Future<Color> _selectColor(Color currentColor) async {
     Color newSelectedColor = currentColor;
-    return await showDialog<Color>(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-                child: SizedBox(
-              height: 350,
-              width: 650,
-              child: Column(
-                children: [
-                  ColorPicker(
-                    pickerColor: newSelectedColor,
-                    onColorChanged: (color) {
-                      newSelectedColor = color;
-                    },
-                  ),
-                  MaterialButton(
-                      child: const Text('Select'),
-                      onPressed: () =>
-                          Navigator.of(context).pop(newSelectedColor))
-                ],
-              ),
-            ));
-          },
+    return await showTrDialog<Color>(
+          context,
+          SizedBox(
+            height: 350,
+            width: 650,
+            child: Column(
+              children: [
+                ColorPicker(
+                  pickerColor: newSelectedColor,
+                  onColorChanged: (color) {
+                    newSelectedColor = color;
+                  },
+                ),
+                MaterialButton(
+                    child: const Text('Select'),
+                    onPressed: () =>
+                        Navigator.of(context).pop(newSelectedColor))
+              ],
+            ),
+          ),
         ) ??
         currentColor;
   }

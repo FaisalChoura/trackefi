@@ -3,6 +3,7 @@ import 'package:expense_categoriser/core/domain/extensions/async_value_error_ext
 import 'package:expense_categoriser/core/domain/extensions/reverse_map_extension.dart';
 import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
@@ -165,17 +166,11 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
   }
 
   Future<CsvFileData> _openImportSettingsDialog(CsvFileData filesData) async {
-    return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: CsvImportsSettingsDialog(
-                fileData: filesData,
-              ),
-            );
-          },
-        ) ??
-        [];
+    return await showTrDialog(
+        context,
+        CsvImportsSettingsDialog(
+          fileData: filesData,
+        ));
   }
 }
 
@@ -221,10 +216,9 @@ class _CsvImportsSettingsDialogState
   Widget build(BuildContext context) {
     final fileData = widget.fileData;
 
-    return Container(
+    return SizedBox(
       height: 500,
       width: 1300,
-      padding: const EdgeInsets.all(24.0),
       child: Form(
         key: _formKey,
         child: Column(

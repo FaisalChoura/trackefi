@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:flutter/material.dart';
@@ -52,63 +53,57 @@ class SpendingPerTransactionList extends StatelessWidget {
 
   Future<dynamic> _showMore(BuildContext context,
       List<MapEntry<String, double>> groupedTransactionsMap) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(32),
-            height: 420,
-            width: 600,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return showTrDialog(
+      context,
+      SizedBox(
+        height: 420,
+        width: 600,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
-                          Icons.close,
-                          size: 20,
-                        )),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    const Text(
-                      'Expenses by transaction',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+                IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.close,
+                      size: 20,
+                    )),
                 const SizedBox(
-                  height: 16,
+                  width: 16,
                 ),
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 300,
-                      child: ListView.builder(
-                          itemCount: groupedTransactionsMap.length,
-                          itemBuilder: (context, i) {
-                            final name = groupedTransactionsMap[i].key;
-                            final amount = groupedTransactionsMap[i].value;
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: TrShortenedListItem(
-                                  stringLength: name.length,
-                                  title: name,
-                                  trailing: Text(amount.toString())),
-                            );
-                          }),
-                    )
-                  ],
+                const Text(
+                  'Expenses by transaction',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-          ),
-        );
-      },
+            const SizedBox(
+              height: 16,
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 300,
+                  child: ListView.builder(
+                      itemCount: groupedTransactionsMap.length,
+                      itemBuilder: (context, i) {
+                        final name = groupedTransactionsMap[i].key;
+                        final amount = groupedTransactionsMap[i].value;
+                        return Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: TrShortenedListItem(
+                              stringLength: name.length,
+                              title: name,
+                              trailing: Text(amount.toString())),
+                        );
+                      }),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

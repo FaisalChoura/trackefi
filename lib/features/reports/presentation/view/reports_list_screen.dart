@@ -1,6 +1,7 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/features/categories/presentaion/viewmodel/categories_viewmodel.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
@@ -140,31 +141,21 @@ class ReportsListScreen extends ConsumerWidget {
 
   Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
       List<Transaction> uncategorisedTransactions, BuildContext context) async {
-    return await showDialog<List<UncategorisedRowData>>(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: UncategorisedItemsDialog(
-                  uncategorisedTransactions: uncategorisedTransactions),
-            );
-          },
+    return await showTrDialog<List<UncategorisedRowData>>(
+          context,
+          UncategorisedItemsDialog(
+              uncategorisedTransactions: uncategorisedTransactions),
         ) ??
         [];
   }
 
   Future<List<ReportCategorySnapshot>> _showAndEditCategorisedTransactions(
       List<ReportCategorySnapshot> categories, BuildContext context) async {
-    // TODO extract dialog into TrDialog to use in app
-    return await showDialog<List<ReportCategorySnapshot>>(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: EditableCategorisedTransactionsList(
-                categorySnapshots: categories,
-              ),
-            );
-          },
-        ) ??
+    return await showTrDialog<List<ReportCategorySnapshot>>(
+            context,
+            EditableCategorisedTransactionsList(
+              categorySnapshots: categories,
+            )) ??
         categories;
   }
 }
