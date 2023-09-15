@@ -211,7 +211,9 @@ class _CsvImportsSettingsDialogState
     expenseSign = importSettings.expenseSign;
     dateFormat = importSettings.dateFormat;
     fieldIndexes = importSettings.fieldIndexes;
-    selectedCurrencyId = importSettings.currencyId;
+    selectedCurrencyId = importSettings.currencyId.isEmpty
+        ? selectedCurrencyId
+        : importSettings.currencyId;
   }
 
   @override
