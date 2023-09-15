@@ -193,6 +193,7 @@ class _CsvImportsSettingsDialogState
   TextEditingController dateSeparatorController = TextEditingController();
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
+  String selectedCurrencyId = 'USD';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -210,10 +211,13 @@ class _CsvImportsSettingsDialogState
     expenseSign = importSettings.expenseSign;
     dateFormat = importSettings.dateFormat;
     fieldIndexes = importSettings.fieldIndexes;
+    selectedCurrencyId = importSettings.currencyId;
   }
 
   @override
   Widget build(BuildContext context) {
+    final currencyList =
+        ref.read(csvFilesViewModelProvider.notifier).getCurrencies();
     final fileData = widget.fileData;
 
     return SizedBox(
@@ -236,6 +240,7 @@ class _CsvImportsSettingsDialogState
                     ),
                   ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(
                         flex: 1,
@@ -282,6 +287,30 @@ class _CsvImportsSettingsDialogState
                           },
                         ),
                       ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Flexible(
+                          flex: 1,
+                          child: TrSelectField(
+                              label: 'Currency',
+                              value: selectedCurrencyId,
+                              items: currencyList
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.id),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedCurrencyId = value;
+                                    fileData.importSettings.currencyId = value;
+                                  });
+                                }
+                              })),
                     ],
                   ),
                   Row(
@@ -478,17 +507,17 @@ class _CsvImportsSettingsDialogState
                         child: const Text('Done'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            final importSettings = CsvImportSettings();
-                            importSettings.fieldIndexes = fieldIndexes;
-                            importSettings.fieldDelimiter =
-                                fieldDelimiterController.text;
-                            importSettings.numberStyle = numberingStyle;
-                            importSettings.dateFormat = dateFormat;
-                            importSettings.dateSeparator =
-                                dateSeparatorController.text;
-                            importSettings.expenseSign = expenseSign;
-                            Navigator.of(context).pop(
-                                CsvFileData(fileData.file, importSettings));
+                            // final importSettings = CsvImportSettings();
+                            fileData.importSettings.fieldIndexes = fieldIndexes;
+                            // importSettings.fieldDelimiter =
+                            //     fieldDelimiterController.text;
+                            // importSettings.numberStyle = numberingStyle;
+                            // importSettings.dateFormat = dateFormat;
+                            // importSettings.dateSeparator =
+                            //     dateSeparatorController.text;
+                            // importSettings.expenseSign = expenseSign;
+                            Navigator.of(context).pop(CsvFileData(
+                                fileData.file, fileData.importSettings));
                           }
                         }),
                   ),

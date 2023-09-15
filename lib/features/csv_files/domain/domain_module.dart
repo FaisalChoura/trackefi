@@ -1,4 +1,6 @@
+import 'package:expense_categoriser/core/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
+import 'package:expense_categoriser/features/csv_files/domain/usecase/get_currencies_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/import_files_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/update_file_usecase.dart';
@@ -11,4 +13,7 @@ final removeFilesUseCaseProvider = Provider<RemoveFileUseCase>(
 );
 final updateFileUseCaseProvider = Provider<UpdateFileUseCase>(
   (ref) => UpdateFileUseCase(ref.watch(csvFilesRepositoryProvider)),
+);
+final getCurrenciesUseCaseProvider = Provider<GetCurrenciesUseCase>(
+  (ref) => GetCurrenciesUseCase(ref.watch(currencyDataRepositoryProvider)),
 );

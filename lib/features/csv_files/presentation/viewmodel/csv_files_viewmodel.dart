@@ -1,6 +1,8 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
+import 'package:expense_categoriser/core/domain/model/currency.dart';
 import 'package:expense_categoriser/features/csv_files/domain/domain_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:expense_categoriser/features/csv_files/domain/usecase/get_currencies_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/import_files_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:expense_categoriser/features/csv_files/domain/usecase/update_file_usecase.dart';
@@ -11,21 +13,28 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final csvFilesViewModelProvider =
-    StateNotifierProvider<CsvFilesViewModel, AsyncValue<void>>((ref) =>
-        CsvFilesViewModel(
-            ref.watch(importFilesUseCaseProvider),
-            ref.watch(removeFilesUseCaseProvider),
-            ref.watch(convertCsvFileUseCaseProvider),
-            ref.watch(updateFileUseCaseProvider)));
+    StateNotifierProvider<CsvFilesViewModel, AsyncValue<void>>(
+        (ref) => CsvFilesViewModel(
+              ref.watch(importFilesUseCaseProvider),
+              ref.watch(removeFilesUseCaseProvider),
+              ref.watch(convertCsvFileUseCaseProvider),
+              ref.watch(updateFileUseCaseProvider),
+              ref.watch(getCurrenciesUseCaseProvider),
+            ));
 
 class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
   final ImportFilesUseCase _importFilesUseCase;
   final RemoveFileUseCase _removeFileUseCase;
   final ConvertCsvFileUseCase _convertCsvFileUseCase;
   final UpdateFileUseCase _updateFileUseCase;
+  final GetCurrenciesUseCase _getCurrenciesUseCase;
 
-  CsvFilesViewModel(this._importFilesUseCase, this._removeFileUseCase,
-      this._convertCsvFileUseCase, this._updateFileUseCase)
+  CsvFilesViewModel(
+      this._importFilesUseCase,
+      this._removeFileUseCase,
+      this._convertCsvFileUseCase,
+      this._updateFileUseCase,
+      this._getCurrenciesUseCase)
       : super(const AsyncValue.data(null));
 
   Future<FilePickerResult?> getFiles() async {
@@ -51,6 +60,10 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
 
   void updateFile(CsvFileData fileData) async {
     _updateFileUseCase.execute(fileData);
+  }
+
+  List<Currency> getCurrencies() {
+    return _getCurrenciesUseCase.execute();
   }
 
   Future<HeaderFirstRowData> getHeaderAndFirstRow(CsvFileData file) async {

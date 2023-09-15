@@ -10,6 +10,7 @@ class CsvImportSettings {
   String dateSeparator = '/'; // field needs to be parsed
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
+  String currencyId = '';
 }
 
 class FieldIndexes {
