@@ -99,7 +99,7 @@ class ReportsListScreen extends ConsumerWidget {
       return;
     }
 
-    final x = await _getReportSettings(context, ref);
+    final reportSettings = await _getReportSettings(context, ref);
 
     if (ref
         .read(reportsListViewModel.notifier)
@@ -135,9 +135,15 @@ class ReportsListScreen extends ConsumerWidget {
       categorisedTransactions = await _showAndEditCategorisedTransactions(
           categorisedTransactions, context);
     }
+
+    final unifiedCurrencyTransaction = await ref
+        .read(reportsListViewModel.notifier)
+        .unifyTransactionCurrencies(
+            categorisedTransactions, reportSettings.currencyId);
+
     final report = ref
         .read(reportsListViewModel.notifier)
-        .buildReport(categorisedTransactions);
+        .buildReport(unifiedCurrencyTransaction, reportSettings);
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ReportBreakdownScreen(report: report)));

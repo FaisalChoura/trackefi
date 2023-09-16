@@ -56,7 +56,8 @@ class CategoriseTransactionsUseCase {
           row[importSettings.fieldIndexes.descriptionField],
           transactionAmount,
           formatedDate,
-          isIncome);
+          isIncome,
+          importSettings.currencyId);
 
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);

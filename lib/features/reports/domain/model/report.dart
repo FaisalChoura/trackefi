@@ -18,6 +18,7 @@ class Report {
       final totalExpenses = categories
           .map((category) => category.totalExpenses)
           .reduce((value, element) => value + element);
+      // TODO create function for rounding
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
     }
   }

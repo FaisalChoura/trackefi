@@ -7,10 +7,12 @@ import 'package:expense_categoriser/features/csv_files/domain/usecase/get_curren
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:expense_categoriser/features/reports/domain/model/report_settings.dart';
 import 'package:expense_categoriser/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/build_report_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
+import 'package:expense_categoriser/features/reports/domain/usecase/convert_currency_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/get_all_reports_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
@@ -31,7 +33,8 @@ final reportsListViewModel =
             ref.watch(updateCategoriesFromRowDataProvider),
             ref.watch(putReportUseCaseProvider),
             ref.watch(moveTransactionBetweenCategorySnapshots),
-            ref.watch(getCurrenciesUseCaseProvider)));
+            ref.watch(getCurrenciesUseCaseProvider),
+            ref.watch(convertCurrencyUseCaseProvider)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
@@ -43,7 +46,8 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       this._updateCategoriesFromRowData,
       this._putReportUseCase,
       this._moveTransactionBetweenCategorySnapshots,
-      this._getCurrenciesUseCase)
+      this._getCurrenciesUseCase,
+      this._convertCurrencyUseCase)
       : super(const AsyncValue.data([])) {
     getList();
   }
@@ -58,6 +62,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   final MoveTransactionBetweenCategorySnapshots
       _moveTransactionBetweenCategorySnapshots;
   final GetCurrenciesUseCase _getCurrenciesUseCase;
+  final ConvertCurrencyUseCase _convertCurrencyUseCase;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -69,8 +74,43 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
     _removeReportUseCase.execute(id);
   }
 
-  Report buildReport(List<ReportCategorySnapshot> categorisedTransactions) {
-    return _buildReportUseCase.execute(categorisedTransactions);
+  Report buildReport(List<ReportCategorySnapshot> categorisedTransactions,
+      ReportSettings reportSettings) {
+    return _buildReportUseCase.execute(categorisedTransactions, reportSettings);
+  }
+
+  Future<List<ReportCategorySnapshot>> unifyTransactionCurrencies(
+      List<ReportCategorySnapshot> categorisedTransactions,
+      String toCurrencyId) async {
+    // TODO optimise
+    for (var snapshot in categorisedTransactions) {
+      for (var i = 0; i < snapshot.expensesTransactions.length; i++) {
+        final transaction = snapshot.expensesTransactions[i];
+        if (transaction.currencyId != toCurrencyId) {
+          // TODO add currency to income
+          final conversion = await _convertCurrencyUseCase.execute(
+              transaction.currencyId, toCurrencyId);
+          transaction.amount = double.parse(
+              (transaction.amount * conversion.val).toStringAsFixed(2));
+          transaction.currencyId = toCurrencyId;
+          snapshot.expensesTransactions[i] = transaction;
+        }
+      }
+
+      for (var i = 0; i < snapshot.incomeTransactions.length; i++) {
+        final transaction = snapshot.incomeTransactions[i];
+        if (transaction.currencyId != toCurrencyId) {
+          final conversion = await _convertCurrencyUseCase.execute(
+              transaction.currencyId, toCurrencyId);
+          transaction.amount = double.parse(
+              (transaction.amount * conversion.val).toStringAsFixed(2));
+          transaction.currencyId = toCurrencyId;
+          snapshot.incomeTransactions[i] = transaction;
+        }
+      }
+      snapshot.recalculate();
+    }
+    return categorisedTransactions;
   }
 
   Future<List<ReportCategorySnapshot>> categoriseTransactions(
