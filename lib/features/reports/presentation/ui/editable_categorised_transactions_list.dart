@@ -31,7 +31,7 @@ class _EditableCategorisedTransactionsListState
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 800,
+      height: 900,
       width: 1200,
       child: Container(
         padding: const EdgeInsets.only(top: 24, bottom: 24),
@@ -49,12 +49,8 @@ class _EditableCategorisedTransactionsListState
                   ),
                 ),
                 SizedBox(
-                  height: 600,
-                  child: SingleChildScrollView(
-                      child: Padding(
-                    padding: const EdgeInsets.only(left: 32.0, right: 32),
-                    child: _buildAccordion(),
-                  )),
+                  height: 560,
+                  child: SingleChildScrollView(child: _buildAccordion()),
                 ),
               ],
             ),

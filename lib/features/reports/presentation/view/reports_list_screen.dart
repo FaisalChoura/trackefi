@@ -242,52 +242,48 @@ class _UncategorisedItemsDialogState
         data: (categories) => SizedBox(
               height: 600,
               width: 800,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Unknown keywords mapper',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            for (var i = 0; i < transactions.length; i++)
-                              UncategorisedItemRow(
-                                transaction: transactions[i],
-                                categories: categories,
-                                onChanged: (categoryData) {
-                                  updatedRowCategoryData[i] = categoryData;
-                                },
-                              )
-                          ],
-                        ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Unknown keywords mapper',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (var i = 0; i < transactions.length; i++)
+                            UncategorisedItemRow(
+                              transaction: transactions[i],
+                              categories: categories,
+                              onChanged: (categoryData) {
+                                updatedRowCategoryData[i] = categoryData;
+                              },
+                            )
+                        ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TrButton(
-                            onPressed: () => Navigator.of(context).pop(
-                                groupRowData(
-                                    updatedRowCategoryData.values.toList())),
-                            child: const Text('Done'),
-                          ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TrButton(
+                          onPressed: () => Navigator.of(context).pop(
+                              groupRowData(
+                                  updatedRowCategoryData.values.toList())),
+                          child: const Text('Done'),
                         ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
         orElse: () =>
