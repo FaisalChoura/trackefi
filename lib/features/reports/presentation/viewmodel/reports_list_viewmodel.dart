@@ -1,6 +1,9 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
+import 'package:expense_categoriser/core/domain/model/currency.dart';
 import 'package:expense_categoriser/features/categories/domain/domain_module.dart';
+import 'package:expense_categoriser/features/csv_files/domain/domain_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:expense_categoriser/features/csv_files/domain/usecase/get_currencies_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -27,7 +30,8 @@ final reportsListViewModel =
             ref.watch(categoriseTransactionsUseCaseProvider),
             ref.watch(updateCategoriesFromRowDataProvider),
             ref.watch(putReportUseCaseProvider),
-            ref.watch(moveTransactionBetweenCategorySnapshots)));
+            ref.watch(moveTransactionBetweenCategorySnapshots),
+            ref.watch(getCurrenciesUseCaseProvider)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
@@ -38,7 +42,8 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       this._categoriseTransactionsUseCase,
       this._updateCategoriesFromRowData,
       this._putReportUseCase,
-      this._moveTransactionBetweenCategorySnapshots)
+      this._moveTransactionBetweenCategorySnapshots,
+      this._getCurrenciesUseCase)
       : super(const AsyncValue.data([])) {
     getList();
   }
@@ -52,6 +57,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   final PutReportUseCase _putReportUseCase;
   final MoveTransactionBetweenCategorySnapshots
       _moveTransactionBetweenCategorySnapshots;
+  final GetCurrenciesUseCase _getCurrenciesUseCase;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -113,6 +119,10 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
         ? categorisedTransactions[0].expensesTransactions.isNotEmpty ||
             categorisedTransactions[0].incomeTransactions.isNotEmpty
         : false;
+  }
+
+  List<Currency> getCurrencies() {
+    return _getCurrenciesUseCase.execute();
   }
 
   Future<void> updateCategoriesFromRowData(

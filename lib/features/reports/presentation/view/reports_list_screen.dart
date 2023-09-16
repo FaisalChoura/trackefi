@@ -2,12 +2,14 @@ import 'package:expense_categoriser/core/domain/extensions/async_value_error_ext
 import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
 import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
+import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:expense_categoriser/features/categories/presentaion/viewmodel/categories_viewmodel.dart';
 import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
 import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:expense_categoriser/features/reports/data/data_module.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:expense_categoriser/features/reports/domain/model/report_settings.dart';
 import 'package:expense_categoriser/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
 import 'package:expense_categoriser/features/reports/presentation/ui/report_breakdown.dart';
@@ -97,6 +99,8 @@ class ReportsListScreen extends ConsumerWidget {
       return;
     }
 
+    final x = await _getReportSettings(context, ref);
+
     if (ref
         .read(reportsListViewModel.notifier)
         .hasUncategorisedTransactions(categorisedTransactions)) {
@@ -139,6 +143,11 @@ class ReportsListScreen extends ConsumerWidget {
         builder: (context) => ReportBreakdownScreen(report: report)));
   }
 
+  Future<ReportSettings> _getReportSettings(
+      BuildContext context, WidgetRef ref) async {
+    return await showTrDialog(context, ReportSettingsDialog());
+  }
+
   Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
       List<Transaction> uncategorisedTransactions, BuildContext context) async {
     return await showTrDialog<List<UncategorisedRowData>>(
@@ -157,6 +166,63 @@ class ReportsListScreen extends ConsumerWidget {
               categorySnapshots: categories,
             )) ??
         categories;
+  }
+}
+
+class ReportSettingsDialog extends ConsumerStatefulWidget {
+  const ReportSettingsDialog({super.key});
+
+  @override
+  ConsumerState<ReportSettingsDialog> createState() =>
+      _ReportSettingsDialogState();
+}
+
+class _ReportSettingsDialogState extends ConsumerState<ReportSettingsDialog> {
+  String selectedCurrencyId = 'USD';
+
+  @override
+  Widget build(BuildContext context) {
+    final currencyList =
+        ref.read(reportsListViewModel.notifier).getCurrencies();
+    return SizedBox(
+      height: 300,
+      width: 600,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          const Text('Report Settings'),
+          TrSelectField(
+              label: 'Currency',
+              value: selectedCurrencyId,
+              items: currencyList
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e.id,
+                      child: Text(e.id),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    selectedCurrencyId = value;
+                  });
+                }
+              }),
+          Row(
+            children: [
+              Expanded(
+                child: TrButton(
+                  onPressed: () => Navigator.of(context)
+                      .pop(ReportSettings(currencyId: selectedCurrencyId)),
+                  child: const Text('Done'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
