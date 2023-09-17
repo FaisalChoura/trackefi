@@ -19,7 +19,8 @@
 - Fine tuning for alpha release
   - ~~Reports page~~
   - Date range for report generation
-  - Currency selection and conversion
+  - ~~Currency selection and conversion~~
+  - Add date info to report
 - Create tags
 - Create rules
 - Report analytics
