@@ -78,11 +78,13 @@ class CategoriseTransactionsUseCase {
   }
 
   Category? _findCategory(String description) {
+    final cleanedDescription = description.replaceAll(RegExp(r'\s\s+'), ' ');
+
     Category? matchedCategory;
     num lastStrength = 0;
     for (var category in _categories) {
-      if (category.isPartOfCategory(description)) {
-        num newStrength = category.matchingStrength(description);
+      if (category.isPartOfCategory(cleanedDescription)) {
+        num newStrength = category.matchingStrength(cleanedDescription);
         if (newStrength > lastStrength) {
           matchedCategory = category;
           lastStrength = newStrength;

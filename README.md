@@ -21,6 +21,7 @@
   - Date range for report generation
   - ~~Currency selection and conversion~~
   - Add date info to report
+- What transaction came from what file
 - Create tags
 - Create rules
 - Report analytics
