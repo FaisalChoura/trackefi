@@ -52,6 +52,11 @@ class CategoriseTransactionsUseCase {
           row[importSettings.fieldIndexes.dateField], importSettings);
       bool isIncome = _transactionIsIncome(transactionAmount, importSettings);
 
+      if (isIncome && transactionAmount > 0 ||
+          !isIncome && transactionAmount < 0) {
+        transactionAmount = transactionAmount * -1;
+      }
+
       Transaction transaction = Transaction(
           row[importSettings.fieldIndexes.descriptionField],
           transactionAmount,
