@@ -18,7 +18,7 @@
 - ~~Multiple files~~
 - Fine tuning for alpha release
   - ~~Reports page~~
-  - Date range for report generation
+  - ~~Date range for report generation~~
   - ~~Currency selection and conversion~~
   - Add date info to report
   - Edit category name
