@@ -13,6 +13,7 @@ import 'package:expense_categoriser/features/reports/domain/usecase/build_report
 import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/convert_currency_usecase.dart';
+import 'package:expense_categoriser/features/reports/domain/usecase/filter_csv_data_by_date_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/get_all_reports_usecase.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
 import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
@@ -34,7 +35,8 @@ final reportsListViewModel =
             ref.watch(putReportUseCaseProvider),
             ref.watch(moveTransactionBetweenCategorySnapshots),
             ref.watch(getCurrenciesUseCaseProvider),
-            ref.watch(convertCurrencyUseCaseProvider)));
+            ref.watch(convertCurrencyUseCaseProvider),
+            ref.watch(filterCsvDataByDate)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
@@ -47,7 +49,8 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       this._putReportUseCase,
       this._moveTransactionBetweenCategorySnapshots,
       this._getCurrenciesUseCase,
-      this._convertCurrencyUseCase)
+      this._convertCurrencyUseCase,
+      this._filterCsvDataByDateUseCase)
       : super(const AsyncValue.data([])) {
     getList();
   }
@@ -63,6 +66,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       _moveTransactionBetweenCategorySnapshots;
   final GetCurrenciesUseCase _getCurrenciesUseCase;
   final ConvertCurrencyUseCase _convertCurrencyUseCase;
+  final FilterCsvDataByDateUseCase _filterCsvDataByDateUseCase;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -114,7 +118,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   }
 
   Future<List<ReportCategorySnapshot>> categoriseTransactions(
-      List<CsvFileData> filesData) async {
+      List<CsvFileData> filesData, ReportSettings reportSettings) async {
     try {
       final filesList = await _convertCsvFileUseCase.execute(filesData);
       if (filesList.isEmpty) {
@@ -129,8 +133,14 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       List<Map<String, ReportCategorySnapshot>> categorySnapshots = [];
 
       for (var i = 0; i < filesData.length; i++) {
+        final csvData = _filterCsvDataByDateUseCase.execute(
+            filesList[i]!, filesData[i].importSettings, reportSettings);
+        // TODO Handle this case with an error box
+        if (csvData.isEmpty) {
+          return [];
+        }
         final categoriesMap = await _categoriseTransactionsUseCase.execute(
-            filesList[i]!, filesData[i].importSettings);
+            csvData, filesData[i].importSettings);
         categorySnapshots.add(categoriesMap);
       }
 

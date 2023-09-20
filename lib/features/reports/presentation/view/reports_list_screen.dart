@@ -1,6 +1,7 @@
 import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
 import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:expense_categoriser/core/presentation/ui/date_picker.dart';
 import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
 import 'package:expense_categoriser/features/categories/presentaion/viewmodel/categories_viewmodel.dart';
@@ -91,15 +92,15 @@ class ReportsListScreen extends ConsumerWidget {
 
   void _generateReport(
       List<CsvFileData> csvFiles, BuildContext context, WidgetRef ref) async {
+    final reportSettings = await _getReportSettings(context, ref);
+
     var categorisedTransactions = await ref
         .read(reportsListViewModel.notifier)
-        .categoriseTransactions(csvFiles);
+        .categoriseTransactions(csvFiles, reportSettings);
 
     if (categorisedTransactions.isEmpty) {
       return;
     }
-
-    final reportSettings = await _getReportSettings(context, ref);
 
     if (ref
         .read(reportsListViewModel.notifier)
@@ -134,7 +135,7 @@ class ReportsListScreen extends ConsumerWidget {
 
       categorisedTransactions = await ref
           .read(reportsListViewModel.notifier)
-          .categoriseTransactions(csvFiles);
+          .categoriseTransactions(csvFiles, reportSettings);
 
       categorisedTransactions = await _showAndEditCategorisedTransactions(
           categorisedTransactions, context);
@@ -155,7 +156,7 @@ class ReportsListScreen extends ConsumerWidget {
 
   Future<ReportSettings> _getReportSettings(
       BuildContext context, WidgetRef ref) async {
-    return await showTrDialog(context, ReportSettingsDialog());
+    return await showTrDialog(context, const ReportSettingsDialog());
   }
 
   Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
@@ -189,6 +190,8 @@ class ReportSettingsDialog extends ConsumerStatefulWidget {
 
 class _ReportSettingsDialogState extends ConsumerState<ReportSettingsDialog> {
   String selectedCurrencyId = 'USD';
+  DateTime? dateFrom;
+  DateTime? dateTo;
 
   @override
   Widget build(BuildContext context) {
@@ -219,12 +222,31 @@ class _ReportSettingsDialogState extends ConsumerState<ReportSettingsDialog> {
                   });
                 }
               }),
+          TrDateField(
+            label: 'Date from',
+            onSaved: (val) {
+              setState(() {
+                dateFrom = val;
+              });
+            },
+          ),
+          TrDateField(
+            label: 'Date to',
+            onSaved: (val) {
+              setState(() {
+                dateTo = val;
+              });
+            },
+          ),
           Row(
             children: [
               Expanded(
                 child: TrButton(
-                  onPressed: () => Navigator.of(context)
-                      .pop(ReportSettings(currencyId: selectedCurrencyId)),
+                  onPressed: () => Navigator.of(context).pop(ReportSettings(
+                    currencyId: selectedCurrencyId,
+                    fromDate: dateFrom,
+                    toDate: dateTo,
+                  )),
                   child: const Text('Done'),
                 ),
               ),

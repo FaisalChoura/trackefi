@@ -1,4 +1,10 @@
 class ReportSettings {
   String currencyId = '';
-  ReportSettings({required this.currencyId});
+  DateTime? fromDate;
+  DateTime? toDate;
+  ReportSettings({
+    required this.currencyId,
+    this.fromDate,
+    this.toDate,
+  });
 }

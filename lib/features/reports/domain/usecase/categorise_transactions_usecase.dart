@@ -1,6 +1,6 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
+import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -48,8 +48,11 @@ class CategoriseTransactionsUseCase {
             row[importSettings.fieldIndexes.amountField]);
       }
 
-      String formatedDate = _formatDate(
-          row[importSettings.fieldIndexes.dateField], importSettings);
+      String formatedDate = TrHelpers.formatDate(
+        row[importSettings.fieldIndexes.dateField],
+        importSettings.dateSeparator,
+        importSettings.dateFormat,
+      );
       bool isIncome = _transactionIsIncome(transactionAmount, importSettings);
 
       if (isIncome && transactionAmount > 0 ||
@@ -104,25 +107,6 @@ class CategoriseTransactionsUseCase {
       return double.parse(amount);
     } catch (e) {
       throw IncorrectAmountMappingException();
-    }
-  }
-
-  String _formatDate(String date, CsvImportSettings settings) {
-    try {
-      List<String> dateChunks = date.split(settings.dateSeparator);
-      String formatedDate = '';
-      if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
-        formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
-      } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
-        formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
-      } else if (settings.dateFormat == DateFormatEnum.yyyymmdd) {
-        formatedDate = "${dateChunks[0]}-${dateChunks[1]}-${dateChunks[2]}";
-      } else {
-        throw 'WrongDateFormat';
-      }
-      return formatedDate;
-    } catch (e) {
-      throw IncorrectDateFormatException();
     }
   }
 

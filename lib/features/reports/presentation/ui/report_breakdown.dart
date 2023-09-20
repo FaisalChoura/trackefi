@@ -233,7 +233,7 @@ class DailySpendLineGraph extends StatelessWidget {
               )
             ],
           ),
-          swapAnimationDuration: Duration(milliseconds: 150), // Optional
+          swapAnimationDuration: const Duration(milliseconds: 150), // Optional
           swapAnimationCurve: Curves.linear, // Optional
         ),
       ),
