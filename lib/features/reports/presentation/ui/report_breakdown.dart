@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/accordion.dart';
 import 'package:expense_categoriser/core/presentation/ui/card.dart';
@@ -18,7 +19,8 @@ class ReportBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO add list off all transactions with dates
+    final dateFrom = report.dateRangeFrom;
+    final dateTo = report.dateRangeTo;
     return SizedBox(
       height: 700,
       child: SingleChildScrollView(
@@ -66,6 +68,46 @@ class ReportBreakdown extends StatelessWidget {
                             style: const TextStyle(
                                 fontSize: 32, fontWeight: FontWeight.bold),
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 32,
+                  ),
+                  Expanded(
+                    child: TrCard(
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Created on',
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            TrHelpers.simpleDateFormatter(report.createdAt),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          if (dateTo != null && dateFrom != null)
+                            Column(
+                              children: [
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                const Text(
+                                  'Date Range',
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
                         ],
                       ),
                     ),

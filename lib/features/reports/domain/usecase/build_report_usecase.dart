@@ -6,6 +6,9 @@ import '../model/report.dart';
 class BuildReportUseCase {
   Report execute(List<ReportCategorySnapshot> categorisedTransactions,
       ReportSettings reportSettings) {
-    return Report(0, 0, categorisedTransactions);
+    final report = Report(0, 0, categorisedTransactions);
+    report.dateRangeFrom = reportSettings.fromDate;
+    report.dateRangeTo = reportSettings.toDate;
+    return report;
   }
 }

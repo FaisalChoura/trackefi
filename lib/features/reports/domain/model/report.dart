@@ -11,6 +11,8 @@ class Report {
   double expenses;
   late DateTime createdAt;
   List<ReportCategorySnapshot> categories;
+  DateTime? dateRangeFrom;
+  DateTime? dateRangeTo;
 
   Report(this.income, this.expenses, this.categories) {
     createdAt = DateTime.now();

@@ -1,5 +1,6 @@
 import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
 import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
+import 'package:intl/intl.dart';
 
 class TrHelpers {
   static String dateString(DateTime date) {
@@ -24,5 +25,11 @@ class TrHelpers {
     } catch (e) {
       throw IncorrectDateFormatException();
     }
+  }
+
+  static String simpleDateFormatter(DateTime date) {
+    final DateFormat formatter = DateFormat('yMMMMd');
+    final String formatted = formatter.format(date);
+    return formatted;
   }
 }
