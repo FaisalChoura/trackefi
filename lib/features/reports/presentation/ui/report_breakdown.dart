@@ -4,6 +4,7 @@ import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
 import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/accordion.dart';
 import 'package:expense_categoriser/core/presentation/ui/card.dart';
+import 'package:expense_categoriser/core/presentation/ui/label.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -242,23 +243,6 @@ class GroupedTransactionsByCategory extends StatelessWidget {
       );
     }
     return subItemList;
-  }
-}
-
-class TrLabel extends StatelessWidget {
-  final Widget child;
-  final Color color;
-  const TrLabel({super.key, required this.child, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: color,
-        ),
-        child: child);
   }
 }
 
