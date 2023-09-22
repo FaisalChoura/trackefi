@@ -42,7 +42,7 @@ class _TrAccordionState extends ConsumerState<TrAccordion> {
             );
           },
           body: SizedBox(
-            height: 300,
+            height: item.expandableHeight,
             child: ListView.builder(
                 itemCount: item.subItems.length,
                 itemBuilder: (context, i) {
@@ -61,11 +61,13 @@ class TrAccordionItem {
   Widget trailing;
   Widget leading;
   List<Widget> subItems;
+  double expandableHeight;
 
   TrAccordionItem(
       {required this.trailing,
       required this.leading,
       required this.subItems,
+      this.expandableHeight = 300,
       this.id = ''}) {
     id = id.isEmpty ? const Uuid().v4() : id;
   }

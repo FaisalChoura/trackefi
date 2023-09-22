@@ -171,6 +171,11 @@ class GroupedTransactionsByCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final populatedCategorySnapshots = categorySnapshots
+        .where(
+          (snapshot) => snapshot.transactions.isNotEmpty,
+        )
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -183,10 +188,13 @@ class GroupedTransactionsByCategory extends StatelessWidget {
         ),
         TrAccordion(
           // TODO clean up
-          items: generateItems(categorySnapshots).map((item) {
+          items: generateItems(populatedCategorySnapshots).map((item) {
             return TrAccordionItem(
                 id: item.categorySnapshot.id,
                 leading: Text(item.categorySnapshot.name),
+                expandableHeight: item.categorySnapshot.transactions.length > 10
+                    ? 300
+                    : (item.categorySnapshot.transactions.length + 1) * 30,
                 trailing: Wrap(
                   children: [
                     TrLabel(
