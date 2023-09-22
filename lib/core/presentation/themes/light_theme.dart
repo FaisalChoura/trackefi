@@ -11,6 +11,9 @@ class TColors {
   static const grey = Color(0xFFB8B8B8);
   static const lightGrey = Color(0xFFEFEFEF);
 
+  static const lightgreen = Color(0x486EB83D);
+  static const lightRed = Color(0x48E14414);
+
   static const Map<int, Color> color = {
     50: Color.fromRGBO(20, 204, 96, .1),
     100: Color.fromRGBO(20, 204, 96, .2),

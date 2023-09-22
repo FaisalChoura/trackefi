@@ -181,17 +181,31 @@ class GroupedTransactionsByCategory extends StatelessWidget {
           height: 8,
         ),
         TrAccordion(
+          // TODO clean up
           items: generateItems(categorySnapshots).map((item) {
             return TrAccordionItem(
                 id: item.categorySnapshot.id,
                 leading: Text(item.categorySnapshot.name),
                 trailing: Wrap(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: Text('- ${item.categorySnapshot.totalExpenses}'),
+                    TrLabel(
+                      color: TColors.lightRed,
+                      child: Text(
+                        '${item.categorySnapshot.totalExpenses * -1}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
                     ),
-                    Text('+ ${item.categorySnapshot.totalIncome}'),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    // TODO The more expensses the redded
+                    TrLabel(
+                      color: TColors.lightgreen,
+                      child: Text(
+                        '${item.categorySnapshot.totalIncome * -1}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
                   ],
                 ),
                 subItems: _generateCategotySubItems(
@@ -228,6 +242,23 @@ class GroupedTransactionsByCategory extends StatelessWidget {
       );
     }
     return subItemList;
+  }
+}
+
+class TrLabel extends StatelessWidget {
+  final Widget child;
+  final Color color;
+  const TrLabel({super.key, required this.child, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: color,
+        ),
+        child: child);
   }
 }
 

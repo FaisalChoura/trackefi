@@ -73,7 +73,7 @@ class ReportCategorySnapshot {
     }
 
     for (var transaction in incomeTransactions) {
-      totalIncome = transaction.amount + totalExpenses;
+      totalIncome = transaction.amount + totalIncome;
     }
 
     totalIncome = double.parse(totalIncome.toStringAsFixed(2));
