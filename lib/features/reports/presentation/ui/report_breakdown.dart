@@ -194,28 +194,40 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                     Text('+ ${item.categorySnapshot.totalIncome}'),
                   ],
                 ),
-                subItems: item.categorySnapshot.transactions
-                    .map(
-                      (transaction) => Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16.0, right: 16, top: 8, bottom: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                                width: 150,
-                                child: Text(transaction.name.toString())),
-                            Text(transaction.amount.toString()),
-                            Text(transaction.date.toString().split(' ')[0]),
-                          ],
-                        ),
-                      ),
-                    )
-                    .toList());
+                subItems: _generateCategotySubItems(
+                    item.categorySnapshot.transactions));
           }).toList(),
         ),
       ],
     );
+  }
+
+  List<Widget> _generateCategotySubItems(List<Transaction> transactions) {
+    final subItemList = <Widget>[];
+    for (var i = 0; i < transactions.length; i++) {
+      final transaction = transactions[i];
+      subItemList.add(
+        Container(
+          decoration: BoxDecoration(
+              color: i % 2 == 0 ? Colors.transparent : TColors.lightGrey),
+          padding:
+              const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+          child: SizedBox(
+            height: 30,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(width: 150, child: Text(transaction.name.toString())),
+                Text(TrHelpers.simpleDateFormatter(transaction.date)),
+                Text(transaction.amount.toString()),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    return subItemList;
   }
 }
 

@@ -9,6 +9,7 @@ class TColors {
   static const silver = Color(0xFFF5F5F5);
 
   static const grey = Color(0xFFB8B8B8);
+  static const lightGrey = Color(0xFFEFEFEF);
 
   static const Map<int, Color> color = {
     50: Color.fromRGBO(20, 204, 96, .1),
