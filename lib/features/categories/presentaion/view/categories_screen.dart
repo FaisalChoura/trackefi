@@ -159,6 +159,12 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
   final categoryKeywordController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final id = ref.watch(selectedCategoryId);
     ref.watch(categoriesViewModelStateNotifierProvider);
@@ -169,6 +175,9 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             final category = snapshot.data!;
+            currentColor = category.colorValues != null
+                ? category.colorValues!.toColor()
+                : currentColor;
             return Padding(
               padding: const EdgeInsets.only(
                   top: 36, left: 24, right: 24, bottom: 24),
@@ -286,20 +295,45 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
     return await showTrDialog<Color>(
           context,
           SizedBox(
-            height: 350,
+            height: 420,
             width: 650,
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Select Color',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close))
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
                 ColorPicker(
                   pickerColor: newSelectedColor,
                   onColorChanged: (color) {
                     newSelectedColor = color;
                   },
                 ),
-                MaterialButton(
-                    child: const Text('Select'),
-                    onPressed: () =>
-                        Navigator.of(context).pop(newSelectedColor))
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TrButton(
+                          child: const Text('Select'),
+                          onPressed: () =>
+                              Navigator.of(context).pop(newSelectedColor)),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
