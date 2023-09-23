@@ -9,6 +9,7 @@ class BuildReportUseCase {
     final report = Report(0, 0, categorisedTransactions);
     report.dateRangeFrom = reportSettings.fromDate;
     report.dateRangeTo = reportSettings.toDate;
+    report.currencyId = reportSettings.currencyId;
     return report;
   }
 }

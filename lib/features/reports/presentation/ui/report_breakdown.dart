@@ -43,10 +43,24 @@ class ReportBreakdown extends StatelessWidget {
                             const SizedBox(
                               height: 8,
                             ),
-                            Text(
-                              report.expenses.toString(),
-                              style: const TextStyle(
-                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  report.expenses.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  report.currencyId,
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -65,10 +79,24 @@ class ReportBreakdown extends StatelessWidget {
                             const SizedBox(
                               height: 8,
                             ),
-                            Text(
-                              report.income.toString(),
-                              style: const TextStyle(
-                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  report.income.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  report.currencyId,
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
                             ),
                           ],
                         ),

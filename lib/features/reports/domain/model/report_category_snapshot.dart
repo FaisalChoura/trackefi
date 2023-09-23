@@ -90,14 +90,14 @@ class Transaction {
   double amount;
   bool isIncome;
   String currencyId;
-  Transaction([
+  Transaction({
     this.name = '',
     this.amount = 0,
     String dateString = '1995-01-01',
     this.isIncome = false,
     this.currencyId = '',
     this.categorySnapshotId = '',
-  ]) {
+  }) {
     id = const Uuid().v4();
     date = DateTime.parse(dateString);
   }

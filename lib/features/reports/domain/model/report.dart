@@ -13,6 +13,7 @@ class Report {
   List<ReportCategorySnapshot> categories;
   DateTime? dateRangeFrom;
   DateTime? dateRangeTo;
+  String currencyId = '';
 
   Report(this.income, this.expenses, this.categories) {
     createdAt = DateTime.now();
