@@ -38,10 +38,12 @@ class AppMenu extends ConsumerWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.money_off_csred_outlined),
-                Text(
-                  'Trackefi',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text(
+                    'Trackefi',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
