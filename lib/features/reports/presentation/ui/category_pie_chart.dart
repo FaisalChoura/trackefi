@@ -74,20 +74,18 @@ class CategoriesPieChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Text(
+                  'Expenses by category',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(
                       Icons.close,
                       size: 20,
-                    )),
-                const SizedBox(
-                  width: 16,
-                ),
-                const Text(
-                  'Expenses by category',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                    ))
               ],
             ),
             Row(

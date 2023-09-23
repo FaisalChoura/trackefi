@@ -1,3 +1,4 @@
+import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
 import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
 import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
@@ -56,26 +57,24 @@ class SpendingPerTransactionList extends StatelessWidget {
     return showTrDialog(
       context,
       SizedBox(
-        height: 420,
+        height: 340,
         width: 600,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Text(
+                  'Expenses by transaction',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(
                       Icons.close,
                       size: 20,
-                    )),
-                const SizedBox(
-                  width: 16,
-                ),
-                const Text(
-                  'Expenses by transaction',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                    ))
               ],
             ),
             const SizedBox(
@@ -84,16 +83,20 @@ class SpendingPerTransactionList extends StatelessWidget {
             Column(
               children: [
                 SizedBox(
-                  height: 300,
+                  height: 280,
                   child: ListView.builder(
                       itemCount: groupedTransactionsMap.length,
                       itemBuilder: (context, i) {
                         final name = groupedTransactionsMap[i].key;
                         final amount = groupedTransactionsMap[i].value;
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
+                        return Container(
+                          decoration: BoxDecoration(
+                              color: i % 2 == 0
+                                  ? Colors.transparent
+                                  : TColors.lightGrey),
+                          padding: const EdgeInsets.all(8),
                           child: TrShortenedListItem(
-                              stringLength: name.length,
+                              stringLength: name.length + 1,
                               title: name,
                               trailing: Text(amount.toString())),
                         );
@@ -132,7 +135,7 @@ class TrShortenedListItem extends StatelessWidget {
 
     charCount = charCount > splitString.length ? splitString.length : charCount;
 
-    for (var i = 0; i < charCount - 1; i++) {
+    for (var i = 0; i < charCount; i++) {
       stringArray.add(splitString[i]);
     }
 
