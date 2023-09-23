@@ -29,91 +29,94 @@ class ReportBreakdown extends StatelessWidget {
           padding: const EdgeInsets.all(46),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Expenses',
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            report.expenses.toString(),
-                            style: const TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+              IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: TrCard(
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Expenses',
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              report.expenses.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 32,
-                  ),
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Income',
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            report.income.toString(),
-                            style: const TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    const SizedBox(
+                      width: 32,
+                    ),
+                    Expanded(
+                      child: TrCard(
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Income',
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              report.income.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 32,
-                  ),
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Created on',
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            TrHelpers.simpleDateFormatter(report.createdAt),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (dateTo != null && dateFrom != null)
-                            Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                const Text(
-                                  'Date Range',
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                        ],
+                    const SizedBox(
+                      width: 32,
+                    ),
+                    Expanded(
+                      child: TrCard(
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Created on',
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              TrHelpers.simpleDateFormatter(report.createdAt),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            if (dateTo != null && dateFrom != null)
+                              Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    'Date Range',
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 32,
