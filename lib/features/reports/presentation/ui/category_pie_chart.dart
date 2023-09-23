@@ -60,10 +60,15 @@ class CategoriesPieChart extends StatelessWidget {
 
   Future<dynamic> showMore(
       BuildContext context, List<ReportCategorySnapshot> sortedCategories) {
+    final filteredCategories = sortedCategories
+        .where(
+          (category) => category.totalExpenses > 0,
+        )
+        .toList();
     return showTrDialog(
       context,
       SizedBox(
-        height: 420,
+        height: 340,
         width: 600,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,41 +90,44 @@ class CategoriesPieChart extends StatelessWidget {
                 ),
               ],
             ),
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              SizedBox(
-                height: 300,
-                width: 300,
-                child: PieChart(
-                  PieChartData(
-                      centerSpaceRadius: 100,
-                      borderData: FlBorderData(show: false),
-                      sectionsSpace: 1,
-                      sections: _generateChartData(categories)),
-                ),
-              ),
-              const SizedBox(
-                width: 32,
-              ),
-              Column(
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (var i = 0; i < sortedCategories.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Indicator(
-                        color: sortedCategories[i].colorValues != null
-                            ? sortedCategories[i].colorValues!.toColor()
-                            : Colors.purple,
-                        text:
-                            "${sortedCategories[i].name}: ${sortedCategories[i].totalExpenses}",
-                        isSquare: false,
-                        size: 12,
-                      ),
+                  SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: PieChart(
+                      PieChartData(
+                          centerSpaceRadius: 100,
+                          borderData: FlBorderData(show: false),
+                          sectionsSpace: 1,
+                          sections: _generateChartData(categories)),
                     ),
-                ],
-              )
-            ]),
+                  ),
+                  const SizedBox(
+                    width: 32,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < filteredCategories.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Indicator(
+                            color: filteredCategories[i].colorValues != null
+                                ? filteredCategories[i].colorValues!.toColor()
+                                : Colors.purple,
+                            text:
+                                "${filteredCategories[i].name}: ${filteredCategories[i].totalExpenses}",
+                            isSquare: false,
+                            size: 12,
+                          ),
+                        ),
+                    ],
+                  )
+                ]),
           ],
         ),
       ),
