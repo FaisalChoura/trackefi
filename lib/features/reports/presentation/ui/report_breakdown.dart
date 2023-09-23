@@ -23,7 +23,7 @@ class ReportBreakdown extends StatelessWidget {
     final dateFrom = report.dateRangeFrom;
     final dateTo = report.dateRangeTo;
     return SizedBox(
-      height: 700,
+      height: 740,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(46),
