@@ -1,4 +1,4 @@
-# expense_categoriser
+# Trackefi
 
 ## Roadmap
 
@@ -17,10 +17,16 @@
 - ~~Update default import settings~~
 - ~~Multiple files~~
 - Fine tuning for alpha release
+  - ~~Reports page~~
+  - ~~Date range for report generation~~
+  - ~~Currency selection and conversion~~
+  - Add date info to report
+  - Edit category name
+- What transaction came from what file
+- Add default categories with default words
+- Create tags
+- Create rules
 - Report analytics
 - Export report
 - Search and filter reports
-- Create tags
-- Create rules
-- Implement design
 - Combine reports to generate bigger reports

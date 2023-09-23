@@ -1,6 +1,6 @@
-import 'package:expense_categoriser/features/reports/data/store/reports_list_store.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report.dart';
-import 'package:expense_categoriser/features/reports/domain/repository/reports_list_store_repository.dart';
+import 'package:Trackefi/features/reports/data/store/reports_list_store.dart';
+import 'package:Trackefi/features/reports/domain/model/report.dart';
+import 'package:Trackefi/features/reports/domain/repository/reports_list_store_repository.dart';
 
 class ReportsListStoreRepositoryImpl implements ReportsListStoreRepository {
   ReportsListStoreRepositoryImpl(this._store);

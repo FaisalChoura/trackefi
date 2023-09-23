@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
+import 'package:Trackefi/core/presentation/ui/select_field.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalListMapper<K, T> extends StatefulWidget {

@@ -1,4 +1,4 @@
-name: expense_categoriser
+name: Trackefi
 description: A new Flutter project.
 publish_to: "none"
 version: 0.1.0
@@ -14,10 +14,13 @@ dependencies:
     sdk: flutter
   flutter_colorpicker: ^1.0.3
   flutter_riverpod: ^2.3.6
+  http: ^1.1.0
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.0.14
   uuid: ^3.0.7
+  flutter_dotenv: ^5.1.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +33,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env

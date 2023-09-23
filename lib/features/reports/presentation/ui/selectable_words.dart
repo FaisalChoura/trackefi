@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
-import 'package:expense_categoriser/core/presentation/ui/button.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:flutter/material.dart';
 import '../../domain/model/selectable_word_item.dart';
 

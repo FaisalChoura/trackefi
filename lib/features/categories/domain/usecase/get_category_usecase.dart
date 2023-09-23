@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/features/categories/domain/model/category.dart';
-import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+import 'package:Trackefi/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/categories/domain/repository/categories_repository.dart';
 
 class GetCategoryUseCase {
   final CategoriesRepository _categoriesRepository;

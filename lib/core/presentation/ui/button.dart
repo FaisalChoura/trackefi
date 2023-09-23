@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/core/domain/enums/button_styles.dart';
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/domain/enums/button_styles.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 
 class TrButton extends StatelessWidget {

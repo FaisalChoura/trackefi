@@ -6,8 +6,13 @@ class TColors {
   static const accentGreen = Color(0xFF23FB67);
   static const gunmetal = Color(0xFF0A2E36);
   static const drakGreen = Color(0xFF036D19);
+  static const silver = Color(0xFFF5F5F5);
 
   static const grey = Color(0xFFB8B8B8);
+  static const lightGrey = Color(0xFFEFEFEF);
+
+  static const lightgreen = Color(0x486EB83D);
+  static const lightRed = Color(0x48E14414);
 
   static const Map<int, Color> color = {
     50: Color.fromRGBO(20, 204, 96, .1),
@@ -26,6 +31,7 @@ class TColors {
 }
 
 final lightTheme = ThemeData(
+    scaffoldBackgroundColor: TColors.silver,
     primarySwatch: TColors.materialGreen,
     hoverColor: const Color(0x1A14CC60),
     splashColor: const Color(0x4014CC60),

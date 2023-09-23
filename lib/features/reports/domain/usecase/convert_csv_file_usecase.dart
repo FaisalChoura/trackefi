@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:expense_categoriser/features/reports/domain/enum/csv_file_chunk_size_enum.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/reports/domain/enum/csv_file_chunk_size_enum.dart';
 
 import '../../../../core/domain/errors/exceptions.dart';
 

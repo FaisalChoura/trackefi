@@ -1,8 +1,8 @@
-import 'package:expense_categoriser/features/categories/domain/usecase/delete_category_usecase.dart';
-import 'package:expense_categoriser/features/categories/domain/usecase/get_all_categories_usecase.dart';
-import 'package:expense_categoriser/features/categories/domain/usecase/get_category_usecase.dart';
-import 'package:expense_categoriser/features/categories/domain/usecase/put_category_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
+import 'package:Trackefi/features/categories/domain/usecase/delete_category_usecase.dart';
+import 'package:Trackefi/features/categories/domain/usecase/get_all_categories_usecase.dart';
+import 'package:Trackefi/features/categories/domain/usecase/get_category_usecase.dart';
+import 'package:Trackefi/features/categories/domain/usecase/put_category_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/data_module.dart';

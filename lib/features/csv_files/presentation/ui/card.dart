@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 
 class TrCard extends StatelessWidget {
@@ -7,6 +7,7 @@ class TrCard extends StatelessWidget {
   final Widget? footer;
   const TrCard({super.key, this.header, this.body, this.footer});
 
+  // TODO remove this card
   @override
   Widget build(BuildContext context) {
     return Container(

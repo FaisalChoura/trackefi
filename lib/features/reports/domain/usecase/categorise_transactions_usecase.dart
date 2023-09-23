@@ -1,9 +1,9 @@
-import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
-import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
+import 'package:Trackefi/core/domain/helpers/helpers.dart';
+import 'package:Trackefi/features/categories/domain/repository/categories_repository.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 
 import '../../../csv_files/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';
@@ -48,15 +48,24 @@ class CategoriseTransactionsUseCase {
             row[importSettings.fieldIndexes.amountField]);
       }
 
-      String formatedDate = _formatDate(
-          row[importSettings.fieldIndexes.dateField], importSettings);
+      String formatedDate = TrHelpers.formatDate(
+        row[importSettings.fieldIndexes.dateField],
+        importSettings.dateSeparator,
+        importSettings.dateFormat,
+      );
       bool isIncome = _transactionIsIncome(transactionAmount, importSettings);
 
+      if (isIncome && transactionAmount > 0 ||
+          !isIncome && transactionAmount < 0) {
+        transactionAmount = transactionAmount * -1;
+      }
+
       Transaction transaction = Transaction(
-          row[importSettings.fieldIndexes.descriptionField],
-          transactionAmount,
-          formatedDate,
-          isIncome);
+          name: row[importSettings.fieldIndexes.descriptionField],
+          amount: transactionAmount,
+          dateString: formatedDate,
+          isIncome: isIncome,
+          currencyId: importSettings.currencyId);
 
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);
@@ -68,24 +77,17 @@ class CategoriseTransactionsUseCase {
       }
     }
 
-    // clears out empty categories
-    // for (var i = 0; i < categoriesMap.values.length; i++) {
-    //   final category = categoriesMap.values.toList()[i];
-    //   final key = categoriesMap.keys.toList()[i];
-    //   if (category.transactions.isEmpty) {
-    //     categoriesMap.remove(key);
-    //   }
-    // }
-
     return categoriesMap;
   }
 
   Category? _findCategory(String description) {
+    final cleanedDescription = description.replaceAll(RegExp(r'\s\s+'), ' ');
+
     Category? matchedCategory;
     num lastStrength = 0;
     for (var category in _categories) {
-      if (category.isPartOfCategory(description)) {
-        num newStrength = category.matchingStrength(description);
+      if (category.isPartOfCategory(cleanedDescription)) {
+        num newStrength = category.matchingStrength(cleanedDescription);
         if (newStrength > lastStrength) {
           matchedCategory = category;
           lastStrength = newStrength;
@@ -105,25 +107,6 @@ class CategoriseTransactionsUseCase {
       return double.parse(amount);
     } catch (e) {
       throw IncorrectAmountMappingException();
-    }
-  }
-
-  String _formatDate(String date, CsvImportSettings settings) {
-    try {
-      List<String> dateChunks = date.split(settings.dateSeparator);
-      String formatedDate = '';
-      if (settings.dateFormat == DateFormatEnum.ddmmyyyy) {
-        formatedDate = "${dateChunks[2]}-${dateChunks[1]}-${dateChunks[0]}";
-      } else if (settings.dateFormat == DateFormatEnum.mmddyyyy) {
-        formatedDate = "${dateChunks[2]}-${dateChunks[0]}-${dateChunks[1]}";
-      } else if (settings.dateFormat == DateFormatEnum.yyyymmdd) {
-        formatedDate = "${dateChunks[0]}-${dateChunks[1]}-${dateChunks[2]}";
-      } else {
-        throw 'WrongDateFormat';
-      }
-      return formatedDate;
-    } catch (e) {
-      throw IncorrectDateFormatException();
     }
   }
 

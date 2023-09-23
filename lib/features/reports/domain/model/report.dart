@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/features/categories/domain/model/category.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:isar/isar.dart';
 
 part 'report.g.dart';
@@ -11,6 +11,9 @@ class Report {
   double expenses;
   late DateTime createdAt;
   List<ReportCategorySnapshot> categories;
+  DateTime? dateRangeFrom;
+  DateTime? dateRangeTo;
+  String currencyId = '';
 
   Report(this.income, this.expenses, this.categories) {
     createdAt = DateTime.now();
@@ -18,6 +21,7 @@ class Report {
       final totalExpenses = categories
           .map((category) => category.totalExpenses)
           .reduce((value, element) => value + element);
+      // TODO create function for rounding
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
     }
   }

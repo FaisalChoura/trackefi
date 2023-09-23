@@ -1,18 +1,24 @@
-import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
-import 'package:expense_categoriser/features/categories/domain/domain_module.dart';
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
-import 'package:expense_categoriser/features/reports/domain/model/uncategories_row_data.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/build_report_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/categorise_transactions_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/get_all_reports_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/put_report_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/remove_report_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
+import 'package:Trackefi/core/domain/model/currency.dart';
+import 'package:Trackefi/features/categories/domain/domain_module.dart';
+import 'package:Trackefi/features/csv_files/domain/domain_module.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/csv_files/domain/usecase/get_currencies_usecase.dart';
+import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
+import 'package:Trackefi/features/reports/domain/model/report.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/report_settings.dart';
+import 'package:Trackefi/features/reports/domain/model/uncategories_row_data.dart';
+import 'package:Trackefi/features/reports/domain/usecase/build_report_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/categorise_transactions_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/convert_csv_file_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/convert_currency_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/filter_csv_data_by_date_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/get_all_reports_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
+import 'package:Trackefi/features/reports/domain/usecase/put_report_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/remove_report_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final reportsListViewModel =
@@ -27,7 +33,10 @@ final reportsListViewModel =
             ref.watch(categoriseTransactionsUseCaseProvider),
             ref.watch(updateCategoriesFromRowDataProvider),
             ref.watch(putReportUseCaseProvider),
-            ref.watch(moveTransactionBetweenCategorySnapshots)));
+            ref.watch(moveTransactionBetweenCategorySnapshots),
+            ref.watch(getCurrenciesUseCaseProvider),
+            ref.watch(convertCurrencyUseCaseProvider),
+            ref.watch(filterCsvDataByDate)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
@@ -38,7 +47,10 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       this._categoriseTransactionsUseCase,
       this._updateCategoriesFromRowData,
       this._putReportUseCase,
-      this._moveTransactionBetweenCategorySnapshots)
+      this._moveTransactionBetweenCategorySnapshots,
+      this._getCurrenciesUseCase,
+      this._convertCurrencyUseCase,
+      this._filterCsvDataByDateUseCase)
       : super(const AsyncValue.data([])) {
     getList();
   }
@@ -52,6 +64,9 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   final PutReportUseCase _putReportUseCase;
   final MoveTransactionBetweenCategorySnapshots
       _moveTransactionBetweenCategorySnapshots;
+  final GetCurrenciesUseCase _getCurrenciesUseCase;
+  final ConvertCurrencyUseCase _convertCurrencyUseCase;
+  final FilterCsvDataByDateUseCase _filterCsvDataByDateUseCase;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -63,12 +78,47 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
     _removeReportUseCase.execute(id);
   }
 
-  Report buildReport(List<ReportCategorySnapshot> categorisedTransactions) {
-    return _buildReportUseCase.execute(categorisedTransactions);
+  Report buildReport(List<ReportCategorySnapshot> categorisedTransactions,
+      ReportSettings reportSettings) {
+    return _buildReportUseCase.execute(categorisedTransactions, reportSettings);
+  }
+
+  Future<List<ReportCategorySnapshot>> unifyTransactionCurrencies(
+      List<ReportCategorySnapshot> categorisedTransactions,
+      String toCurrencyId) async {
+    // TODO optimise
+    for (var snapshot in categorisedTransactions) {
+      for (var i = 0; i < snapshot.expensesTransactions.length; i++) {
+        final transaction = snapshot.expensesTransactions[i];
+        if (transaction.currencyId != toCurrencyId) {
+          // TODO add currency to income
+          final conversion = await _convertCurrencyUseCase.execute(
+              transaction.currencyId, toCurrencyId);
+          transaction.amount = double.parse(
+              (transaction.amount * conversion.val).toStringAsFixed(2));
+          transaction.currencyId = toCurrencyId;
+          snapshot.expensesTransactions[i] = transaction;
+        }
+      }
+
+      for (var i = 0; i < snapshot.incomeTransactions.length; i++) {
+        final transaction = snapshot.incomeTransactions[i];
+        if (transaction.currencyId != toCurrencyId) {
+          final conversion = await _convertCurrencyUseCase.execute(
+              transaction.currencyId, toCurrencyId);
+          transaction.amount = double.parse(
+              (transaction.amount * conversion.val).toStringAsFixed(2));
+          transaction.currencyId = toCurrencyId;
+          snapshot.incomeTransactions[i] = transaction;
+        }
+      }
+      snapshot.recalculate();
+    }
+    return categorisedTransactions;
   }
 
   Future<List<ReportCategorySnapshot>> categoriseTransactions(
-      List<CsvFileData> filesData) async {
+      List<CsvFileData> filesData, ReportSettings reportSettings) async {
     try {
       final filesList = await _convertCsvFileUseCase.execute(filesData);
       if (filesList.isEmpty) {
@@ -83,8 +133,14 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       List<Map<String, ReportCategorySnapshot>> categorySnapshots = [];
 
       for (var i = 0; i < filesData.length; i++) {
+        final csvData = _filterCsvDataByDateUseCase.execute(
+            filesList[i]!, filesData[i].importSettings, reportSettings);
+        // TODO Handle this case with an error box
+        if (csvData.isEmpty) {
+          return [];
+        }
         final categoriesMap = await _categoriseTransactionsUseCase.execute(
-            filesList[i]!, filesData[i].importSettings);
+            csvData, filesData[i].importSettings);
         categorySnapshots.add(categoriesMap);
       }
 
@@ -113,6 +169,10 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
         ? categorisedTransactions[0].expensesTransactions.isNotEmpty ||
             categorisedTransactions[0].incomeTransactions.isNotEmpty
         : false;
+  }
+
+  List<Currency> getCurrencies() {
+    return _getCurrenciesUseCase.execute();
   }
 
   Future<void> updateCategoriesFromRowData(

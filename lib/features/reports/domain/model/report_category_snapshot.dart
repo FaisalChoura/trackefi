@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -63,6 +63,22 @@ class ReportCategorySnapshot {
     totalIncome = totalIncome + mergedCategorySnapshot.totalIncome;
     totalExpenses = totalExpenses + mergedCategorySnapshot.totalExpenses;
   }
+
+  void recalculate() {
+    totalExpenses = 0;
+    totalIncome = 0;
+
+    for (var transaction in expensesTransactions) {
+      totalExpenses = transaction.amount + totalExpenses;
+    }
+
+    for (var transaction in incomeTransactions) {
+      totalIncome = transaction.amount + totalIncome;
+    }
+
+    totalIncome = double.parse(totalIncome.toStringAsFixed(2));
+    totalExpenses = double.parse(totalExpenses.toStringAsFixed(2));
+  }
 }
 
 @embedded
@@ -73,13 +89,15 @@ class Transaction {
   late DateTime date;
   double amount;
   bool isIncome;
-  Transaction([
+  String currencyId;
+  Transaction({
     this.name = '',
     this.amount = 0,
     String dateString = '1995-01-01',
     this.isIncome = false,
+    this.currencyId = '',
     this.categorySnapshotId = '',
-  ]) {
+  }) {
     id = const Uuid().v4();
     date = DateTime.parse(dateString);
   }

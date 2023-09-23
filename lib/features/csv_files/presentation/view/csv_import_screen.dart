@@ -1,19 +1,20 @@
-import 'package:expense_categoriser/core/domain/enums/button_styles.dart';
-import 'package:expense_categoriser/core/domain/extensions/async_value_error_extension.dart';
-import 'package:expense_categoriser/core/domain/extensions/reverse_map_extension.dart';
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
-import 'package:expense_categoriser/core/presentation/ui/button.dart';
-import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
-import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
-import 'package:expense_categoriser/features/csv_files/data/data_module.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:expense_categoriser/features/csv_files/domain/model/import_settings.dart';
-import 'package:expense_categoriser/features/csv_files/presentation/ui/card.dart';
-import 'package:expense_categoriser/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
-import 'package:expense_categoriser/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
+import 'package:Trackefi/core/domain/enums/button_styles.dart';
+import 'package:Trackefi/core/domain/extensions/async_value_error_extension.dart';
+import 'package:Trackefi/core/domain/extensions/reverse_map_extension.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/core/presentation/ui/dialog.dart';
+import 'package:Trackefi/core/presentation/ui/select_field.dart';
+import 'package:Trackefi/core/presentation/ui/text_field.dart';
+import 'package:Trackefi/features/csv_files/data/data_module.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/csv_files/domain/model/import_settings.dart';
+import 'package:Trackefi/features/csv_files/presentation/ui/card.dart';
+import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
+import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -165,17 +166,11 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
   }
 
   Future<CsvFileData> _openImportSettingsDialog(CsvFileData filesData) async {
-    return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: CsvImportsSettingsDialog(
-                fileData: filesData,
-              ),
-            );
-          },
-        ) ??
-        [];
+    return await showTrDialog(
+        context,
+        CsvImportsSettingsDialog(
+          fileData: filesData,
+        ));
   }
 }
 
@@ -198,6 +193,7 @@ class _CsvImportsSettingsDialogState
   TextEditingController dateSeparatorController = TextEditingController();
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
+  String selectedCurrencyId = 'USD';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -215,16 +211,20 @@ class _CsvImportsSettingsDialogState
     expenseSign = importSettings.expenseSign;
     dateFormat = importSettings.dateFormat;
     fieldIndexes = importSettings.fieldIndexes;
+    selectedCurrencyId = importSettings.currencyId.isEmpty
+        ? selectedCurrencyId
+        : importSettings.currencyId;
   }
 
   @override
   Widget build(BuildContext context) {
+    final currencyList =
+        ref.read(csvFilesViewModelProvider.notifier).getCurrencies();
     final fileData = widget.fileData;
 
-    return Container(
+    return SizedBox(
       height: 500,
       width: 1300,
-      padding: const EdgeInsets.all(24.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -242,6 +242,7 @@ class _CsvImportsSettingsDialogState
                     ),
                   ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(
                         flex: 1,
@@ -288,6 +289,30 @@ class _CsvImportsSettingsDialogState
                           },
                         ),
                       ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Flexible(
+                          flex: 1,
+                          child: TrSelectField(
+                              label: 'Currency',
+                              value: selectedCurrencyId,
+                              items: currencyList
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.id),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedCurrencyId = value;
+                                    fileData.importSettings.currencyId = value;
+                                  });
+                                }
+                              })),
                     ],
                   ),
                   Row(
@@ -484,17 +509,17 @@ class _CsvImportsSettingsDialogState
                         child: const Text('Done'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            final importSettings = CsvImportSettings();
-                            importSettings.fieldIndexes = fieldIndexes;
-                            importSettings.fieldDelimiter =
-                                fieldDelimiterController.text;
-                            importSettings.numberStyle = numberingStyle;
-                            importSettings.dateFormat = dateFormat;
-                            importSettings.dateSeparator =
-                                dateSeparatorController.text;
-                            importSettings.expenseSign = expenseSign;
-                            Navigator.of(context).pop(
-                                CsvFileData(fileData.file, importSettings));
+                            // final importSettings = CsvImportSettings();
+                            fileData.importSettings.fieldIndexes = fieldIndexes;
+                            // importSettings.fieldDelimiter =
+                            //     fieldDelimiterController.text;
+                            // importSettings.numberStyle = numberingStyle;
+                            // importSettings.dateFormat = dateFormat;
+                            // importSettings.dateSeparator =
+                            //     dateSeparatorController.text;
+                            // importSettings.expenseSign = expenseSign;
+                            Navigator.of(context).pop(CsvFileData(
+                                fileData.file, fileData.importSettings));
                           }
                         }),
                   ),
