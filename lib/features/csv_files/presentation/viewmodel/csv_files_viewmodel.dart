@@ -1,14 +1,14 @@
-import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
-import 'package:expense_categoriser/core/domain/model/currency.dart';
-import 'package:expense_categoriser/features/csv_files/domain/domain_module.dart';
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:expense_categoriser/features/csv_files/domain/usecase/get_currencies_usecase.dart';
-import 'package:expense_categoriser/features/csv_files/domain/usecase/import_files_usecase.dart';
-import 'package:expense_categoriser/features/csv_files/domain/usecase/remove_file_usecase.dart';
-import 'package:expense_categoriser/features/csv_files/domain/usecase/update_file_usecase.dart';
-import 'package:expense_categoriser/features/reports/domain/domain_modulde.dart';
-import 'package:expense_categoriser/features/reports/domain/enum/csv_file_chunk_size_enum.dart';
-import 'package:expense_categoriser/features/reports/domain/usecase/convert_csv_file_usecase.dart';
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
+import 'package:Trackefi/core/domain/model/currency.dart';
+import 'package:Trackefi/features/csv_files/domain/domain_module.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/csv_files/domain/usecase/get_currencies_usecase.dart';
+import 'package:Trackefi/features/csv_files/domain/usecase/import_files_usecase.dart';
+import 'package:Trackefi/features/csv_files/domain/usecase/remove_file_usecase.dart';
+import 'package:Trackefi/features/csv_files/domain/usecase/update_file_usecase.dart';
+import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
+import 'package:Trackefi/features/reports/domain/enum/csv_file_chunk_size_enum.dart';
+import 'package:Trackefi/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

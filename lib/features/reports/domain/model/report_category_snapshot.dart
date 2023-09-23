@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 

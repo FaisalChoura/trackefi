@@ -1,4 +1,4 @@
-package com.example.expense_categoriser
+package com.example.Trackefi
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:expense_categoriser/core/data/store/currencies_map.dart';
+import 'package:Trackefi/core/data/store/currencies_map.dart';
 import 'package:http/http.dart' as http;
-import 'package:expense_categoriser/core/domain/model/currency.dart';
-import 'package:expense_categoriser/core/domain/model/currency_conversion.dart';
-import 'package:expense_categoriser/core/domain/repository/currency_data_repository.dart';
+import 'package:Trackefi/core/domain/model/currency.dart';
+import 'package:Trackefi/core/domain/model/currency_conversion.dart';
+import 'package:Trackefi/core/domain/repository/currency_data_repository.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CurrencyDataRepositoryImpl implements CurrencyDataRepository {

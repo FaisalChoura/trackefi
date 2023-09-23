@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CsvFilesStore extends StateNotifier<List<CsvFileData>> {

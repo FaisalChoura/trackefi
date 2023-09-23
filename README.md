@@ -1,4 +1,4 @@
-# expense_categoriser
+# Trackefi
 
 ## Roadmap
 

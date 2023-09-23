@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/domain/model/currency_conversion.dart';
+import 'package:Trackefi/core/domain/model/currency_conversion.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CurrenciesMapStore

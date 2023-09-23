@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/features/categories/domain/model/category.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:isar/isar.dart';
 
 part 'report.g.dart';

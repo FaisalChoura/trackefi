@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
+import 'package:Trackefi/features/categories/domain/repository/categories_repository.dart';
 
 import '../model/uncategories_row_data.dart';
 import '../../../categories/domain/model/category.dart';

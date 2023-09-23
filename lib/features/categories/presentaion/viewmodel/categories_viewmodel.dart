@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/categories/domain/domain_module.dart';
+import 'package:Trackefi/features/categories/domain/domain_module.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/category.dart';

@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/core/domain/errors/error_object.dart';
-import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
+import 'package:Trackefi/core/domain/errors/error_object.dart';
+import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/core/domain/model/currency.dart';
-import 'package:expense_categoriser/core/domain/repository/currency_data_repository.dart';
+import 'package:Trackefi/core/domain/model/currency.dart';
+import 'package:Trackefi/core/domain/repository/currency_data_repository.dart';
 
 class GetCurrenciesUseCase {
   final CurrencyDataRepository _currencyDataRepository;

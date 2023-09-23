@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/reports/domain/model/report.dart';
+import 'package:Trackefi/features/reports/domain/model/report.dart';
 
 abstract class ReportsRepository {
   Future<Report?> putReport(Report category);

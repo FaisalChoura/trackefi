@@ -1,7 +1,7 @@
-import 'package:expense_categoriser/core/presentation/ui/button.dart';
-import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
-import 'package:expense_categoriser/core/presentation/ui/text_field.dart';
-import 'package:expense_categoriser/features/categories/presentaion/ui/tag.dart';
+import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/core/presentation/ui/dialog.dart';
+import 'package:Trackefi/core/presentation/ui/text_field.dart';
+import 'package:Trackefi/features/categories/presentaion/ui/tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

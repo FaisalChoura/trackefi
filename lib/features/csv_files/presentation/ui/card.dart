@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 
 class TrCard extends StatelessWidget {

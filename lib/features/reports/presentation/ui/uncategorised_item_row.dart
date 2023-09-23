@@ -1,5 +1,5 @@
-import 'package:expense_categoriser/core/presentation/ui/select_field.dart';
-import 'package:expense_categoriser/features/reports/presentation/ui/selectable_words.dart';
+import 'package:Trackefi/core/presentation/ui/select_field.dart';
+import 'package:Trackefi/features/reports/presentation/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

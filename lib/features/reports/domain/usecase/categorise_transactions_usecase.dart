@@ -1,9 +1,9 @@
-import 'package:expense_categoriser/core/domain/errors/exceptions.dart';
-import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
-import 'package:expense_categoriser/features/categories/domain/repository/categories_repository.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
+import 'package:Trackefi/core/domain/helpers/helpers.dart';
+import 'package:Trackefi/features/categories/domain/repository/categories_repository.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 
 import '../../../csv_files/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';

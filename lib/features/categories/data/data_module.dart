@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/core/data/database/database_manager.dart';
+import 'package:Trackefi/core/data/database/database_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/repository/categories_repository.dart';

@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/csv_files/domain/model/csv_file_data.dart';
+import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 
 import '../../domain/repository/csv_files_repository.dart';
 import '../store/csv_files_store.dart';

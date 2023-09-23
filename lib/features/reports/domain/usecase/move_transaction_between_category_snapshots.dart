@@ -1,4 +1,4 @@
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 
 class MoveTransactionBetweenCategorySnapshots {
   List<ReportCategorySnapshot> execute(

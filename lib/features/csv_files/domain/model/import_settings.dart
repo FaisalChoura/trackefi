@@ -1,6 +1,6 @@
-import 'package:expense_categoriser/features/csv_files/domain/enum/date_format.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/expense_sign.dart';
-import 'package:expense_categoriser/features/csv_files/domain/enum/numbering_style.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
+import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
 
 class CsvImportSettings {
   String fieldDelimiter = ',';

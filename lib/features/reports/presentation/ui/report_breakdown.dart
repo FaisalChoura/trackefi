@@ -1,16 +1,16 @@
 import 'dart:collection';
 
-import 'package:expense_categoriser/core/domain/helpers/helpers.dart';
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
-import 'package:expense_categoriser/core/presentation/ui/accordion.dart';
-import 'package:expense_categoriser/core/presentation/ui/card.dart';
-import 'package:expense_categoriser/core/presentation/ui/label.dart';
-import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
-import 'package:expense_categoriser/features/reports/presentation/ui/category_pie_chart.dart';
-import 'package:expense_categoriser/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
-import 'package:expense_categoriser/features/reports/presentation/ui/spending_per_transaction.dart';
+import 'package:Trackefi/core/domain/helpers/helpers.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/ui/accordion.dart';
+import 'package:Trackefi/core/presentation/ui/card.dart';
+import 'package:Trackefi/core/presentation/ui/label.dart';
+import 'package:Trackefi/features/csv_files/presentation/ui/extra_info_card.dart';
+import 'package:Trackefi/features/reports/domain/model/report.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/presentation/ui/category_pie_chart.dart';
+import 'package:Trackefi/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
+import 'package:Trackefi/features/reports/presentation/ui/spending_per_transaction.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 

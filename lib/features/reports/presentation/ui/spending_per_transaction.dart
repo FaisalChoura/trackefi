@@ -1,7 +1,7 @@
-import 'package:expense_categoriser/core/presentation/themes/light_theme.dart';
-import 'package:expense_categoriser/core/presentation/ui/dialog.dart';
-import 'package:expense_categoriser/features/csv_files/presentation/ui/extra_info_card.dart';
-import 'package:expense_categoriser/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/core/presentation/ui/dialog.dart';
+import 'package:Trackefi/features/csv_files/presentation/ui/extra_info_card.dart';
+import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:flutter/material.dart';
 
 class SpendingPerTransactionList extends StatelessWidget {
