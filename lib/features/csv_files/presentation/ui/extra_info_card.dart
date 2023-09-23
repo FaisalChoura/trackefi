@@ -6,14 +6,15 @@ class TrExtraInfoCard extends StatelessWidget {
       {super.key,
       required this.title,
       required this.child,
-      required this.onButtonClick});
+      this.onButtonClick});
 
   final String title;
   final Widget child;
-  final VoidCallback onButtonClick;
+  final VoidCallback? onButtonClick;
 
   @override
   Widget build(BuildContext context) {
+    final text = onButtonClick != null ? 'View all' : '';
     return SizedBox(
         height: 250,
         width: 420,
@@ -26,8 +27,7 @@ class TrExtraInfoCard extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              TextButton(
-                  onPressed: onButtonClick, child: const Text('View all'))
+              TextButton(onPressed: onButtonClick, child: Text(text))
             ],
           ),
           const SizedBox(

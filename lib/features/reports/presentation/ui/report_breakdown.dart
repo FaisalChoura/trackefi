@@ -293,11 +293,32 @@ class DailySpendLineGraph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TrExtraInfoCard(
-      onButtonClick: () {},
       title: 'Daily spend',
       child: SizedBox(
         child: LineChart(
           LineChartData(
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipItems: (touchedSpots) {
+                  return touchedSpots.map((spot) {
+                    return LineTooltipItem(
+                        '${spot.y} \n',
+                        const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "Date: ${_getDateFromMap(spot.x)}",
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10),
+                          ),
+                        ],
+                        textAlign: TextAlign.right);
+                  }).toList();
+                },
+              ),
+            ),
             gridData: FlGridData(show: false),
             titlesData: FlTitlesData(
               show: true,
@@ -332,13 +353,13 @@ class DailySpendLineGraph extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                color: TColors.accentGreen,
-                dotData: FlDotData(
-                  show: false,
-                ),
-                spots: generateLineSpots(_groupTransactionsByDateMap()),
-                isCurved: true,
-              )
+                  color: TColors.accentGreen,
+                  dotData: FlDotData(
+                    show: false,
+                  ),
+                  spots: generateLineSpots(_groupTransactionsByDateMap()),
+                  isCurved: true,
+                  preventCurveOverShooting: true)
             ],
           ),
           swapAnimationDuration: const Duration(milliseconds: 150), // Optional
@@ -354,6 +375,14 @@ class DailySpendLineGraph extends StatelessWidget {
       list.add(FlSpot(i.toDouble(), map.values.toList()[i]));
     }
     return list;
+  }
+
+  String _getDateFromMap(double value) {
+    final dates = _groupTransactionsByDateMap().keys.toList();
+
+    final splitDate = dates[value.toInt()].split('-');
+    final shortDate = "${splitDate[1]}/${splitDate[2]}";
+    return shortDate;
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
