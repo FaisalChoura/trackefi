@@ -23,6 +23,12 @@ class Report {
           .reduce((value, element) => value + element);
       // TODO create function for rounding
       expenses = double.parse(totalExpenses.toStringAsFixed(2));
+
+      final totalIncome = categories
+          .map((category) => category.totalIncome)
+          .reduce((value, element) => value + element);
+      // TODO create function for rounding
+      income = double.parse(totalIncome.toStringAsFixed(2));
     }
   }
 
