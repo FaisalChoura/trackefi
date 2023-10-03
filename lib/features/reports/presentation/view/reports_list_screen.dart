@@ -294,7 +294,7 @@ class ReportBreakdownScreen extends ConsumerWidget {
               children: [
                 ReportBreakdown(report: report),
                 report.id < 0
-                    ? MaterialButton(
+                    ? TrButton(
                         child: const Text('Save Report'),
                         onPressed: () => ref
                             .read(reportsListViewModel.notifier)
