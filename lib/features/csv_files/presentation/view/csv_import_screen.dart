@@ -214,6 +214,8 @@ class _CsvImportsSettingsDialogState
     selectedCurrencyId = importSettings.currencyId.isEmpty
         ? selectedCurrencyId
         : importSettings.currencyId;
+
+    widget.fileData.importSettings.currencyId = selectedCurrencyId;
   }
 
   @override
