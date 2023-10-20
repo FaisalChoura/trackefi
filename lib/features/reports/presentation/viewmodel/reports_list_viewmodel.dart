@@ -177,7 +177,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
 
   Future<void> updateCategoriesFromRowData(
       List<UncategorisedRowData> values) async {
-    _updateCategoriesFromRowData.execute(values);
+    await _updateCategoriesFromRowData.execute(values);
   }
 
   Future<void> putReport(Report report) async {
