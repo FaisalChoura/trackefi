@@ -139,10 +139,17 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _loadFile(),
-        child: const Icon(Icons.upload_file_outlined),
-      ),
+      floatingActionButton: TrButton(
+          onPressed: () => _loadFile(),
+          child: const Wrap(
+            children: [
+              Icon(Icons.upload_file_outlined),
+              SizedBox(
+                width: 8,
+              ),
+              Text('Import'),
+            ],
+          )),
     );
   }
 

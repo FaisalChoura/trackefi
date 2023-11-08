@@ -34,8 +34,11 @@ class ReportsListScreen extends ConsumerWidget {
     return Scaffold(
       floatingActionButton: TrButton(
         onPressed: () => _generateReport(csvFiles, context, ref),
-        child: const Wrap(children: [
+        child: const Wrap(alignment: WrapAlignment.center, children: [
           Icon(Icons.refresh),
+          SizedBox(
+            width: 8,
+          ),
           Text('Generate'),
         ]),
       ),
