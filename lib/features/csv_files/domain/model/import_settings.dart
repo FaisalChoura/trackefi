@@ -11,6 +11,7 @@ class CsvImportSettings {
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String currencyId = '';
+  bool excludeIncome = false;
 }
 
 class FieldIndexes {

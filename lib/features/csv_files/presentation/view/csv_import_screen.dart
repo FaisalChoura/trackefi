@@ -201,6 +201,7 @@ class _CsvImportsSettingsDialogState
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String selectedCurrencyId = 'USD';
+  bool excludeIncome = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -223,6 +224,7 @@ class _CsvImportsSettingsDialogState
         : importSettings.currencyId;
 
     widget.fileData.importSettings.currencyId = selectedCurrencyId;
+    excludeIncome = importSettings.excludeIncome;
   }
 
   @override
@@ -409,7 +411,23 @@ class _CsvImportsSettingsDialogState
                                   });
                                 }
                               }),
-                        )
+                        ),
+                        Flexible(
+                            flex: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Checkbox(
+                                  value: excludeIncome,
+                                  onChanged: (bool? value) => setState(() {
+                                    excludeIncome = value!;
+                                    fileData.importSettings.excludeIncome =
+                                        value;
+                                  }),
+                                ),
+                                const Text('Exclude Income'),
+                              ],
+                            ))
                       ]),
                   FutureBuilder(
                       future: ref
