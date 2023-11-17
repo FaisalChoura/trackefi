@@ -274,7 +274,20 @@ class GroupedTransactionsByCategory extends StatelessWidget {
               children: [
                 SizedBox(width: 150, child: Text(transaction.name.toString())),
                 Text(TrHelpers.simpleDateFormatter(transaction.date)),
-                Text(transaction.amount.toString()),
+                Wrap(
+                  children: [
+                    Text(transaction.amount.toString()),
+                    PopupMenuButton(
+                      itemBuilder: ((context) => [
+                            PopupMenuItem(
+                              value: 'Remove',
+                              child: Text('Remove'),
+                              onTap: () => print('s'),
+                            ),
+                          ]),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
