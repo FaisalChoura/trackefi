@@ -5,6 +5,8 @@ import 'package:Trackefi/features/reports/data/repository/reports_repository_imp
 import 'package:Trackefi/features/reports/data/repository/selected_report_repository_impl.dart';
 import 'package:Trackefi/features/reports/data/store/reports_list_store.dart';
 import 'package:Trackefi/features/reports/data/store/selected_report_store.dart';
+import 'package:Trackefi/features/reports/data/store/selected_report_transaction_events.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction_event.dart';
 import 'package:Trackefi/features/reports/domain/repository/reports_list_store_repository.dart';
 import 'package:Trackefi/features/reports/domain/repository/reports_repositry.dart';
 import 'package:Trackefi/features/reports/domain/repository/selected_report_store_repository.dart';
@@ -34,3 +36,8 @@ final selectedReportStoreRepositoryProvider =
     Provider<SelectedReportStoreRepository>((ref) =>
         SelectedReportRepositoryImpl(
             ref.watch(selectedReportStoreProvider.notifier)));
+
+final selectedReportTransactionEvents = NotifierProvider<
+    SelectedReportTransactionEventsStore, List<TransactionEvent>>(() {
+  return SelectedReportTransactionEventsStore();
+});
