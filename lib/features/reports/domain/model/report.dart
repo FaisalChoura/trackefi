@@ -14,7 +14,7 @@ class Report {
   DateTime? dateRangeFrom;
   DateTime? dateRangeTo;
   String currencyId = '';
-
+  // TODO remove income and expenses from inputs
   Report(this.income, this.expenses, this.categories) {
     createdAt = DateTime.now();
     if (categories.isNotEmpty) {
