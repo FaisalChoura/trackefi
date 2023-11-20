@@ -29,7 +29,7 @@ class ReportsListScreen extends ConsumerWidget {
       reportsListViewModel,
       (_, state) => state.showDialogOnError(context),
     );
-
+    // TODO create base page
     return Scaffold(
       floatingActionButton: TrButton(
         onPressed: () => _generateReport(csvFiles, context, ref),
