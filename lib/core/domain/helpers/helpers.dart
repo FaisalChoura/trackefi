@@ -32,4 +32,8 @@ class TrHelpers {
     final String formatted = formatter.format(date);
     return formatted;
   }
+
+  static double round(num number, int decimals) {
+    return double.parse(number.toStringAsFixed(decimals));
+  }
 }
