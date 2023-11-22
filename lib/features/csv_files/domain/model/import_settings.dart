@@ -1,19 +1,29 @@
 import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
+import 'package:isar/isar.dart';
 
+part 'import_settings.g.dart';
+
+@collection
 class CsvImportSettings {
+  Id id = Isar.autoIncrement;
   String fieldDelimiter = ',';
   String endOfLine = '\n';
+  @enumerated
   NumberingStyle numberStyle = NumberingStyle.eu;
+  @enumerated
   DateFormatEnum dateFormat = DateFormatEnum.ddmmyyyy;
   String dateSeparator = '/'; // field needs to be parsed
+  @enumerated
   FieldIndexes fieldIndexes = FieldIndexes();
+  @enumerated
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String currencyId = '';
   bool excludeIncome = false;
 }
 
+@embedded
 class FieldIndexes {
   int dateField = 0;
   int amountField = 1;
