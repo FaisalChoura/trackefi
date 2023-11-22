@@ -1,5 +1,5 @@
 import 'package:Trackefi/features/reports/presentation/view/reports_list_screen.dart';
-import 'package:Trackefi/features/settings/presentation/settings_list_screen.dart';
+import 'package:Trackefi/features/settings/presentation/view/settings_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/categories/presentaion/view/categories_screen.dart';

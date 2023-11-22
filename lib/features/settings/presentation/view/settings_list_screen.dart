@@ -1,4 +1,4 @@
-import 'package:Trackefi/features/settings/presentation/import_settings_screen.dart';
+import 'package:Trackefi/features/settings/presentation/view/import_settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class SettingsListScreen extends StatelessWidget {
