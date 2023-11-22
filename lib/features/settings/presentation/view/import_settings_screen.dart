@@ -1,14 +1,20 @@
 import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
+import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ImportSettingsScreen extends StatelessWidget {
+class ImportSettingsScreen extends ConsumerWidget {
   const ImportSettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(importSettingsViewModelProvider.notifier);
     return Scaffold(
       floatingActionButton: TrButton(
-          onPressed: () {},
+          onPressed: () {
+            // openImportSettingsDialog(context, null)
+          },
           child: const Wrap(
             children: [
               Icon(Icons.add),
@@ -46,9 +52,27 @@ class ImportSettingsScreen extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            Expanded(
-              child: ListView(children: []),
-            ),
+            FutureBuilder(
+                future: viewModel.getImportSettings(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return Expanded(
+                      child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final importListItem = snapshot.data![index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ListTile(
+                                title: Text(importListItem.currencyId),
+                              ),
+                            );
+                          }),
+                    );
+                  } else {
+                    return Container();
+                  }
+                })
           ],
         ),
       ),
