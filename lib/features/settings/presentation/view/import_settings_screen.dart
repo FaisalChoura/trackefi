@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:flutter/material.dart';
 
 class ImportSettingsScreen extends StatelessWidget {
@@ -6,6 +7,17 @@ class ImportSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: TrButton(
+          onPressed: () {},
+          child: const Wrap(
+            children: [
+              Icon(Icons.add),
+              SizedBox(
+                width: 8,
+              ),
+              Text('Add'),
+            ],
+          )),
       body: Container(
         padding:
             const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 36),
