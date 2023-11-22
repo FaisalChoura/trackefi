@@ -1,7 +1,6 @@
 import 'package:Trackefi/core/domain/enums/button_styles.dart';
 import 'package:Trackefi/core/domain/extensions/async_value_error_extension.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
-import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:Trackefi/features/csv_files/data/data_module.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
@@ -154,22 +153,14 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
       for (var i = 0; i < result.files.length; i++) {
         final file = result.files[i];
         final csvFileData = CsvFileData(file, CsvImportSettings());
-        csvDataList.add(await _openImportSettingsDialog(csvFileData));
+        csvDataList.add(await openImportSettingsDialog(context, csvFileData));
       }
       ref.read(csvFilesViewModelProvider.notifier).importFiles(csvDataList);
     }
   }
 
   void _updateFile(CsvFileData fileData) async {
-    final csvData = await _openImportSettingsDialog(fileData);
+    final csvData = await openImportSettingsDialog(context, fileData);
     ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData);
-  }
-
-  Future<CsvFileData> _openImportSettingsDialog(CsvFileData filesData) async {
-    return await showTrDialog(
-        context,
-        CsvImportsSettingsDialog(
-          fileData: filesData,
-        ));
   }
 }

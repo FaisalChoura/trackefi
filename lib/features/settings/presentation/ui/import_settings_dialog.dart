@@ -1,6 +1,7 @@
 import 'package:Trackefi/core/domain/extensions/reverse_map_extension.dart';
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:Trackefi/core/presentation/ui/select_field.dart';
 import 'package:Trackefi/core/presentation/ui/text_field.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
@@ -369,15 +370,8 @@ class _CsvImportsSettingsDialogState
                         child: const Text('Done'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // final importSettings = CsvImportSettings();
                             fileData.importSettings.fieldIndexes = fieldIndexes;
-                            // importSettings.fieldDelimiter =
-                            //     fieldDelimiterController.text;
-                            // importSettings.numberStyle = numberingStyle;
-                            // importSettings.dateFormat = dateFormat;
-                            // importSettings.dateSeparator =
-                            //     dateSeparatorController.text;
-                            // importSettings.expenseSign = expenseSign;
+
                             Navigator.of(context).pop(CsvFileData(
                                 fileData.file, fileData.importSettings));
                           }
@@ -389,4 +383,15 @@ class _CsvImportsSettingsDialogState
       ),
     );
   }
+}
+
+Future<CsvFileData> openImportSettingsDialog(
+  BuildContext context,
+  CsvFileData filesData,
+) async {
+  return await showTrDialog(
+      context,
+      CsvImportsSettingsDialog(
+        fileData: filesData,
+      ));
 }

@@ -6,6 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final importSettingsDatabaseProvider = Provider<ImportSettingsDatabase>(
     (_) => ImportSettingsDatabase(DBManager.isntance.isar));
 
-final reportsRepositoryProvider = Provider<ImportSettingsRepositoryImpl>(
+final importSettingsRepositoryProivder = Provider<ImportSettingsRepositoryImpl>(
     (ref) => ImportSettingsRepositoryImpl(
         ref.watch(importSettingsDatabaseProvider)));
