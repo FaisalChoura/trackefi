@@ -8,8 +8,8 @@ import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
-import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
+import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_dialog_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,8 +61,9 @@ class _CsvImportsSettingsDialogState
 
   @override
   Widget build(BuildContext context) {
-    final currencyList =
-        ref.read(csvFilesViewModelProvider.notifier).getCurrencies();
+    final currencyList = ref
+        .read(importSettingsDialogViewModelProvider.notifier)
+        .getCurrencies();
     final fileData = widget.fileData;
 
     return SizedBox(
@@ -263,7 +264,7 @@ class _CsvImportsSettingsDialogState
                       ]),
                   FutureBuilder(
                       future: ref
-                          .read(csvFilesViewModelProvider.notifier)
+                          .read(importSettingsDialogViewModelProvider.notifier)
                           .getHeaderAndFirstRow(fileData),
                       builder: (context, snapshot) {
                         if (snapshot.error != null) {
