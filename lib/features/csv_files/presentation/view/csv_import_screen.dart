@@ -11,7 +11,7 @@ import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:Trackefi/features/csv_files/domain/model/import_settings.dart';
+import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/card.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
