@@ -1,3 +1,4 @@
+import 'package:Trackefi/features/settings/presentation/import_settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class SettingsListScreen extends StatelessWidget {
@@ -23,7 +24,8 @@ class SettingsListScreen extends StatelessWidget {
               child: ListView(children: [
                 ListTile(
                   title: Text('Import Settings'),
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ImportSettingsScreen())),
                 ),
               ]),
             ),
