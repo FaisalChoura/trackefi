@@ -55,7 +55,9 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                               width: 4,
                             ),
                             Text(
-                              fileData.file.name,
+                              fileData.file != null
+                                  ? fileData.file!.name
+                                  : 'No File',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
