@@ -3,9 +3,9 @@ import 'package:Trackefi/core/domain/extensions/async_value_error_extension.dart
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/features/csv_files/data/data_module.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
-import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/card.dart';
 import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
+import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -55,9 +55,7 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                               width: 4,
                             ),
                             Text(
-                              fileData.file != null
-                                  ? fileData.file!.name
-                                  : 'No File',
+                              fileData.file.name,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -158,19 +156,23 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
         final headerAndFirstRow = await ref
             .read(csvFilesViewModelProvider.notifier)
             .getHeaderAndFirstRow(csvFileData);
-        final importSettings = CsvImportSettings();
+        CsvImportSettings importSettings = CsvImportSettings();
         importSettings.headerAndFirstRowData = headerAndFirstRow;
 
-        csvDataList
-            .add(await openImportSettingsDialog(context, importSettings, file));
+        importSettings =
+            await openImportSettingsDialog(context, importSettings);
+
+        csvDataList.add(CsvFileData(file, importSettings));
       }
       ref.read(csvFilesViewModelProvider.notifier).importFiles(csvDataList);
     }
   }
 
   void _updateFile(CsvFileData fileData) async {
-    final csvData = await openImportSettingsDialog(
-        context, fileData.importSettings, fileData.file);
-    ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData);
+    final importSettings =
+        await openImportSettingsDialog(context, fileData.importSettings);
+    ref
+        .read(csvFilesViewModelProvider.notifier)
+        .updateFile(CsvFileData(fileData.file, importSettings));
   }
 }

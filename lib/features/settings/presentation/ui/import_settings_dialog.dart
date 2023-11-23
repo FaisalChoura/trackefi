@@ -7,11 +7,9 @@ import 'package:Trackefi/core/presentation/ui/text_field.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
-import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_dialog_viewmodel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,11 +17,9 @@ class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
   const CsvImportsSettingsDialog({
     Key? key,
     required this.importSettings,
-    required this.file,
   }) : super(key: key);
 
   final CsvImportSettings importSettings;
-  final PlatformFile file;
 
   @override
   ConsumerState<CsvImportsSettingsDialog> createState() =>
@@ -366,8 +362,7 @@ class _CsvImportsSettingsDialogState
                           if (_formKey.currentState!.validate()) {
                             importSettings.fieldIndexes = fieldIndexes;
 
-                            Navigator.of(context)
-                                .pop(CsvFileData(widget.file, importSettings));
+                            Navigator.of(context).pop(importSettings);
                           }
                         }),
                   ),
@@ -384,15 +379,13 @@ class _CsvImportsSettingsDialogState
   }
 }
 
-Future<CsvFileData> openImportSettingsDialog(
+Future<CsvImportSettings> openImportSettingsDialog(
   BuildContext context,
   CsvImportSettings importSettings,
-  PlatformFile file,
 ) async {
   return await showTrDialog(
       context,
       CsvImportsSettingsDialog(
-        file: file,
         importSettings: importSettings,
       ));
 }
