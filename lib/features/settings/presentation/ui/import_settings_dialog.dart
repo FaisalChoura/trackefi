@@ -63,10 +63,9 @@ class _CsvImportsSettingsDialogState
 
   @override
   Widget build(BuildContext context) {
-    final currencyList = ref
-        .read(importSettingsDialogViewModelProvider.notifier)
-        .getCurrencies();
-    // final fileData = widget.fileData;
+    final viewModel = ref.read(importSettingsDialogViewModelProvider.notifier);
+
+    final currencyList = viewModel.getCurrencies();
 
     final importSettings = widget.importSettings;
 
@@ -369,7 +368,14 @@ class _CsvImportsSettingsDialogState
                   Flexible(
                     flex: 1,
                     child: TrButton(
-                        child: const Text('Save Settings'), onPressed: () {}),
+                        child: const Text('Save Settings'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            importSettings.fieldIndexes = fieldIndexes;
+
+                            viewModel.putImportSettings(importSettings);
+                          }
+                        }),
                   ),
                 ],
               )
