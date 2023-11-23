@@ -60,8 +60,14 @@ const CsvImportSettingsSchema = CollectionSchema(
       type: IsarType.object,
       target: r'FieldIndexes',
     ),
-    r'numberStyle': PropertySchema(
+    r'headerAndFirstRowData': PropertySchema(
       id: 8,
+      name: r'headerAndFirstRowData',
+      type: IsarType.object,
+      target: r'HeaderFirstRowData',
+    ),
+    r'numberStyle': PropertySchema(
+      id: 9,
       name: r'numberStyle',
       type: IsarType.byte,
       enumMap: _CsvImportSettingsnumberStyleEnumValueMap,
@@ -74,7 +80,10 @@ const CsvImportSettingsSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {r'FieldIndexes': FieldIndexesSchema},
+  embeddedSchemas: {
+    r'FieldIndexes': FieldIndexesSchema,
+    r'HeaderFirstRowData': HeaderFirstRowDataSchema
+  },
   getId: _csvImportSettingsGetId,
   getLinks: _csvImportSettingsGetLinks,
   attach: _csvImportSettingsAttach,
@@ -94,6 +103,9 @@ int _csvImportSettingsEstimateSize(
   bytesCount += 3 +
       FieldIndexesSchema.estimateSize(
           object.fieldIndexes, allOffsets[FieldIndexes]!, allOffsets);
+  bytesCount += 3 +
+      HeaderFirstRowDataSchema.estimateSize(object.headerAndFirstRowData,
+          allOffsets[HeaderFirstRowData]!, allOffsets);
   return bytesCount;
 }
 
@@ -116,7 +128,13 @@ void _csvImportSettingsSerialize(
     FieldIndexesSchema.serialize,
     object.fieldIndexes,
   );
-  writer.writeByte(offsets[8], object.numberStyle.index);
+  writer.writeObject<HeaderFirstRowData>(
+    offsets[8],
+    allOffsets,
+    HeaderFirstRowDataSchema.serialize,
+    object.headerAndFirstRowData,
+  );
+  writer.writeByte(offsets[9], object.numberStyle.index);
 }
 
 CsvImportSettings _csvImportSettingsDeserialize(
@@ -143,9 +161,15 @@ CsvImportSettings _csvImportSettingsDeserialize(
         allOffsets,
       ) ??
       FieldIndexes();
+  object.headerAndFirstRowData = reader.readObjectOrNull<HeaderFirstRowData>(
+        offsets[8],
+        HeaderFirstRowDataSchema.deserialize,
+        allOffsets,
+      ) ??
+      HeaderFirstRowData();
   object.id = id;
   object.numberStyle = _CsvImportSettingsnumberStyleValueEnumMap[
-          reader.readByteOrNull(offsets[8])] ??
+          reader.readByteOrNull(offsets[9])] ??
       NumberingStyle.eu;
   return object;
 }
@@ -183,6 +207,13 @@ P _csvImportSettingsDeserializeProp<P>(
           ) ??
           FieldIndexes()) as P;
     case 8:
+      return (reader.readObjectOrNull<HeaderFirstRowData>(
+            offset,
+            HeaderFirstRowDataSchema.deserialize,
+            allOffsets,
+          ) ??
+          HeaderFirstRowData()) as P;
+    case 9:
       return (_CsvImportSettingsnumberStyleValueEnumMap[
               reader.readByteOrNull(offset)] ??
           NumberingStyle.eu) as P;
@@ -1101,6 +1132,13 @@ extension CsvImportSettingsQueryObject
       return query.object(q, r'fieldIndexes');
     });
   }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      headerAndFirstRowData(FilterQuery<HeaderFirstRowData> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'headerAndFirstRowData');
+    });
+  }
 }
 
 extension CsvImportSettingsQueryLinks
@@ -1474,6 +1512,13 @@ extension CsvImportSettingsQueryProperty
     });
   }
 
+  QueryBuilder<CsvImportSettings, HeaderFirstRowData, QQueryOperations>
+      headerAndFirstRowDataProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'headerAndFirstRowData');
+    });
+  }
+
   QueryBuilder<CsvImportSettings, NumberingStyle, QQueryOperations>
       numberStyleProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1740,3 +1785,545 @@ extension FieldIndexesQueryFilter
 
 extension FieldIndexesQueryObject
     on QueryBuilder<FieldIndexes, FieldIndexes, QFilterCondition> {}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+const HeaderFirstRowDataSchema = Schema(
+  name: r'HeaderFirstRowData',
+  id: 9000377330969592656,
+  properties: {
+    r'firstRow': PropertySchema(
+      id: 0,
+      name: r'firstRow',
+      type: IsarType.stringList,
+    ),
+    r'headerRow': PropertySchema(
+      id: 1,
+      name: r'headerRow',
+      type: IsarType.stringList,
+    )
+  },
+  estimateSize: _headerFirstRowDataEstimateSize,
+  serialize: _headerFirstRowDataSerialize,
+  deserialize: _headerFirstRowDataDeserialize,
+  deserializeProp: _headerFirstRowDataDeserializeProp,
+);
+
+int _headerFirstRowDataEstimateSize(
+  HeaderFirstRowData object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.firstRow.length * 3;
+  {
+    for (var i = 0; i < object.firstRow.length; i++) {
+      final value = object.firstRow[i];
+      bytesCount += value.length * 3;
+    }
+  }
+  bytesCount += 3 + object.headerRow.length * 3;
+  {
+    for (var i = 0; i < object.headerRow.length; i++) {
+      final value = object.headerRow[i];
+      bytesCount += value.length * 3;
+    }
+  }
+  return bytesCount;
+}
+
+void _headerFirstRowDataSerialize(
+  HeaderFirstRowData object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeStringList(offsets[0], object.firstRow);
+  writer.writeStringList(offsets[1], object.headerRow);
+}
+
+HeaderFirstRowData _headerFirstRowDataDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = HeaderFirstRowData(
+    reader.readStringList(offsets[1]) ?? const [],
+    reader.readStringList(offsets[0]) ?? const [],
+  );
+  return object;
+}
+
+P _headerFirstRowDataDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readStringList(offset) ?? const []) as P;
+    case 1:
+      return (reader.readStringList(offset) ?? const []) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+extension HeaderFirstRowDataQueryFilter
+    on QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QFilterCondition> {
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'firstRow',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'firstRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'firstRow',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstRow',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'firstRow',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      firstRowLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstRow',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'headerRow',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'headerRow',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'headerRow',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'headerRow',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'headerRow',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QAfterFilterCondition>
+      headerRowLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'headerRow',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+}
+
+extension HeaderFirstRowDataQueryObject
+    on QueryBuilder<HeaderFirstRowData, HeaderFirstRowData, QFilterCondition> {}

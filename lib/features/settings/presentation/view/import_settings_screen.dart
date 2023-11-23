@@ -1,5 +1,3 @@
-import 'package:Trackefi/core/presentation/ui/button.dart';
-import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,19 +9,6 @@ class ImportSettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(importSettingsViewModelProvider.notifier);
     return Scaffold(
-      floatingActionButton: TrButton(
-          onPressed: () {
-            // openImportSettingsDialog(context, null)
-          },
-          child: const Wrap(
-            children: [
-              Icon(Icons.add),
-              SizedBox(
-                width: 8,
-              ),
-              Text('Add'),
-            ],
-          )),
       body: Container(
         padding:
             const EdgeInsets.only(top: 36, left: 24, right: 24, bottom: 36),

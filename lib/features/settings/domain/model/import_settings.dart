@@ -21,6 +21,7 @@ class CsvImportSettings {
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String currencyId = '';
   bool excludeIncome = false;
+  HeaderFirstRowData headerAndFirstRowData = HeaderFirstRowData();
 }
 
 @embedded
@@ -63,3 +64,11 @@ class FieldIndexes {
 
 /// Fields that are read and supported in the application
 enum UsableCsvFields { date, amount, description }
+
+@embedded
+class HeaderFirstRowData {
+  List<String> headerRow;
+  List<String> firstRow;
+
+  HeaderFirstRowData([this.headerRow = const [], this.firstRow = const []]);
+}

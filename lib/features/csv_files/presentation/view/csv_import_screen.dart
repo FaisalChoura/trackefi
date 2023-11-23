@@ -155,14 +155,22 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
       for (var i = 0; i < result.files.length; i++) {
         final file = result.files[i];
         final csvFileData = CsvFileData(file, CsvImportSettings());
-        csvDataList.add(await openImportSettingsDialog(context, csvFileData));
+        final headerAndFirstRow = await ref
+            .read(csvFilesViewModelProvider.notifier)
+            .getHeaderAndFirstRow(csvFileData);
+        final importSettings = CsvImportSettings();
+        importSettings.headerAndFirstRowData = headerAndFirstRow;
+
+        csvDataList
+            .add(await openImportSettingsDialog(context, importSettings, file));
       }
       ref.read(csvFilesViewModelProvider.notifier).importFiles(csvDataList);
     }
   }
 
   void _updateFile(CsvFileData fileData) async {
-    final csvData = await openImportSettingsDialog(context, fileData);
+    final csvData = await openImportSettingsDialog(
+        context, fileData.importSettings, fileData.file);
     ref.read(csvFilesViewModelProvider.notifier).updateFile(csvData);
   }
 }

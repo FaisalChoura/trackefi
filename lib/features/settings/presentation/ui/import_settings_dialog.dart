@@ -11,14 +11,19 @@ import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_dialog_viewmodel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
-  const CsvImportsSettingsDialog({Key? key, required this.fileData})
-      : super(key: key);
+  const CsvImportsSettingsDialog({
+    Key? key,
+    required this.importSettings,
+    required this.file,
+  }) : super(key: key);
 
-  final CsvFileData fileData;
+  final CsvImportSettings importSettings;
+  final PlatformFile file;
 
   @override
   ConsumerState<CsvImportsSettingsDialog> createState() =>
@@ -39,7 +44,7 @@ class _CsvImportsSettingsDialogState
 
   @override
   void initState() {
-    final importSettings = widget.fileData.importSettings;
+    final importSettings = widget.importSettings;
 
     super.initState();
     fieldDelimiterController.text = importSettings.fieldDelimiter.isEmpty
@@ -56,7 +61,7 @@ class _CsvImportsSettingsDialogState
         ? selectedCurrencyId
         : importSettings.currencyId;
 
-    widget.fileData.importSettings.currencyId = selectedCurrencyId;
+    widget.importSettings.currencyId = selectedCurrencyId;
     excludeIncome = importSettings.excludeIncome;
   }
 
@@ -65,7 +70,9 @@ class _CsvImportsSettingsDialogState
     final currencyList = ref
         .read(importSettingsDialogViewModelProvider.notifier)
         .getCurrencies();
-    final fileData = widget.fileData;
+    // final fileData = widget.fileData;
+
+    final importSettings = widget.importSettings;
 
     return SizedBox(
       height: 500,
@@ -104,7 +111,7 @@ class _CsvImportsSettingsDialogState
                           onChanged: (value) {
                             if (value.isNotEmpty) {
                               setState(() {
-                                fileData.importSettings.fieldDelimiter = value;
+                                importSettings.fieldDelimiter = value;
                               });
                             }
                           },
@@ -128,7 +135,7 @@ class _CsvImportsSettingsDialogState
                           onChanged: (value) {
                             if (value.isNotEmpty) {
                               setState(() {
-                                fileData.importSettings.dateSeparator = value;
+                                importSettings.dateSeparator = value;
                               });
                             }
                           },
@@ -154,7 +161,7 @@ class _CsvImportsSettingsDialogState
                                 if (value != null) {
                                   setState(() {
                                     selectedCurrencyId = value;
-                                    fileData.importSettings.currencyId = value;
+                                    importSettings.currencyId = value;
                                   });
                                 }
                               })),
@@ -182,7 +189,7 @@ class _CsvImportsSettingsDialogState
                                 if (value != null) {
                                   setState(() {
                                     numberingStyle = value;
-                                    fileData.importSettings.numberStyle = value;
+                                    importSettings.numberStyle = value;
                                   });
                                 }
                               }),
@@ -209,8 +216,7 @@ class _CsvImportsSettingsDialogState
                                 if (value != null) {
                                   setState(() {
                                     expenseSign = value;
-                                    fileData.importSettings.expenseSign =
-                                        expenseSign;
+                                    importSettings.expenseSign = expenseSign;
                                   });
                                 }
                               }),
@@ -241,7 +247,7 @@ class _CsvImportsSettingsDialogState
                                 if (value != null) {
                                   setState(() {
                                     dateFormat = value;
-                                    fileData.importSettings.dateFormat = value;
+                                    importSettings.dateFormat = value;
                                   });
                                 }
                               }),
@@ -255,127 +261,120 @@ class _CsvImportsSettingsDialogState
                                   value: excludeIncome,
                                   onChanged: (bool? value) => setState(() {
                                     excludeIncome = value!;
-                                    fileData.importSettings.excludeIncome =
-                                        value;
+                                    importSettings.excludeIncome = value;
                                   }),
                                 ),
                                 const Text('Exclude Income'),
                               ],
                             ))
                       ]),
-                  FutureBuilder(
-                      future: ref
-                          .read(importSettingsDialogViewModelProvider.notifier)
-                          .getHeaderAndFirstRow(fileData),
-                      builder: (context, snapshot) {
-                        if (snapshot.error != null) {
-                          return Text(snapshot.error.toString());
-                        }
-                        if (snapshot.data != null) {
-                          final headerList = snapshot.data!.headerRow;
-                          final firstDataRow = snapshot.data!.firstRow;
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              // TODO add text to explain what this is
-                              Table(
-                                border: TableBorder.all(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12),
-                                    bottom: Radius.circular(12),
-                                  ),
+                  Builder(builder: (context) {
+                    final headerList =
+                        importSettings.headerAndFirstRowData.headerRow;
+                    final firstDataRow =
+                        importSettings.headerAndFirstRowData.firstRow;
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        // TODO add text to explain what this is
+                        Table(
+                          border: TableBorder.all(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12),
+                              bottom: Radius.circular(12),
+                            ),
+                          ),
+                          columnWidths: const <int, TableColumnWidth>{
+                            0: IntrinsicColumnWidth(),
+                            1: FlexColumnWidth(),
+                            2: FixedColumnWidth(64),
+                          },
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: <TableRow>[
+                            TableRow(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(12),
                                 ),
-                                columnWidths: const <int, TableColumnWidth>{
-                                  0: IntrinsicColumnWidth(),
-                                  1: FlexColumnWidth(),
-                                  2: FixedColumnWidth(64),
-                                },
-                                defaultVerticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                children: <TableRow>[
-                                  TableRow(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12),
+                                color: TColors.grey,
+                              ),
+                              children: <Widget>[
+                                for (var col in headerList)
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        col,
+                                        style: const TextStyle(fontSize: 12),
                                       ),
-                                      color: TColors.grey,
                                     ),
-                                    children: <Widget>[
-                                      for (var col in headerList)
-                                        TableCell(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              col,
-                                              style:
-                                                  const TextStyle(fontSize: 12),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
                                   ),
-                                  TableRow(
-                                    children: <Widget>[
-                                      for (var col in firstDataRow)
-                                        TableCell(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Text(
-                                              col,
-                                              style:
-                                                  const TextStyle(fontSize: 12),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
+                              ],
+                            ),
+                            TableRow(
+                              children: <Widget>[
+                                for (var col in firstDataRow)
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                        col,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              HorizontalListMapper<int, UsableCsvFields>(
-                                headerValueMap: headerList.asReverseMap(),
-                                value: fieldIndexes.toMap(),
-                                options: [
-                                  HorizontalListMapperOption<UsableCsvFields>(
-                                      label: 'Description',
-                                      value: UsableCsvFields.description),
-                                  HorizontalListMapperOption<UsableCsvFields>(
-                                      label: 'Date',
-                                      value: UsableCsvFields.date),
-                                  HorizontalListMapperOption<UsableCsvFields>(
-                                      label: 'Amount',
-                                      value: UsableCsvFields.amount),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    fieldIndexes = FieldIndexes.fromMap(value);
-                                  });
-                                },
-                              )
-                            ],
-                          );
-                        }
-                        return Container();
-                      })
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        HorizontalListMapper<int, UsableCsvFields>(
+                          headerValueMap: headerList.asReverseMap(),
+                          value: fieldIndexes.toMap(),
+                          options: [
+                            HorizontalListMapperOption<UsableCsvFields>(
+                                label: 'Description',
+                                value: UsableCsvFields.description),
+                            HorizontalListMapperOption<UsableCsvFields>(
+                                label: 'Date', value: UsableCsvFields.date),
+                            HorizontalListMapperOption<UsableCsvFields>(
+                                label: 'Amount', value: UsableCsvFields.amount),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              fieldIndexes = FieldIndexes.fromMap(value);
+                            });
+                          },
+                        )
+                      ],
+                    );
+                  })
                 ],
               ),
               Row(
                 children: [
-                  Expanded(
+                  Flexible(
+                    flex: 1,
                     child: TrButton(
                         child: const Text('Done'),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            fileData.importSettings.fieldIndexes = fieldIndexes;
+                            importSettings.fieldIndexes = fieldIndexes;
 
-                            Navigator.of(context).pop(CsvFileData(
-                                fileData.file, fileData.importSettings));
+                            Navigator.of(context)
+                                .pop(CsvFileData(widget.file, importSettings));
                           }
                         }),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: TrButton(
+                        child: const Text('Save Settings'), onPressed: () {}),
                   ),
                 ],
               )
@@ -387,11 +386,13 @@ class _CsvImportsSettingsDialogState
 
 Future<CsvFileData> openImportSettingsDialog(
   BuildContext context,
-  CsvFileData filesData,
+  CsvImportSettings importSettings,
+  PlatformFile file,
 ) async {
   return await showTrDialog(
       context,
       CsvImportsSettingsDialog(
-        fileData: filesData,
+        file: file,
+        importSettings: importSettings,
       ));
 }
