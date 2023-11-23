@@ -1,3 +1,4 @@
+import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,11 +46,13 @@ class ImportSettingsScreen extends ConsumerWidget {
                       child: ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            final importListItem = snapshot.data![index];
+                            final importSettings = snapshot.data![index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: ListTile(
-                                title: Text(importListItem.currencyId),
+                                title: Text(importSettings.currencyId),
+                                onTap: () => openImportSettingsDialog(
+                                    context, importSettings),
                               ),
                             );
                           }),
