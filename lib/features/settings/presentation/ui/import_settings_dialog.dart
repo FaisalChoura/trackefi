@@ -32,17 +32,21 @@ class _CsvImportsSettingsDialogState
   DateFormatEnum dateFormat = DateFormatEnum.ddmmyyyy;
   TextEditingController fieldDelimiterController = TextEditingController();
   TextEditingController dateSeparatorController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   FieldIndexes fieldIndexes = FieldIndexes();
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String selectedCurrencyId = 'USD';
   bool excludeIncome = false;
   final _formKey = GlobalKey<FormState>();
+  late CsvImportSettings importSettings;
 
   @override
   void initState() {
-    final importSettings = widget.importSettings;
-
     super.initState();
+    importSettings = widget.importSettings;
+
+    nameController.text = importSettings.name;
+
     fieldDelimiterController.text = importSettings.fieldDelimiter.isEmpty
         ? ','
         : importSettings.fieldDelimiter;
@@ -67,8 +71,6 @@ class _CsvImportsSettingsDialogState
 
     final currencyList = viewModel.getCurrencies();
 
-    final importSettings = widget.importSettings;
-
     return SizedBox(
       height: 500,
       width: 1300,
@@ -87,6 +89,30 @@ class _CsvImportsSettingsDialogState
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
+                  ),
+                  Row(
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: TrTextField(
+                          label: 'Name',
+                          controller: nameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'This field cannot be empty';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                importSettings.name = value;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

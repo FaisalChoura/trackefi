@@ -66,8 +66,13 @@ const CsvImportSettingsSchema = CollectionSchema(
       type: IsarType.object,
       target: r'HeaderFirstRowData',
     ),
-    r'numberStyle': PropertySchema(
+    r'name': PropertySchema(
       id: 9,
+      name: r'name',
+      type: IsarType.string,
+    ),
+    r'numberStyle': PropertySchema(
+      id: 10,
       name: r'numberStyle',
       type: IsarType.byte,
       enumMap: _CsvImportSettingsnumberStyleEnumValueMap,
@@ -106,6 +111,7 @@ int _csvImportSettingsEstimateSize(
   bytesCount += 3 +
       HeaderFirstRowDataSchema.estimateSize(object.headerAndFirstRowData,
           allOffsets[HeaderFirstRowData]!, allOffsets);
+  bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
 
@@ -134,7 +140,8 @@ void _csvImportSettingsSerialize(
     HeaderFirstRowDataSchema.serialize,
     object.headerAndFirstRowData,
   );
-  writer.writeByte(offsets[9], object.numberStyle.index);
+  writer.writeString(offsets[9], object.name);
+  writer.writeByte(offsets[10], object.numberStyle.index);
 }
 
 CsvImportSettings _csvImportSettingsDeserialize(
@@ -168,8 +175,9 @@ CsvImportSettings _csvImportSettingsDeserialize(
       ) ??
       HeaderFirstRowData();
   object.id = id;
+  object.name = reader.readString(offsets[9]);
   object.numberStyle = _CsvImportSettingsnumberStyleValueEnumMap[
-          reader.readByteOrNull(offsets[9])] ??
+          reader.readByteOrNull(offsets[10])] ??
       NumberingStyle.eu;
   return object;
 }
@@ -214,6 +222,8 @@ P _csvImportSettingsDeserializeProp<P>(
           ) ??
           HeaderFirstRowData()) as P;
     case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
       return (_CsvImportSettingsnumberStyleValueEnumMap[
               reader.readByteOrNull(offset)] ??
           NumberingStyle.eu) as P;
@@ -1068,6 +1078,142 @@ extension CsvImportSettingsQueryFilter
   }
 
   QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'name',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'name',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'name',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      nameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
       numberStyleEqualTo(NumberingStyle value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1245,6 +1391,20 @@ extension CsvImportSettingsQuerySortBy
   }
 
   QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
+      sortByName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
+      sortByNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
       sortByNumberStyle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'numberStyle', Sort.asc);
@@ -1373,6 +1533,20 @@ extension CsvImportSettingsQuerySortThenBy
   }
 
   QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
+      thenByName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
+      thenByNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterSortBy>
       thenByNumberStyle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'numberStyle', Sort.asc);
@@ -1437,6 +1611,13 @@ extension CsvImportSettingsQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'fieldDelimiter',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QDistinct> distinctByName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
@@ -1516,6 +1697,12 @@ extension CsvImportSettingsQueryProperty
       headerAndFirstRowDataProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'headerAndFirstRowData');
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, String, QQueryOperations> nameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'name');
     });
   }
 

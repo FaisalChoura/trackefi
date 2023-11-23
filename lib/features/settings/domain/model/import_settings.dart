@@ -8,6 +8,7 @@ part 'import_settings.g.dart';
 @collection
 class CsvImportSettings {
   Id id = Isar.autoIncrement;
+  String name = '';
   String fieldDelimiter = ',';
   String endOfLine = '\n';
   @enumerated

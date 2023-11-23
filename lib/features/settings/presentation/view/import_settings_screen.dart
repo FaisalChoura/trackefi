@@ -50,7 +50,7 @@ class ImportSettingsScreen extends ConsumerWidget {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: ListTile(
-                                title: Text(importSettings.currencyId),
+                                title: Text(importSettings.name),
                                 onTap: () => openImportSettingsDialog(
                                     context, importSettings),
                               ),
