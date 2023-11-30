@@ -39,12 +39,21 @@ class _CsvImportsSettingsDialogState
   bool excludeIncome = false;
   final _formKey = GlobalKey<FormState>();
   late CsvImportSettings importSettings;
+  bool isNewImportSettings = false;
+  List<CsvImportSettings> importSettingsList = [];
 
   @override
   void initState() {
     super.initState();
     importSettings = widget.importSettings;
 
+    _updateFormValues(importSettings);
+    if (isNewImportSettings) {
+      importSettingsList.add(importSettings);
+    }
+  }
+
+  void _updateFormValues(CsvImportSettings importSettings) {
     nameController.text = importSettings.name;
 
     fieldDelimiterController.text = importSettings.fieldDelimiter.isEmpty
@@ -63,6 +72,7 @@ class _CsvImportsSettingsDialogState
 
     widget.importSettings.currencyId = selectedCurrencyId;
     excludeIncome = importSettings.excludeIncome;
+    isNewImportSettings = importSettings.id < 0;
   }
 
   @override
@@ -70,6 +80,9 @@ class _CsvImportsSettingsDialogState
     final viewModel = ref.read(importSettingsDialogViewModelProvider.notifier);
 
     final currencyList = viewModel.getCurrencies();
+
+    final headerList = importSettings.headerAndFirstRowData.headerRow;
+    final firstDataRow = importSettings.headerAndFirstRowData.firstRow;
 
     return SizedBox(
       height: 500,
@@ -90,29 +103,74 @@ class _CsvImportsSettingsDialogState
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: TrTextField(
-                          label: 'Name',
-                          controller: nameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'This field cannot be empty';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              setState(() {
-                                importSettings.name = value;
-                              });
-                            }
-                          },
+                  FutureBuilder(
+                    future: viewModel.getImportSettings(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container();
+                      }
+                      final List<CsvImportSettings> fetchedImportSettingsList =
+                          [...importSettingsList, ...(snapshot.data ?? [])];
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: TrSelectField(
+                                  label: 'Saved Import Settings',
+                                  value: importSettings.id,
+                                  items: fetchedImportSettingsList
+                                      .map(
+                                        (setting) => DropdownMenuItem(
+                                          value: setting.id,
+                                          child: Text(setting.name),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      final selectedValue =
+                                          fetchedImportSettingsList
+                                              .where((element) =>
+                                                  element.id == value)
+                                              .toList()[0];
+                                      setState(() {
+                                        _updateFormValues(selectedValue);
+                                        importSettings = selectedValue;
+                                      });
+                                    }
+                                  }),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            if (importSettings.id < 0)
+                              Flexible(
+                                flex: 1,
+                                child: TrTextField(
+                                  label: 'Name',
+                                  controller: nameController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'This field cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (value) {
+                                    if (value.isNotEmpty) {
+                                      setState(() {
+                                        importSettings.name = value;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                          ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,92 +347,87 @@ class _CsvImportsSettingsDialogState
                               ],
                             ))
                       ]),
-                  Builder(builder: (context) {
-                    final headerList =
-                        importSettings.headerAndFirstRowData.headerRow;
-                    final firstDataRow =
-                        importSettings.headerAndFirstRowData.firstRow;
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        // TODO add text to explain what this is
-                        Table(
-                          border: TableBorder.all(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
-                              bottom: Radius.circular(12),
-                            ),
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      // TODO add text to explain what this is
+                      Table(
+                        border: TableBorder.all(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                            bottom: Radius.circular(12),
                           ),
-                          columnWidths: const <int, TableColumnWidth>{
-                            0: IntrinsicColumnWidth(),
-                            1: FlexColumnWidth(),
-                            2: FixedColumnWidth(64),
-                          },
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: <TableRow>[
-                            TableRow(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(12),
-                                ),
-                                color: TColors.grey,
+                        ),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: IntrinsicColumnWidth(),
+                          1: FlexColumnWidth(),
+                          2: FixedColumnWidth(64),
+                        },
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        children: <TableRow>[
+                          TableRow(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(12),
                               ),
-                              children: <Widget>[
-                                for (var col in headerList)
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        col,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
+                              color: TColors.grey,
+                            ),
+                            children: <Widget>[
+                              for (var col in headerList)
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      col,
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
-                              ],
-                            ),
-                            TableRow(
-                              children: <Widget>[
-                                for (var col in firstDataRow)
-                                  TableCell(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Text(
-                                        col,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
+                                ),
+                            ],
+                          ),
+                          TableRow(
+                            children: <Widget>[
+                              for (var col in firstDataRow)
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Text(
+                                      col,
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        HorizontalListMapper<int, UsableCsvFields>(
-                          headerValueMap: headerList.asReverseMap(),
-                          value: fieldIndexes.toMap(),
-                          options: [
-                            HorizontalListMapperOption<UsableCsvFields>(
-                                label: 'Description',
-                                value: UsableCsvFields.description),
-                            HorizontalListMapperOption<UsableCsvFields>(
-                                label: 'Date', value: UsableCsvFields.date),
-                            HorizontalListMapperOption<UsableCsvFields>(
-                                label: 'Amount', value: UsableCsvFields.amount),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              fieldIndexes = FieldIndexes.fromMap(value);
-                            });
-                          },
-                        )
-                      ],
-                    );
-                  })
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Text(fieldIndexes.descriptionField.toString()),
+                      HorizontalListMapper<int, UsableCsvFields>(
+                        headerValueMap: headerList.asReverseMap(),
+                        value: fieldIndexes.toMap(),
+                        options: [
+                          HorizontalListMapperOption<UsableCsvFields>(
+                              label: 'Description',
+                              value: UsableCsvFields.description),
+                          HorizontalListMapperOption<UsableCsvFields>(
+                              label: 'Date', value: UsableCsvFields.date),
+                          HorizontalListMapperOption<UsableCsvFields>(
+                              label: 'Amount', value: UsableCsvFields.amount),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            fieldIndexes = FieldIndexes.fromMap(value);
+                          });
+                        },
+                      )
+                    ],
+                  )
                 ],
               ),
               Row(
