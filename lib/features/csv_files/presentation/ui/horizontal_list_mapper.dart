@@ -21,14 +21,6 @@ class HorizontalListMapper<K, T> extends StatefulWidget {
 
 class _HorizontalListMapperState<K, T>
     extends State<HorizontalListMapper<K, T>> {
-  late Map<K, T> selectedValues;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedValues = widget.value ?? {};
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -39,6 +31,7 @@ class _HorizontalListMapperState<K, T>
   List<Widget> genrateColumns() {
     final headerValues = widget.headerValueMap.keys;
     final columnList = <Widget>[];
+    Map<K, T> selectedValues = widget.value ?? {};
 
     for (var header in headerValues) {
       final mappedHeaderValue = widget.headerValueMap[header];
@@ -93,6 +86,8 @@ class _HorizontalListMapperState<K, T>
   }
 
   bool _isOptionEnabled(T value) {
+    Map<K, T> selectedValues = widget.value ?? {};
+
     final selectedValuesKeys = selectedValues.keys.toList();
     for (var key in selectedValuesKeys) {
       if (selectedValues[key] == value) {
