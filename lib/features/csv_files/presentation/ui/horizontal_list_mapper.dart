@@ -55,7 +55,7 @@ class _HorizontalListMapperState<K, T>
                       for (var option in widget.options)
                         DropdownMenuItem(
                           value: option.value,
-                          enabled: _isOptionEnabled(option.value),
+                          // enabled: _isOptionEnabled(option.value),
                           child: Text(option.label),
                         ),
                     ],

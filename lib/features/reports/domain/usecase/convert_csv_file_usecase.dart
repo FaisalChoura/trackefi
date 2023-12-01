@@ -18,27 +18,25 @@ class ConvertCsvFileUseCase {
     final Map<int, List<List<dynamic>>> convertedFilesMap = {};
     for (var i = 0; i < filesData.length; i++) {
       final file = filesData[i].file;
-      if (file != null) {
-        final input = File(file.path!).openRead();
-        List<List<dynamic>> convertedFile = [];
-        if (chunkSize == CsvFileChunkSizeEnum.full) {
-          convertedFile = await input
-              .transform(utf8.decoder)
-              .transform(CsvToListConverter(
-                  eol: "\n",
-                  fieldDelimiter: filesData[i].importSettings.fieldDelimiter))
-              .toList();
-        } else {
-          convertedFile = await input
-              .take(1)
-              .transform(utf8.decoder)
-              .transform(CsvToListConverter(
-                  eol: "\n",
-                  fieldDelimiter: filesData[i].importSettings.fieldDelimiter))
-              .toList();
-        }
-        convertedFilesMap[i] = convertedFile;
+      final input = File(file.path!).openRead();
+      List<List<dynamic>> convertedFile = [];
+      if (chunkSize == CsvFileChunkSizeEnum.full) {
+        convertedFile = await input
+            .transform(utf8.decoder)
+            .transform(CsvToListConverter(
+                eol: "\n",
+                fieldDelimiter: filesData[i].importSettings.fieldDelimiter))
+            .toList();
+      } else {
+        convertedFile = await input
+            .take(1)
+            .transform(utf8.decoder)
+            .transform(CsvToListConverter(
+                eol: "\n",
+                fieldDelimiter: filesData[i].importSettings.fieldDelimiter))
+            .toList();
       }
+      convertedFilesMap[i] = convertedFile;
     }
     return convertedFilesMap;
   }

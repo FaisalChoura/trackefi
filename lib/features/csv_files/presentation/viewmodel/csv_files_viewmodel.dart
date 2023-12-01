@@ -5,28 +5,25 @@ import 'package:Trackefi/features/csv_files/domain/usecase/import_files_usecase.
 import 'package:Trackefi/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/update_file_usecase.dart';
 import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
-import 'package:Trackefi/features/reports/domain/enum/csv_file_chunk_size_enum.dart';
 import 'package:Trackefi/features/reports/domain/usecase/convert_csv_file_usecase.dart';
-import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final csvFilesViewModelProvider =
-    StateNotifierProvider<CsvFilesViewModel, AsyncValue<void>>((ref) =>
-        CsvFilesViewModel(
-            ref.watch(importFilesUseCaseProvider),
-            ref.watch(removeFilesUseCaseProvider),
-            ref.watch(updateFileUseCaseProvider),
-            ref.watch(convertCsvFileUseCaseProvider)));
+    StateNotifierProvider<CsvFilesViewModel, AsyncValue<void>>(
+        (ref) => CsvFilesViewModel(
+              ref.watch(importFilesUseCaseProvider),
+              ref.watch(removeFilesUseCaseProvider),
+              ref.watch(updateFileUseCaseProvider),
+            ));
 
 class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
   final ImportFilesUseCase _importFilesUseCase;
   final RemoveFileUseCase _removeFileUseCase;
   final UpdateFileUseCase _updateFileUseCase;
-  final ConvertCsvFileUseCase _convertCsvFileUseCase;
 
   CsvFilesViewModel(this._importFilesUseCase, this._removeFileUseCase,
-      this._updateFileUseCase, this._convertCsvFileUseCase)
+      this._updateFileUseCase)
       : super(const AsyncValue.data(null));
 
   Future<FilePickerResult?> getFiles() async {
@@ -60,13 +57,5 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
         throw WrongFileTypeException();
       }
     }
-  }
-
-  Future<HeaderFirstRowData> getHeaderAndFirstRow(CsvFileData file) async {
-    final data = await _convertCsvFileUseCase
-        .execute([file], CsvFileChunkSizeEnum.small);
-    final headerRow = data[0]![0].map((e) => e.toString()).toList();
-    final firstRow = data[0]![1].map((e) => e.toString()).toList();
-    return HeaderFirstRowData(headerRow, firstRow);
   }
 }

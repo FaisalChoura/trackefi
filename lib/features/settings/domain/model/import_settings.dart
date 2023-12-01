@@ -22,7 +22,7 @@ class CsvImportSettings {
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
   String currencyId = '';
   bool excludeIncome = false;
-  HeaderFirstRowData headerAndFirstRowData = HeaderFirstRowData();
+  List<String> firstTwoLinesOfFile = [];
 }
 
 @embedded

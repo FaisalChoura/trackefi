@@ -81,8 +81,10 @@ class _CsvImportsSettingsDialogState
 
     final currencyList = viewModel.getCurrencies();
 
-    final headerList = importSettings.headerAndFirstRowData.headerRow;
-    final firstDataRow = importSettings.headerAndFirstRowData.firstRow;
+    final headerList = importSettings.firstTwoLinesOfFile[0]
+        .split(importSettings.fieldDelimiter);
+    final firstDataRow = importSettings.firstTwoLinesOfFile[1]
+        .split(importSettings.fieldDelimiter);
 
     return SizedBox(
       height: 500,
@@ -407,7 +409,6 @@ class _CsvImportsSettingsDialogState
                       const SizedBox(
                         height: 16,
                       ),
-                      Text(fieldIndexes.descriptionField.toString()),
                       HorizontalListMapper<int, UsableCsvFields>(
                         headerValueMap: headerList.asReverseMap(),
                         value: fieldIndexes.toMap(),

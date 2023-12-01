@@ -60,11 +60,10 @@ const CsvImportSettingsSchema = CollectionSchema(
       type: IsarType.object,
       target: r'FieldIndexes',
     ),
-    r'headerAndFirstRowData': PropertySchema(
+    r'firstTwoLinesOfFile': PropertySchema(
       id: 8,
-      name: r'headerAndFirstRowData',
-      type: IsarType.object,
-      target: r'HeaderFirstRowData',
+      name: r'firstTwoLinesOfFile',
+      type: IsarType.stringList,
     ),
     r'name': PropertySchema(
       id: 9,
@@ -85,10 +84,7 @@ const CsvImportSettingsSchema = CollectionSchema(
   idName: r'id',
   indexes: {},
   links: {},
-  embeddedSchemas: {
-    r'FieldIndexes': FieldIndexesSchema,
-    r'HeaderFirstRowData': HeaderFirstRowDataSchema
-  },
+  embeddedSchemas: {r'FieldIndexes': FieldIndexesSchema},
   getId: _csvImportSettingsGetId,
   getLinks: _csvImportSettingsGetLinks,
   attach: _csvImportSettingsAttach,
@@ -108,9 +104,13 @@ int _csvImportSettingsEstimateSize(
   bytesCount += 3 +
       FieldIndexesSchema.estimateSize(
           object.fieldIndexes, allOffsets[FieldIndexes]!, allOffsets);
-  bytesCount += 3 +
-      HeaderFirstRowDataSchema.estimateSize(object.headerAndFirstRowData,
-          allOffsets[HeaderFirstRowData]!, allOffsets);
+  bytesCount += 3 + object.firstTwoLinesOfFile.length * 3;
+  {
+    for (var i = 0; i < object.firstTwoLinesOfFile.length; i++) {
+      final value = object.firstTwoLinesOfFile[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
@@ -134,12 +134,7 @@ void _csvImportSettingsSerialize(
     FieldIndexesSchema.serialize,
     object.fieldIndexes,
   );
-  writer.writeObject<HeaderFirstRowData>(
-    offsets[8],
-    allOffsets,
-    HeaderFirstRowDataSchema.serialize,
-    object.headerAndFirstRowData,
-  );
+  writer.writeStringList(offsets[8], object.firstTwoLinesOfFile);
   writer.writeString(offsets[9], object.name);
   writer.writeByte(offsets[10], object.numberStyle.index);
 }
@@ -168,12 +163,7 @@ CsvImportSettings _csvImportSettingsDeserialize(
         allOffsets,
       ) ??
       FieldIndexes();
-  object.headerAndFirstRowData = reader.readObjectOrNull<HeaderFirstRowData>(
-        offsets[8],
-        HeaderFirstRowDataSchema.deserialize,
-        allOffsets,
-      ) ??
-      HeaderFirstRowData();
+  object.firstTwoLinesOfFile = reader.readStringList(offsets[8]) ?? [];
   object.id = id;
   object.name = reader.readString(offsets[9]);
   object.numberStyle = _CsvImportSettingsnumberStyleValueEnumMap[
@@ -215,12 +205,7 @@ P _csvImportSettingsDeserializeProp<P>(
           ) ??
           FieldIndexes()) as P;
     case 8:
-      return (reader.readObjectOrNull<HeaderFirstRowData>(
-            offset,
-            HeaderFirstRowDataSchema.deserialize,
-            allOffsets,
-          ) ??
-          HeaderFirstRowData()) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 9:
       return (reader.readString(offset)) as P;
     case 10:
@@ -1022,6 +1007,233 @@ extension CsvImportSettingsQueryFilter
   }
 
   QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'firstTwoLinesOfFile',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'firstTwoLinesOfFile',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'firstTwoLinesOfFile',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstTwoLinesOfFile',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'firstTwoLinesOfFile',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
+      firstTwoLinesOfFileLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'firstTwoLinesOfFile',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1276,13 +1488,6 @@ extension CsvImportSettingsQueryObject
       fieldIndexes(FilterQuery<FieldIndexes> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'fieldIndexes');
-    });
-  }
-
-  QueryBuilder<CsvImportSettings, CsvImportSettings, QAfterFilterCondition>
-      headerAndFirstRowData(FilterQuery<HeaderFirstRowData> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'headerAndFirstRowData');
     });
   }
 }
@@ -1614,6 +1819,13 @@ extension CsvImportSettingsQueryWhereDistinct
     });
   }
 
+  QueryBuilder<CsvImportSettings, CsvImportSettings, QDistinct>
+      distinctByFirstTwoLinesOfFile() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'firstTwoLinesOfFile');
+    });
+  }
+
   QueryBuilder<CsvImportSettings, CsvImportSettings, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1693,10 +1905,10 @@ extension CsvImportSettingsQueryProperty
     });
   }
 
-  QueryBuilder<CsvImportSettings, HeaderFirstRowData, QQueryOperations>
-      headerAndFirstRowDataProperty() {
+  QueryBuilder<CsvImportSettings, List<String>, QQueryOperations>
+      firstTwoLinesOfFileProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'headerAndFirstRowData');
+      return query.addPropertyName(r'firstTwoLinesOfFile');
     });
   }
 

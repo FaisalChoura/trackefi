@@ -2,6 +2,7 @@ import 'package:Trackefi/core/domain/enums/button_styles.dart';
 import 'package:Trackefi/core/domain/extensions/async_value_error_extension.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/features/csv_files/data/data_module.dart';
+import 'package:Trackefi/features/csv_files/domain/domain_module.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/card.dart';
 import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
@@ -152,12 +153,10 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
       List<CsvFileData> csvDataList = [];
       for (var i = 0; i < result.files.length; i++) {
         final file = result.files[i];
-        final csvFileData = CsvFileData(file, CsvImportSettings());
-        final headerAndFirstRow = await ref
-            .read(csvFilesViewModelProvider.notifier)
-            .getHeaderAndFirstRow(csvFileData);
+        final firstTwoLines =
+            await ref.read(getFirstTwoLinesOfFileUseCase).execute(file);
         CsvImportSettings importSettings = CsvImportSettings();
-        importSettings.headerAndFirstRowData = headerAndFirstRow;
+        importSettings.firstTwoLinesOfFile = firstTwoLines;
 
         importSettings =
             await openImportSettingsDialog(context, importSettings);
