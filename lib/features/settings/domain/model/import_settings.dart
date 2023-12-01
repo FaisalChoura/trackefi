@@ -64,7 +64,7 @@ class FieldIndexes {
 }
 
 /// Fields that are read and supported in the application
-enum UsableCsvFields { date, amount, description }
+enum UsableCsvFields { none, date, amount, description }
 
 @embedded
 class HeaderFirstRowData {

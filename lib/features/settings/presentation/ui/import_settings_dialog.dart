@@ -1,4 +1,3 @@
-import 'package:Trackefi/core/domain/extensions/reverse_map_extension.dart';
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
@@ -409,18 +408,9 @@ class _CsvImportsSettingsDialogState
                       const SizedBox(
                         height: 16,
                       ),
-                      HorizontalListMapper<int, UsableCsvFields>(
-                        headerValueMap: headerList.asReverseMap(),
+                      HorizontalListMapper(
                         value: fieldIndexes.toMap(),
-                        options: [
-                          HorizontalListMapperOption<UsableCsvFields>(
-                              label: 'Description',
-                              value: UsableCsvFields.description),
-                          HorizontalListMapperOption<UsableCsvFields>(
-                              label: 'Date', value: UsableCsvFields.date),
-                          HorizontalListMapperOption<UsableCsvFields>(
-                              label: 'Amount', value: UsableCsvFields.amount),
-                        ],
+                        headers: headerList,
                         onChanged: (value) {
                           setState(() {
                             fieldIndexes = FieldIndexes.fromMap(value);
