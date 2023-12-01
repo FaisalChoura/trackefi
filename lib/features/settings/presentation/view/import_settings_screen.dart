@@ -53,6 +53,11 @@ class ImportSettingsScreen extends ConsumerWidget {
                                 title: Text(importSettings.name),
                                 onTap: () => openImportSettingsDialog(
                                     context, importSettings),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () => viewModel
+                                      .deleteImportSettings(importSettings.id),
+                                ),
                               ),
                             );
                           }),

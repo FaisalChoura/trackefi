@@ -8,9 +8,9 @@ class PutImportSettingsUseCase {
 
   final ImportSettingsRepository _importSettingsRepository;
 
-  Future<CsvImportSettings?> execute(CsvImportSettings report) async {
+  Future<CsvImportSettings?> execute(CsvImportSettings settings) async {
     final savedImportSetting =
-        await _importSettingsRepository.putImportSettings(report);
+        await _importSettingsRepository.putImportSettings(settings);
     return savedImportSetting;
   }
 }
