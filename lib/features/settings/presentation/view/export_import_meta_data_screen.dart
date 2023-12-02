@@ -1,10 +1,14 @@
+import 'package:Trackefi/features/settings/presentation/viewmodel/export_import_meta_data_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ExportImportMetaDataScreen extends StatelessWidget {
+class ExportImportMetaDataScreen extends ConsumerWidget {
   const ExportImportMetaDataScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(exportImportMetaDataViewModelProvider.notifier);
+
     return Scaffold(
         body: Container(
             padding:
@@ -33,8 +37,13 @@ class ExportImportMetaDataScreen extends StatelessWidget {
                 height: 16,
               ),
               Expanded(
-                child: ListView(children: const [
-                  ListTile(title: Text('Export meta all data'), onTap: null),
+                child: ListView(children: [
+                  ListTile(
+                      title: const Text('Export meta all data'),
+                      onTap: () async {
+                        final json = await viewModel.generateJson();
+                        print(json);
+                      }),
                 ]),
               ),
             ])));
