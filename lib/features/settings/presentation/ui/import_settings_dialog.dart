@@ -16,9 +16,11 @@ class CsvImportsSettingsDialog extends ConsumerStatefulWidget {
   const CsvImportsSettingsDialog({
     Key? key,
     required this.importSettings,
+    this.importedFileEditing = true,
   }) : super(key: key);
 
   final CsvImportSettings importSettings;
+  final bool importedFileEditing;
 
   @override
   ConsumerState<CsvImportsSettingsDialog> createState() =>
@@ -106,52 +108,56 @@ class _CsvImportsSettingsDialogState
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
-                  FutureBuilder(
-                    future: viewModel.getImportSettings(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container();
-                      }
-                      final List<CsvImportSettings> fetchedImportSettingsList =
-                          [...importSettingsList, ...(snapshot.data ?? [])];
+                  if (widget.importedFileEditing)
+                    FutureBuilder(
+                      future: viewModel.getImportSettings(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container();
+                        }
+                        final List<CsvImportSettings>
+                            fetchedImportSettingsList = [
+                          ...importSettingsList,
+                          ...(snapshot.data ?? [])
+                        ];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: TrSelectField(
-                                  label: 'Saved Import Settings',
-                                  disabled: snapshot.data!.isEmpty,
-                                  value: importSettings.id,
-                                  items: fetchedImportSettingsList
-                                      .map(
-                                        (setting) => DropdownMenuItem(
-                                          value: setting.id,
-                                          child: Text(setting.name),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      final selectedValue =
-                                          fetchedImportSettingsList
-                                              .where((element) =>
-                                                  element.id == value)
-                                              .toList()[0];
-                                      setState(() {
-                                        _updateFormValues(selectedValue);
-                                        importSettings = selectedValue;
-                                      });
-                                    }
-                                  }),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: TrSelectField(
+                                    label: 'Saved Import Settings',
+                                    disabled: snapshot.data!.isEmpty,
+                                    value: importSettings.id,
+                                    items: fetchedImportSettingsList
+                                        .map(
+                                          (setting) => DropdownMenuItem(
+                                            value: setting.id,
+                                            child: Text(setting.name),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        final selectedValue =
+                                            fetchedImportSettingsList
+                                                .where((element) =>
+                                                    element.id == value)
+                                                .toList()[0];
+                                        setState(() {
+                                          _updateFormValues(selectedValue);
+                                          importSettings = selectedValue;
+                                        });
+                                      }
+                                    }),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -417,24 +423,25 @@ class _CsvImportsSettingsDialogState
                           }
                         }),
                   ),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: shouldSaveSettings,
-                            onChanged: (bool? value) => setState(() {
-                              shouldSaveSettings = value!;
-                              importSettings.shouldSaveSettings =
-                                  shouldSaveSettings;
-                            }),
-                          ),
-                          const Text('Save settings'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (shouldSaveSettings)
+                  if (widget.importedFileEditing)
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: shouldSaveSettings,
+                              onChanged: (bool? value) => setState(() {
+                                shouldSaveSettings = value!;
+                                importSettings.shouldSaveSettings =
+                                    shouldSaveSettings;
+                              }),
+                            ),
+                            const Text('Save settings'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  if (shouldSaveSettings || !widget.importedFileEditing)
                     Container(
                       width: 200,
                       padding: EdgeInsets.only(left: 8),
@@ -465,12 +472,12 @@ class _CsvImportsSettingsDialogState
 }
 
 Future<CsvImportSettings> openImportSettingsDialog(
-  BuildContext context,
-  CsvImportSettings importSettings,
-) async {
+    BuildContext context, CsvImportSettings importSettings,
+    [bool importedFileEditing = true]) async {
   return await showTrDialog(
       context,
       CsvImportsSettingsDialog(
         importSettings: importSettings,
+        importedFileEditing: importedFileEditing,
       ));
 }
