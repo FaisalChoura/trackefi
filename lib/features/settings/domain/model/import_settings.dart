@@ -23,6 +23,9 @@ class CsvImportSettings {
   String currencyId = '';
   bool excludeIncome = false;
   List<String> firstTwoLinesOfFile = [];
+
+  @ignore // is not stored in db
+  bool shouldSaveSettings = false;
 }
 
 @embedded

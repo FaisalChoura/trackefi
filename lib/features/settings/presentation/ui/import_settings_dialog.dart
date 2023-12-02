@@ -40,6 +40,7 @@ class _CsvImportsSettingsDialogState
   late CsvImportSettings importSettings;
   bool isNewImportSettings = false;
   List<CsvImportSettings> importSettingsList = [];
+  bool shouldSaveSettings = false;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _CsvImportsSettingsDialogState
     widget.importSettings.currencyId = selectedCurrencyId;
     excludeIncome = importSettings.excludeIncome;
     isNewImportSettings = importSettings.id < 0;
+    shouldSaveSettings = importSettings.shouldSaveSettings;
   }
 
   @override
@@ -121,6 +123,7 @@ class _CsvImportsSettingsDialogState
                               flex: 1,
                               child: TrSelectField(
                                   label: 'Saved Import Settings',
+                                  disabled: snapshot.data!.isEmpty,
                                   value: importSettings.id,
                                   items: fetchedImportSettingsList
                                       .map(
@@ -144,30 +147,6 @@ class _CsvImportsSettingsDialogState
                                     }
                                   }),
                             ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            if (importSettings.id < 0)
-                              Flexible(
-                                flex: 1,
-                                child: TrTextField(
-                                  label: 'Name',
-                                  controller: nameController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'This field cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) {
-                                    if (value.isNotEmpty) {
-                                      setState(() {
-                                        importSettings.name = value;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
                           ],
                         ),
                       );
@@ -430,23 +409,53 @@ class _CsvImportsSettingsDialogState
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             importSettings.fieldIndexes = fieldIndexes;
+                            if (shouldSaveSettings) {
+                              viewModel.putImportSettings(importSettings);
+                            }
 
                             Navigator.of(context).pop(importSettings);
                           }
                         }),
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: TrButton(
-                        child: const Text('Save Settings'),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            importSettings.fieldIndexes = fieldIndexes;
-
-                            viewModel.putImportSettings(importSettings);
-                          }
-                        }),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: shouldSaveSettings,
+                            onChanged: (bool? value) => setState(() {
+                              shouldSaveSettings = value!;
+                              importSettings.shouldSaveSettings =
+                                  shouldSaveSettings;
+                            }),
+                          ),
+                          const Text('Save settings'),
+                        ],
+                      ),
+                    ],
                   ),
+                  if (shouldSaveSettings)
+                    Container(
+                      width: 200,
+                      padding: EdgeInsets.only(left: 8),
+                      child: TrTextField(
+                        label: 'Insert setting name',
+                        controller: nameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'This field cannot be empty';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              importSettings.name = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
                 ],
               )
             ]),

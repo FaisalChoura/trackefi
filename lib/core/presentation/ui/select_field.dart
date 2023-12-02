@@ -6,6 +6,7 @@ class TrSelectField extends StatelessWidget {
   final dynamic value;
   final String? Function(String?)? validator;
   final String? label;
+  final bool disabled;
 
   const TrSelectField({
     super.key,
@@ -14,6 +15,7 @@ class TrSelectField extends StatelessWidget {
     required this.onChanged,
     this.validator,
     this.label,
+    this.disabled = false,
   });
 
   @override
@@ -21,7 +23,7 @@ class TrSelectField extends StatelessWidget {
     return DropdownButtonFormField(
       value: value,
       items: items,
-      onChanged: onChanged,
+      onChanged: disabled ? null : onChanged,
       decoration: InputDecoration(
         isDense: true,
         label: label != null ? Text(label!) : null,
