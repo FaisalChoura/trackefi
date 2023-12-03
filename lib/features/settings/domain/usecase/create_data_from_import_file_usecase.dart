@@ -2,6 +2,7 @@ import 'package:Trackefi/features/categories/data/data_module.dart';
 import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:Trackefi/features/categories/domain/repository/categories_repository.dart';
 import 'package:Trackefi/features/settings/data/data_module.dart';
+import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/domain/repository/import_settings_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +13,7 @@ class CreateDataFromImportFileUseCase {
       this._categoriesRepository, this._importSettingsRepository);
   Future<bool> execute(Map json) async {
     if (!_checkJsonMapIsValid(json)) {
-      return false;
+      throw 'Import file does not match template';
     }
     try {
       if (json['categories'].isNotEmpty) {
@@ -20,6 +21,14 @@ class CreateDataFromImportFileUseCase {
         for (var categoryJson in listOfCategoriesJson) {
           await _categoriesRepository
               .putCategory(Category.fromJson(categoryJson));
+        }
+      }
+
+      if (json['import_settings'].isNotEmpty) {
+        final listOfImportSettings = (json['import_settings'] as List<dynamic>);
+        for (var importSettingsJson in listOfImportSettings) {
+          await _importSettingsRepository.putImportSettings(
+              CsvImportSettings.fromJson(importSettingsJson));
         }
       }
     } catch (e) {
@@ -31,7 +40,7 @@ class CreateDataFromImportFileUseCase {
   }
 
   bool _checkJsonMapIsValid(Map json) {
-    const propertiesToCheck = ['categories', 'importSettings'];
+    const propertiesToCheck = ['categories', 'import_settings'];
 
     if (json.keys.isEmpty) {
       return false;

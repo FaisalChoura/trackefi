@@ -39,6 +39,7 @@ class CsvImportSettings {
     json['dateSeparator'] = dateSeparator;
     json['fieldIndexes'] = fieldIndexes.toJson();
     json['expenseSign'] = expenseSign.index;
+    json['firstTwoLinesOfFile'] = firstTwoLinesOfFile;
     return json;
   }
 
@@ -48,18 +49,26 @@ class CsvImportSettings {
     importSettings.name = json['name'] ?? '';
     importSettings.fieldDelimiter = json['fieldDelimiter'] ?? '';
     importSettings.endOfLine = json['endOfLine'] ?? '\n';
-    importSettings.numberStyle = json['numberStyle'] ?? NumberingStyle.eu;
-    importSettings.dateFormat = json['dateFormat'] ?? DateFormatEnum.ddmmyyyy;
+    importSettings.numberStyle = json['numberStyle'] != null
+        ? NumberingStyle.values[json['numberStyle']]
+        : NumberingStyle.eu;
+    importSettings.dateFormat = json['dateFormat'] != null
+        ? DateFormatEnum.values[json['dateFormat']]
+        : DateFormatEnum.ddmmyyyy;
     importSettings.dateSeparator = json['dateSeparator'] ?? '/';
     importSettings.fieldIndexes = json['fieldIndexes'] != null
-        ? FieldIndexes.fromMap(json['fieldIndexes'])
+        ? FieldIndexes.fromJson(json['fieldIndexes'])
         : FieldIndexes();
-    importSettings.expenseSign =
-        json['expenseSign'] ?? ExpenseSignEnum.negative;
-
+    importSettings.expenseSign = json['expenseSign'] != null
+        ? ExpenseSignEnum.values[json['expenseSign']]
+        : ExpenseSignEnum.negative;
     importSettings.currencyId = json['currencyId'] ?? '';
     importSettings.excludeIncome = json['excludeIncome'] ?? false;
-    importSettings.firstTwoLinesOfFile = json['firstTwoLinesOfFile'] ?? [];
+    importSettings.firstTwoLinesOfFile = json['firstTwoLinesOfFile'] != null
+        ? (json['firstTwoLinesOfFile'] as List)
+            .map((e) => e.toString())
+            .toList()
+        : [];
     return importSettings;
   }
 }
@@ -107,6 +116,14 @@ class FieldIndexes {
     json['amountField'] = amountField;
     json['dateField'] = dateField;
     return json;
+  }
+
+  factory FieldIndexes.fromJson(Map json) {
+    return FieldIndexes(
+      descriptionField: json['descriptionField'],
+      amountField: json['amountField'],
+      dateField: json['dateField'],
+    );
   }
 }
 
