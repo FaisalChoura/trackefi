@@ -415,7 +415,8 @@ class _CsvImportsSettingsDialogState
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             importSettings.fieldIndexes = fieldIndexes;
-                            if (shouldSaveSettings) {
+                            if (shouldSaveSettings ||
+                                !widget.importedFileEditing) {
                               viewModel.putImportSettings(importSettings);
                             }
 
