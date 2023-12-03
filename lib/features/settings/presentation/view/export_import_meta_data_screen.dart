@@ -49,6 +49,20 @@ class ExportImportMetaDataScreen extends ConsumerWidget {
                           TrHelpers.snackBar(context, 'Export file created');
                         }
                       }),
+                  ListTile(
+                      title: const Text('Import meta data'),
+                      onTap: () async {
+                        final json = await viewModel.readJsonFile();
+                        if (json == null) {
+                          TrHelpers.snackBar(context, 'Something went wrong');
+                        }
+                        final dataImported =
+                            await viewModel.createDataFromFile(json!);
+                        if (dataImported) {
+                          TrHelpers.snackBar(
+                              context, 'Data succesfully imported');
+                        }
+                      }),
                 ]),
               ),
             ])));

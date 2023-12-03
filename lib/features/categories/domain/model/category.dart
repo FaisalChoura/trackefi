@@ -61,9 +61,13 @@ class Category {
   }
 
   factory Category.fromJson(Map json) {
-    final category = Category(json['name'], json['keywords']);
+    final keywords =
+        (json['keywords'] as List).map((e) => e.toString()).toList();
+    final category = Category(json['name'], keywords);
     category.id = json['id'];
-    category.colorValues = ColorValues.fromJson(json['colorValues']);
+    category.colorValues = json['colorValues'] != null
+        ? ColorValues.fromJson(json['colorValues'])
+        : null;
     return category;
   }
 }

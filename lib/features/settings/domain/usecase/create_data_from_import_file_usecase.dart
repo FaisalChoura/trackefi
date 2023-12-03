@@ -15,15 +15,16 @@ class CreateDataFromImportFileUseCase {
       return false;
     }
     try {
-      if (json['categories']) {
-        final listOfCategoriesJson = (json['categories'] as List<Map>);
+      if (json['categories'].isNotEmpty) {
+        final listOfCategoriesJson = (json['categories'] as List<dynamic>);
         for (var categoryJson in listOfCategoriesJson) {
           await _categoriesRepository
               .putCategory(Category.fromJson(categoryJson));
         }
       }
     } catch (e) {
-      return false;
+      // TODO handle errors properly
+      rethrow;
     }
 
     return true;
