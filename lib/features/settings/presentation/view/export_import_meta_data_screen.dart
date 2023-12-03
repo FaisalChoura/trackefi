@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/domain/helpers/helpers.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/export_import_meta_data_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,11 @@ class ExportImportMetaDataScreen extends ConsumerWidget {
                       title: const Text('Export meta all data'),
                       onTap: () async {
                         final json = await viewModel.generateJson();
-                        print(json);
+                        final fileCreated =
+                            await viewModel.generateFileFromJson(json);
+                        if (fileCreated) {
+                          TrHelpers.snackBar(context, 'Export file created');
+                        }
                       }),
                 ]),
               ),
