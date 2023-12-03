@@ -7,7 +7,7 @@ class UpdateCategoriesFromRowData {
   final CategoriesRepository _categoriesRepository;
 
   UpdateCategoriesFromRowData(this._categoriesRepository);
-  void execute(List<UncategorisedRowData> values) async {
+  Future<void> execute(List<UncategorisedRowData> values) async {
     List<Category> categories = [];
     for (var data in values) {
       // create a set is used to make the list contain unique values
@@ -16,7 +16,7 @@ class UpdateCategoriesFromRowData {
 
       categories.add(data.category);
     }
-
+    // check if how this works within a loop
     for (var category in categories) {
       await _categoriesRepository.putCategory(category);
     }

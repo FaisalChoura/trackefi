@@ -1,5 +1,6 @@
 import 'package:Trackefi/core/domain/errors/exceptions.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TrHelpers {
@@ -31,5 +32,17 @@ class TrHelpers {
     final DateFormat formatter = DateFormat('yMMMMd');
     final String formatted = formatter.format(date);
     return formatted;
+  }
+
+  static double round(num number, int decimals) {
+    return double.parse(number.toStringAsFixed(decimals));
+  }
+
+  static snackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:flutter/material.dart';
@@ -94,8 +96,14 @@ class _SelectableWordsState extends State<SelectableWords> {
   }
 
   void _mergeKeywords() {
-    final mergedKeyword =
-        selectedWordItems.values.map((wordItem) => wordItem.keyword).join(' ');
+    final sortedMergedKeywords = SplayTreeMap<int, SelectableWordItem>.from(
+        selectedWordItems, (key1, key2) {
+      return key1.compareTo(key2);
+    });
+
+    final mergedKeyword = sortedMergedKeywords.values
+        .map((wordItem) => wordItem.keyword)
+        .join(' ');
 
     final firstMergedIndex = selectedWordItems.keys.toList().first;
 

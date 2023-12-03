@@ -1,5 +1,7 @@
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/accordion.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/core/presentation/ui/label.dart';
 import 'package:Trackefi/core/presentation/ui/select_field.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/presentation/viewmodel/reports_list_viewmodel.dart';
@@ -84,9 +86,13 @@ class _EditableCategorisedTransactionsListState
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Text('- ${item.categorySnapshot.totalExpenses}'),
+                  child: TrLabel(
+                      color: TColors.lightRed,
+                      child: Text('${item.categorySnapshot.totalExpenses}')),
                 ),
-                Text('+ ${item.categorySnapshot.totalIncome}'),
+                TrLabel(
+                    color: TColors.lightgreen,
+                    child: Text('${item.categorySnapshot.totalIncome}')),
               ],
             ),
             subItems: item.categorySnapshot.transactions

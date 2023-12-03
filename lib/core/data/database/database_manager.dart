@@ -1,5 +1,6 @@
 import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
+import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -16,6 +17,7 @@ class DBManager {
       [
         CategorySchema,
         ReportSchema,
+        CsvImportSettingsSchema,
       ],
       directory: dir.path,
     );

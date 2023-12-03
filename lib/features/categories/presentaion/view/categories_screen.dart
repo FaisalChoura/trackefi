@@ -30,10 +30,18 @@ class CategoriesScreen extends ConsumerWidget {
           const Expanded(child: CategoryDetails()),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openNewCategoryDialog(context, ref),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: TrButton(
+          onPressed: () => _openNewCategoryDialog(context, ref),
+          child: const Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              Icon(Icons.add),
+              SizedBox(
+                width: 8,
+              ),
+              Text('Add'),
+            ],
+          )),
     );
   }
 

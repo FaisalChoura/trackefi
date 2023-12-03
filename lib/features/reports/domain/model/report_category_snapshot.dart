@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/domain/helpers/helpers.dart';
 import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
@@ -31,24 +32,22 @@ class ReportCategorySnapshot {
     transaction.categorySnapshotId = id;
     if (transaction.isIncome) {
       incomeTransactions.add(transaction);
-      totalIncome =
-          double.parse((totalIncome + transaction.amount).toStringAsFixed(2));
+      totalIncome = TrHelpers.round(totalIncome + transaction.amount, 2);
       return;
     }
     expensesTransactions.add(transaction);
-    totalExpenses =
-        double.parse((totalExpenses + transaction.amount).toStringAsFixed(2));
+    totalExpenses = TrHelpers.round(totalExpenses + transaction.amount, 2);
   }
 
   void removeTransaction(Transaction transaction) {
     if (transaction.isIncome) {
       incomeTransactions.remove(transaction);
-      totalIncome = totalIncome - transaction.amount;
+      totalIncome = TrHelpers.round(totalIncome - transaction.amount, 2);
       return;
     }
 
     expensesTransactions.remove(transaction);
-    totalExpenses = totalExpenses - transaction.amount;
+    totalExpenses = TrHelpers.round(totalExpenses - transaction.amount, 2);
   }
 
   void merge(ReportCategorySnapshot mergedCategorySnapshot) {
@@ -60,8 +59,10 @@ class ReportCategorySnapshot {
       ...expensesTransactions,
       ...mergedCategorySnapshot.expensesTransactions
     ];
-    totalIncome = totalIncome + mergedCategorySnapshot.totalIncome;
-    totalExpenses = totalExpenses + mergedCategorySnapshot.totalExpenses;
+    totalIncome =
+        TrHelpers.round(totalIncome + mergedCategorySnapshot.totalIncome, 2);
+    totalExpenses = TrHelpers.round(
+        totalExpenses + mergedCategorySnapshot.totalExpenses, 2);
   }
 
   void recalculate() {
@@ -76,8 +77,8 @@ class ReportCategorySnapshot {
       totalIncome = transaction.amount + totalIncome;
     }
 
-    totalIncome = double.parse(totalIncome.toStringAsFixed(2));
-    totalExpenses = double.parse(totalExpenses.toStringAsFixed(2));
+    totalIncome = TrHelpers.round(totalIncome, 2);
+    totalExpenses = TrHelpers.round(totalExpenses, 2);
   }
 }
 

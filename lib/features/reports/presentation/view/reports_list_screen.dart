@@ -8,13 +8,12 @@ import 'package:Trackefi/features/categories/presentaion/viewmodel/categories_vi
 import 'package:Trackefi/features/csv_files/data/data_module.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/reports/data/data_module.dart';
-import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/domain/model/report_settings.dart';
 import 'package:Trackefi/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:Trackefi/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
-import 'package:Trackefi/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:Trackefi/features/reports/presentation/ui/uncategorised_item_row.dart';
+import 'package:Trackefi/features/reports/presentation/view/report_breakdown_screen.dart';
 import 'package:Trackefi/features/reports/presentation/viewmodel/reports_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,12 +29,15 @@ class ReportsListScreen extends ConsumerWidget {
       reportsListViewModel,
       (_, state) => state.showDialogOnError(context),
     );
-
+    // TODO create base page
     return Scaffold(
       floatingActionButton: TrButton(
         onPressed: () => _generateReport(csvFiles, context, ref),
-        child: const Wrap(children: [
+        child: const Wrap(alignment: WrapAlignment.center, children: [
           Icon(Icons.refresh),
+          SizedBox(
+            width: 8,
+          ),
           Text('Generate'),
         ]),
       ),
@@ -253,58 +255,6 @@ class _ReportSettingsDialogState extends ConsumerState<ReportSettingsDialog> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ReportBreakdownScreen extends ConsumerWidget {
-  const ReportBreakdownScreen({super.key, required this.report});
-  final Report report;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                    iconSize: 35,
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(
-                      Icons.chevron_left,
-                    )),
-                const SizedBox(
-                  width: 16,
-                ),
-                Text(
-                  'Report: ${report.id}',
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SingleChildScrollView(
-                child: Column(
-              children: [
-                ReportBreakdown(report: report),
-                report.id < 0
-                    ? MaterialButton(
-                        child: const Text('Save Report'),
-                        onPressed: () => ref
-                            .read(reportsListViewModel.notifier)
-                            .putReport(report),
-                      )
-                    : Container()
-              ],
-            )),
-          ],
-        ),
       ),
     );
   }

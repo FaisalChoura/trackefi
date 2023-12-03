@@ -135,13 +135,15 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       for (var i = 0; i < filesData.length; i++) {
         final csvData = _filterCsvDataByDateUseCase.execute(
             filesList[i]!, filesData[i].importSettings, reportSettings);
-        // TODO Handle this case with an error box
-        if (csvData.isEmpty) {
-          return [];
+        if (csvData.isNotEmpty) {
+          final categoriesMap = await _categoriseTransactionsUseCase.execute(
+              csvData, filesData[i].importSettings);
+          categorySnapshots.add(categoriesMap);
         }
-        final categoriesMap = await _categoriseTransactionsUseCase.execute(
-            csvData, filesData[i].importSettings);
-        categorySnapshots.add(categoriesMap);
+      }
+      // TODO Handle this case with an error box
+      if (categorySnapshots.isEmpty) {
+        return [];
       }
 
       return _mergeCatengorySnapshots(categorySnapshots);
@@ -177,7 +179,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
 
   Future<void> updateCategoriesFromRowData(
       List<UncategorisedRowData> values) async {
-    _updateCategoriesFromRowData.execute(values);
+    await _updateCategoriesFromRowData.execute(values);
   }
 
   Future<void> putReport(Report report) async {

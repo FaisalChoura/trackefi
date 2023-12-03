@@ -50,6 +50,26 @@ class Category {
         keywords.map((keyword) => RegExp.escape(keyword)).join("|");
     return RegExp(regexString);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'keywords': keywords,
+      'colorValues': colorValues != null ? colorValues!.toJson() : null,
+    };
+  }
+
+  factory Category.fromJson(Map json) {
+    final keywords =
+        (json['keywords'] as List).map((e) => e.toString()).toList();
+    final category = Category(json['name'], keywords);
+    category.id = json['id'];
+    category.colorValues = json['colorValues'] != null
+        ? ColorValues.fromJson(json['colorValues'])
+        : null;
+    return category;
+  }
 }
 
 @embedded
@@ -70,5 +90,23 @@ class ColorValues {
 
   Color toColor() {
     return Color.fromRGBO(red ?? 0, green ?? 0, blue ?? 0, opacity ?? 1);
+  }
+
+  Map<String, num?> toJson() {
+    return {
+      'red': red,
+      'blue': blue,
+      'green': green,
+      'opacity': opacity,
+    };
+  }
+
+  factory ColorValues.fromJson(Map json) {
+    return ColorValues(
+      red: json['red'],
+      blue: json['blue'],
+      green: json['green'],
+      opacity: json['opacity'],
+    );
   }
 }
