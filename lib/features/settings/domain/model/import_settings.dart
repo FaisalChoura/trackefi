@@ -16,7 +16,6 @@ class CsvImportSettings {
   @enumerated
   DateFormatEnum dateFormat = DateFormatEnum.ddmmyyyy;
   String dateSeparator = '/'; // field needs to be parsed
-  @enumerated
   FieldIndexes fieldIndexes = FieldIndexes();
   @enumerated
   ExpenseSignEnum expenseSign = ExpenseSignEnum.negative;
@@ -26,6 +25,43 @@ class CsvImportSettings {
 
   @ignore // is not stored in db
   bool shouldSaveSettings = false;
+
+  CsvImportSettings();
+
+  Map toJson() {
+    final json = {};
+    json['id'] = id;
+    json['name'] = name;
+    json['fieldDelimiter'] = fieldDelimiter;
+    json['endOfLine'] = endOfLine;
+    json['numberStyle'] = numberStyle.index;
+    json['dateFormat'] = dateFormat.index;
+    json['dateSeparator'] = dateSeparator;
+    json['fieldIndexes'] = fieldIndexes.toJson();
+    json['expenseSign'] = expenseSign.index;
+    return json;
+  }
+
+  factory CsvImportSettings.fromJson(Map json) {
+    final importSettings = CsvImportSettings();
+    importSettings.id = json['id'] ?? Isar.autoIncrement;
+    importSettings.name = json['name'] ?? '';
+    importSettings.fieldDelimiter = json['fieldDelimiter'] ?? '';
+    importSettings.endOfLine = json['endOfLine'] ?? '\n';
+    importSettings.numberStyle = json['numberStyle'] ?? NumberingStyle.eu;
+    importSettings.dateFormat = json['dateFormat'] ?? DateFormatEnum.ddmmyyyy;
+    importSettings.dateSeparator = json['dateSeparator'] ?? '/';
+    importSettings.fieldIndexes = json['fieldIndexes'] != null
+        ? FieldIndexes.fromMap(json['fieldIndexes'])
+        : FieldIndexes();
+    importSettings.expenseSign =
+        json['expenseSign'] ?? ExpenseSignEnum.negative;
+
+    importSettings.currencyId = json['currencyId'] ?? '';
+    importSettings.excludeIncome = json['excludeIncome'] ?? false;
+    importSettings.firstTwoLinesOfFile = json['firstTwoLinesOfFile'] ?? [];
+    return importSettings;
+  }
 }
 
 @embedded
@@ -63,6 +99,14 @@ class FieldIndexes {
     map[descriptionField] = UsableCsvFields.description;
 
     return map;
+  }
+
+  Map<String, int> toJson() {
+    final json = <String, int>{};
+    json['descriptionField'] = descriptionField;
+    json['amountField'] = amountField;
+    json['dateField'] = dateField;
+    return json;
   }
 }
 

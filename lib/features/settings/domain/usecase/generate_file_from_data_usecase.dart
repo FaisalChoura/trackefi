@@ -19,8 +19,7 @@ class GenerateFileFromDataUseCase {
       await file.writeAsString(stringifiedMap);
       return true;
     } catch (e) {
-      // TODO handle error
-      return false;
+      rethrow;
     }
   }
 }
