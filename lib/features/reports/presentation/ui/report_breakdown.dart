@@ -345,6 +345,7 @@ class DailySpendLineGraph extends StatelessWidget {
                 sideTitles: SideTitles(
                   showTitles: true,
                   reservedSize: 35,
+                  interval: 13.0 * transactions.length,
                   getTitlesWidget: leftTitleWidgets,
                 ),
               ),
@@ -352,8 +353,7 @@ class DailySpendLineGraph extends StatelessWidget {
                 sideTitles: SideTitles(
                   showTitles: true,
                   reservedSize: 20,
-                  // TODO interval should be related to length of data
-                  interval: 7,
+                  interval: _groupTransactionsByDateMap().keys.length / 7,
                   getTitlesWidget: bottomTitleWidgets,
                 ),
               ),
@@ -429,6 +429,7 @@ class DailySpendLineGraph extends StatelessWidget {
     );
   }
 
+  // TODO used a lot can be more efficient
   Map<String, double> _groupTransactionsByDateMap() {
     final groupedTransactions = <String, double>{};
     for (var transaction in transactions) {
