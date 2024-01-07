@@ -234,24 +234,26 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                       : (item.categorySnapshot.transactions.length + 1) * 30,
                   trailing: Wrap(
                     children: [
-                      TrLabel(
-                        color: TColors.lightRed,
-                        child: Text(
-                          '${item.categorySnapshot.totalExpenses * -1}',
-                          style: const TextStyle(fontSize: 14),
+                      // TODO The more expensses the redded
+                      if (item.categorySnapshot.totalExpenses != 0)
+                        TrLabel(
+                          color: TColors.lightRed,
+                          child: Text(
+                            '${item.categorySnapshot.totalExpenses * -1}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         width: 8,
                       ),
-                      // TODO The more expensses the redded
-                      TrLabel(
-                        color: TColors.lightgreen,
-                        child: Text(
-                          '${item.categorySnapshot.totalIncome * -1}',
-                          style: const TextStyle(fontSize: 14),
+                      if (item.categorySnapshot.totalIncome != 0)
+                        TrLabel(
+                          color: TColors.lightgreen,
+                          child: Text(
+                            '${item.categorySnapshot.totalIncome * -1}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   subItems: _generateCategotySubItems(
