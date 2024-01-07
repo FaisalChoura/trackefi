@@ -31,8 +31,9 @@ class TColors {
 }
 
 final lightTheme = ThemeData(
-    scaffoldBackgroundColor: TColors.silver,
+    scaffoldBackgroundColor: Colors.white,
     primarySwatch: TColors.materialGreen,
+    dividerColor: TColors.grey,
     hoverColor: const Color(0x1A14CC60),
     splashColor: const Color(0x4014CC60),
     appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent),

@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 
 class TrCard extends StatelessWidget {
@@ -13,6 +14,7 @@ class TrCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: TColors.grey),
         color: Colors.white,
       ),
       child: child,

@@ -221,40 +221,43 @@ class GroupedTransactionsByCategory extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        TrAccordion(
-          // TODO clean up
-          items: generateItems(populatedCategorySnapshots).map((item) {
-            return TrAccordionItem(
-                id: item.categorySnapshot.id,
-                leading: Text(item.categorySnapshot.name),
-                expandableHeight: item.categorySnapshot.transactions.length > 10
-                    ? 300
-                    : (item.categorySnapshot.transactions.length + 1) * 30,
-                trailing: Wrap(
-                  children: [
-                    TrLabel(
-                      color: TColors.lightRed,
-                      child: Text(
-                        '${item.categorySnapshot.totalExpenses * -1}',
-                        style: const TextStyle(fontSize: 14),
+        TrCard(
+          child: TrAccordion(
+            // TODO clean up
+            items: generateItems(populatedCategorySnapshots).map((item) {
+              return TrAccordionItem(
+                  id: item.categorySnapshot.id,
+                  leading: Text(item.categorySnapshot.name),
+                  expandableHeight: item.categorySnapshot.transactions.length >
+                          10
+                      ? 400
+                      : (item.categorySnapshot.transactions.length + 1) * 30,
+                  trailing: Wrap(
+                    children: [
+                      TrLabel(
+                        color: TColors.lightRed,
+                        child: Text(
+                          '${item.categorySnapshot.totalExpenses * -1}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    // TODO The more expensses the redded
-                    TrLabel(
-                      color: TColors.lightgreen,
-                      child: Text(
-                        '${item.categorySnapshot.totalIncome * -1}',
-                        style: const TextStyle(fontSize: 14),
+                      const SizedBox(
+                        width: 8,
                       ),
-                    ),
-                  ],
-                ),
-                subItems: _generateCategotySubItems(
-                    item.categorySnapshot.transactions));
-          }).toList(),
+                      // TODO The more expensses the redded
+                      TrLabel(
+                        color: TColors.lightgreen,
+                        child: Text(
+                          '${item.categorySnapshot.totalIncome * -1}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                  subItems: _generateCategotySubItems(
+                      item.categorySnapshot.transactions));
+            }).toList(),
+          ),
         ),
       ],
     );
@@ -271,25 +274,25 @@ class GroupedTransactionsByCategory extends StatelessWidget {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
           child: SizedBox(
-            height: 30,
+            height: 45,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: 150, child: Text(transaction.name.toString())),
+                SizedBox(width: 250, child: Text(transaction.name.toString())),
                 Text(TrHelpers.simpleDateFormatter(transaction.date)),
-                Wrap(
+                Row(
                   children: [
                     Text(transaction.amount.toString()),
-                    PopupMenuButton(
-                      itemBuilder: ((context) => [
-                            PopupMenuItem(
-                              value: 'Remove',
-                              child: Text('Remove'),
-                              onTap: () => print('s'),
-                            ),
-                          ]),
-                    )
+                    // PopupMenuButton(
+                    //   itemBuilder: ((context) => [
+                    //         PopupMenuItem(
+                    //           value: 'Remove',
+                    //           child: Text('Remove'),
+                    //           onTap: () => print('s'),
+                    //         ),
+                    //       ]),
+                    // )
                   ],
                 ),
               ],
