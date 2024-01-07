@@ -26,13 +26,14 @@ class ReportBreakdown extends StatelessWidget {
       height: MediaQuery.of(context).size.height < 1000
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.height * 0.9,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(46),
-          child: Column(
-            children: [
-              Row(
+      child: Padding(
+        padding: const EdgeInsets.all(46),
+        child: ListView(
+          children: [
+            IntrinsicHeight(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
                     child: TrCard(
@@ -58,7 +59,7 @@ class ReportBreakdown extends StatelessWidget {
                               ),
                               Text(
                                 report.currencyId,
-                                style: TextStyle(fontSize: 12),
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ],
                           ),
@@ -67,7 +68,7 @@ class ReportBreakdown extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    width: 32,
+                    width: 16,
                   ),
                   Expanded(
                     child: TrCard(
@@ -102,7 +103,7 @@ class ReportBreakdown extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    width: 32,
+                    width: 16,
                   ),
                   Expanded(
                     child: TrCard(
@@ -143,38 +144,44 @@ class ReportBreakdown extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CategoriesPieChart(
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: CategoriesPieChart(
                     categories: report.categories,
                   ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  SpendingPerTransactionList(
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: SpendingPerTransactionList(
                     transactions: report.expenseTransactions,
                   ),
-                  // CostlyDatesBarChart(
-                  //   dateCount: 5,
-                  //   transactions: report.expenseTransactions,
-                  // )
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  DailySpendLineGraph(
+                ),
+                // CostlyDatesBarChart(
+                //   dateCount: 5,
+                //   transactions: report.expenseTransactions,
+                // )
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: DailySpendLineGraph(
                     transactions: report.expenseTransactions,
                   ),
-                ],
-              ),
-              GroupedTransactionsByCategory(
-                categorySnapshots: report.categories,
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            GroupedTransactionsByCategory(
+              categorySnapshots: report.categories,
+            ),
+          ],
         ),
       ),
     );
