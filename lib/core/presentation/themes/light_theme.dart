@@ -33,6 +33,7 @@ class TColors {
 final lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
     primarySwatch: TColors.materialGreen,
+    dialogBackgroundColor: Colors.white,
     dividerColor: TColors.grey,
     hoverColor: const Color(0x1A14CC60),
     splashColor: const Color(0x4014CC60),

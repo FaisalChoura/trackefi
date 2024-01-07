@@ -68,7 +68,7 @@ class CategoriesPieChart extends StatelessWidget {
     return showTrDialog(
       context,
       SizedBox(
-        height: 340,
+        height: filteredCategories.length * 27,
         width: 600,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

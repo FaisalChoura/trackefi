@@ -7,6 +7,8 @@ class TrDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      surfaceTintColor: Colors.white,
+      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: child,
