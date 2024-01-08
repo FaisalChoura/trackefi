@@ -46,80 +46,56 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
                     padding: const EdgeInsets.only(right: 8, top: 16),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(
-                        maxHeight: 200,
+                        maxHeight: 160,
                       ),
                       child: TrCard(
                         header: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Icon(Icons.file_present),
-                            const SizedBox(
-                              width: 4,
+                            Wrap(
+                              children: [
+                                const Icon(Icons.file_present),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  fileData.file.name,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
-                            Text(
-                              fileData.file.name,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => ref
+                                  .read(csvFilesViewModelProvider.notifier)
+                                  .removeFile(fileData),
+                            )
                           ],
                         ),
-                        footer: Column(
+                        footer: Row(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TrButton(
-                                    style: TrButtonStyle.secondary,
-                                    onPressed: () => ref
-                                        .read(
-                                            csvFilesViewModelProvider.notifier)
-                                        .removeFile(fileData),
-                                    child: const Wrap(
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.delete,
-                                            size: 16,
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            'Remove',
-                                          )
-                                        ]),
-                                  ),
-                                ),
-                              ],
+                            Expanded(
+                              child: TrButton(
+                                style: TrButtonStyle.secondary,
+                                onPressed: () => _updateFile(fileData),
+                                child: const Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        'Edit Settings',
+                                      )
+                                    ]),
+                              ),
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TrButton(
-                                    style: TrButtonStyle.secondary,
-                                    onPressed: () => _updateFile(fileData),
-                                    child: const Wrap(
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.edit,
-                                            size: 16,
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            'Edit Settings',
-                                          )
-                                        ]),
-                                  ),
-                                ),
-                              ],
-                            )
                           ],
                         ),
                       ),
