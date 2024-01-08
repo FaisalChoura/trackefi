@@ -1,5 +1,6 @@
 import 'package:Trackefi/core/domain/extensions/async_value_error_extension.dart';
 import 'package:Trackefi/core/domain/helpers/helpers.dart';
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/date_picker.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
@@ -57,34 +58,59 @@ class ReportsListScreen extends ConsumerWidget {
               const SizedBox(
                 height: 16,
               ),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: reportsList.length,
-                    itemBuilder: (context, index) {
-                      final report = reportsList[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: ListTile(
-                          title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Report: ${report.id}'),
-                                Text(TrHelpers.dateString(report.createdAt))
-                              ]),
-                          onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ReportBreakdownScreen(report: report))),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => ref
-                                .read(reportsListViewModel.notifier)
-                                .removeReport(report.id),
+              Wrap(
+                children: reportsList
+                    .map((report) => Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Material(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ReportBreakdownScreen(
+                                              report: report))),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                width: 200,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: TColors.grey),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Report: ${report.id}',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            onPressed: () => ref
+                                                .read(reportsListViewModel
+                                                    .notifier)
+                                                .removeReport(report.id),
+                                          )
+                                        ],
+                                      ),
+                                      Text(
+                                          'Date: ${TrHelpers.dateString(report.createdAt)}'),
+                                      Text('Currency: ${report.currencyId}'),
+                                    ]),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-              ),
+                        ))
+                    .toList(),
+              )
             ],
           ),
         );
