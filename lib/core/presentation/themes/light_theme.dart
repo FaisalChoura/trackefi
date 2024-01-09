@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class TColors {
   static const main = Color(0xFF2981F5);
   static const accent = Color(0xFF2981F5);
+  static const hover = Color(0x1A3C8DF6);
+  static const splash = Color(0x403C8DF6);
   static const gunmetal = Color(0xFF0A2E36);
   static const silver = Color(0xFFF5F5F5);
 
@@ -37,8 +39,8 @@ final lightTheme = ThemeData(
     primarySwatch: TColors.materialBlue,
     dialogBackgroundColor: Colors.white,
     dividerColor: TColors.grey,
-    hoverColor: const Color(0x1A3C8DF6),
-    splashColor: const Color(0x403C8DF6),
+    hoverColor: TColors.hover,
+    splashColor: TColors.splash,
     appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent),
     listTileTheme: const ListTileThemeData(
       selectedColor: Color(0xFF3C8DF6),
