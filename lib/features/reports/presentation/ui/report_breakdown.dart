@@ -26,163 +26,160 @@ class ReportBreakdown extends StatelessWidget {
       height: MediaQuery.of(context).size.height < 1000
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.height * 0.9,
-      child: Padding(
-        padding: const EdgeInsets.all(46),
-        child: ListView(
-          children: [
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Expenses',
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                report.expenses.toString(),
-                                style: const TextStyle(
-                                    fontSize: 32, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                report.currencyId,
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Income',
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                report.income.toString(),
-                                style: const TextStyle(
-                                    fontSize: 32, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                report.currencyId,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                    child: TrCard(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Created on',
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text(
-                            TrHelpers.simpleDateFormatter(report.createdAt),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (dateTo != null && dateFrom != null)
-                            Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                const Text(
-                                  'Date Range',
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 32,
-            ),
-            Row(
+      child: ListView(
+        children: [
+          IntrinsicHeight(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: CategoriesPieChart(
-                    categories: report.categories,
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Expenses',
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              report.expenses.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              report.currencyId,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
                   width: 16,
                 ),
                 Expanded(
-                  child: SpendingPerTransactionList(
-                    transactions: report.expenseTransactions,
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Income',
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              report.income.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              report.currencyId,
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                // CostlyDatesBarChart(
-                //   dateCount: 5,
-                //   transactions: report.expenseTransactions,
-                // )
                 const SizedBox(
                   width: 16,
                 ),
                 Expanded(
-                  child: DailySpendLineGraph(
-                    transactions: report.expenseTransactions,
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Created on',
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          TrHelpers.simpleDateFormatter(report.createdAt),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (dateTo != null && dateFrom != null)
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              const Text(
+                                'Date Range',
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          )
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-            GroupedTransactionsByCategory(
-              categorySnapshots: report.categories,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 32,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: CategoriesPieChart(
+                  categories: report.categories,
+                ),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: SpendingPerTransactionList(
+                  transactions: report.expenseTransactions,
+                ),
+              ),
+              // CostlyDatesBarChart(
+              //   dateCount: 5,
+              //   transactions: report.expenseTransactions,
+              // )
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: DailySpendLineGraph(
+                  transactions: report.expenseTransactions,
+                ),
+              ),
+            ],
+          ),
+          GroupedTransactionsByCategory(
+            categorySnapshots: report.categories,
+          ),
+        ],
       ),
     );
   }
