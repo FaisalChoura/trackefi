@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TColors {
-  static const mainBlue = Color(0xFF2981F5);
-  static const accentBlue = Color(0xFF2981F5);
+  static const main = Color(0xFF2981F5);
+  static const accent = Color(0xFF2981F5);
   static const gunmetal = Color(0xFF0A2E36);
   static const silver = Color(0xFFF5F5F5);
 

@@ -375,7 +375,7 @@ class DailySpendLineGraph extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                  color: TColors.accentBlue,
+                  color: TColors.accent,
                   dotData: FlDotData(
                     show: false,
                   ),
