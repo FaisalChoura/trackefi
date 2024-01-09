@@ -91,7 +91,7 @@ class _EditableCategorisedTransactionsListState
                       child: Text('${item.categorySnapshot.totalExpenses}')),
                 ),
                 TrLabel(
-                    color: TColors.lightgreen,
+                    color: TColors.lightBlue,
                     child: Text('${item.categorySnapshot.totalIncome}')),
               ],
             ),

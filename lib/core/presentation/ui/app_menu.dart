@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,22 +36,12 @@ class AppMenu extends ConsumerWidget {
       ),
     ];
     return Scaffold(
+      backgroundColor: TColors.blue,
       body: Padding(
         padding: const EdgeInsets.only(top: 36, bottom: 24, left: 8, right: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    'Trackefi',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(
               height: 16,
             ),
@@ -60,8 +51,18 @@ class AppMenu extends ConsumerWidget {
                   itemCount: menuItems.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      title: Text(menuItems[index].title),
-                      leading: Icon(menuItems[index].icon),
+                      textColor: Colors.white,
+                      iconColor: Colors.white,
+                      dense: true,
+                      hoverColor: const Color(0x1AFFFFFF),
+                      selectedTileColor: Colors.white,
+                      title: Text(
+                        menuItems[index].title,
+                      ),
+                      leading: Icon(
+                        menuItems[index].icon,
+                      ),
+                      selectedColor: TColors.blue,
                       selected: selectedItem == menuItems[index].title,
                       onTap: () => {
                         if (ref.read(selectedPageNameProvider.notifier).state !=

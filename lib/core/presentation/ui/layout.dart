@@ -20,7 +20,6 @@ class Layout extends ConsumerWidget {
     return Row(
       children: [
         const SizedBox(width: 240, child: AppMenu()),
-        Container(width: 0.5, color: Colors.black),
         Expanded(child: selectedPageBuilder(context))
       ],
     );

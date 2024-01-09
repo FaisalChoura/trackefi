@@ -248,7 +248,7 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                       ),
                       if (item.categorySnapshot.totalIncome != 0)
                         TrLabel(
-                          color: TColors.lightgreen,
+                          color: TColors.lightBlue,
                           child: Text(
                             '${item.categorySnapshot.totalIncome * -1}',
                             style: const TextStyle(fontSize: 14),
@@ -375,7 +375,7 @@ class DailySpendLineGraph extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                  color: TColors.accentGreen,
+                  color: TColors.accentBlue,
                   dotData: FlDotData(
                     show: false,
                   ),

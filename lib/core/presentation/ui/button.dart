@@ -15,16 +15,18 @@ class TrButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
+      textColor:
+          style == TrButtonStyle.primary ? Colors.white : TColors.mainBlue,
       onPressed: onPressed,
       elevation: 0,
       hoverElevation: 0,
       padding: const EdgeInsets.all(21),
       shape: const RoundedRectangleBorder(
-          side: BorderSide(width: 2, color: TColors.mainGreen),
+          side: BorderSide(width: 2, color: TColors.mainBlue),
           borderRadius: BorderRadius.vertical(
               top: Radius.circular(10.0), bottom: Radius.circular(10))),
       color: style == TrButtonStyle.primary
-          ? TColors.mainGreen
+          ? TColors.mainBlue
           : Colors.transparent,
       height: 42,
       child: child,

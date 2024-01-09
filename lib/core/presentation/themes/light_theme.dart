@@ -1,46 +1,47 @@
 import 'package:flutter/material.dart';
 
 class TColors {
-  static const mainGreen = Color(0xFF14CC60);
-  static const mainGreen2 = Color(0xFF12BA58);
-  static const accentGreen = Color(0xFF23FB67);
+  static const mainBlue = Color(0xFF2981F5);
+  static const accentBlue = Color(0xFF2981F5);
   static const gunmetal = Color(0xFF0A2E36);
-  static const drakGreen = Color(0xFF036D19);
   static const silver = Color(0xFFF5F5F5);
+
+  static const blue = Color(0xFF2981F5);
 
   static const grey = Color(0xFFB8B8B8);
   static const lightGrey = Color(0xFFEFEFEF);
 
-  static const lightgreen = Color(0x486EB83D);
+  static const lightBlue = Color(0x482981F5);
   static const lightRed = Color(0x48E14414);
   static const red = Color(0xFFC1292E);
+  static const red2 = Color(0xFFD62839);
 
   static const Map<int, Color> color = {
-    50: Color.fromRGBO(20, 204, 96, .1),
-    100: Color.fromRGBO(20, 204, 96, .2),
-    200: Color.fromRGBO(20, 204, 96, .3),
-    300: Color.fromRGBO(20, 204, 96, .4),
-    400: Color.fromRGBO(20, 204, 96, .5),
-    500: Color.fromRGBO(20, 204, 96, .6),
-    600: Color.fromRGBO(20, 204, 96, .7),
-    700: Color.fromRGBO(20, 204, 96, .8),
-    800: Color.fromRGBO(20, 204, 96, .9),
-    900: Color.fromRGBO(20, 204, 96, 1),
+    50: Color.fromRGBO(41, 128, 245, .1),
+    100: Color.fromRGBO(41, 128, 245, .2),
+    200: Color.fromRGBO(41, 128, 245, .3),
+    300: Color.fromRGBO(41, 128, 245, .4),
+    400: Color.fromRGBO(41, 128, 245, .5),
+    500: Color.fromRGBO(41, 128, 245, .6),
+    600: Color.fromRGBO(41, 128, 245, .7),
+    700: Color.fromRGBO(41, 128, 245, .8),
+    800: Color.fromRGBO(41, 128, 245, .9),
+    900: Color.fromRGBO(41, 128, 245, 1),
   };
 
-  static const MaterialColor materialGreen = MaterialColor(0xFF14CC60, color);
+  static const MaterialColor materialBlue = MaterialColor(0xFF2981F5, color);
 }
 
 final lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
-    primarySwatch: TColors.materialGreen,
+    primarySwatch: TColors.materialBlue,
     dialogBackgroundColor: Colors.white,
     dividerColor: TColors.grey,
-    hoverColor: const Color(0x1A14CC60),
-    splashColor: const Color(0x4014CC60),
+    hoverColor: const Color(0x1A3C8DF6),
+    splashColor: const Color(0x403C8DF6),
     appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent),
     listTileTheme: const ListTileThemeData(
-      selectedColor: Color(0xFF14CC60),
+      selectedColor: Color(0xFF3C8DF6),
       iconColor: TColors.gunmetal,
       textColor: TColors.gunmetal,
       shape: RoundedRectangleBorder(
