@@ -7,6 +7,7 @@ class TColors {
   static const splash = Color(0x403C8DF6);
   static const gunmetal = Color(0xFF0A2E36);
   static const silver = Color(0xFFF5F5F5);
+  static const labelColor = Color.fromRGBO(41, 128, 245, 0.275);
 
   static const blue = Color(0xFF2981F5);
 
