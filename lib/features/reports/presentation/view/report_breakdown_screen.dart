@@ -5,12 +5,21 @@ import 'package:Trackefi/features/reports/presentation/viewmodel/reports_list_vi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReportBreakdownScreen extends ConsumerWidget {
+class ReportBreakdownScreen extends ConsumerStatefulWidget {
   const ReportBreakdownScreen({super.key, required this.report});
   final Report report;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReportBreakdownScreen> createState() =>
+      _ReportBreakdownScreenState();
+}
+
+class _ReportBreakdownScreenState extends ConsumerState<ReportBreakdownScreen> {
+  bool saved = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final report = widget.report;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -37,15 +46,24 @@ class ReportBreakdownScreen extends ConsumerWidget {
               ],
             ),
             SingleChildScrollView(
-                child: Column(
+                child: Stack(
               children: [
                 ReportBreakdown(report: report),
-                report.id < 0
-                    ? TrButton(
-                        child: const Text('Save Report'),
-                        onPressed: () => ref
-                            .read(reportsListViewModel.notifier)
-                            .putReport(report),
+                report.id < 0 && !saved
+                    ? Positioned(
+                        bottom: 0,
+                        left: MediaQuery.of(context).size.width * 0.45,
+                        child: TrButton(
+                          child: const Text('Save Report'),
+                          onPressed: () {
+                            ref
+                                .read(reportsListViewModel.notifier)
+                                .putReport(report);
+                            setState(() {
+                              saved = true;
+                            });
+                          },
+                        ),
                       )
                     : Container()
               ],
