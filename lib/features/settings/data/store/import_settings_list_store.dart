@@ -8,8 +8,14 @@ class ImportSettingsListStore extends StateNotifier<List<CsvImportSettings>> {
     state = setting;
   }
 
-  void addImportSetting(CsvImportSettings setting) {
-    state = [...state, setting];
+  void putImportSetting(CsvImportSettings setting) {
+    final index = state.indexOf(setting);
+    if (index < 0) {
+      state = [...state, setting];
+    } else {
+      state[index] = setting;
+      state = [...state];
+    }
   }
 
   void removeImportSetting(int id) {

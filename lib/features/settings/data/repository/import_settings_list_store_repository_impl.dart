@@ -9,8 +9,8 @@ class ImportSettingsListStoreRepositoryImpl
   final ImportSettingsListStore _store;
 
   @override
-  addImportSetting(CsvImportSettings report) {
-    _store.addImportSetting(report);
+  putImportSetting(CsvImportSettings report) {
+    _store.putImportSetting(report);
   }
 
   @override
