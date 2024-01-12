@@ -8,7 +8,6 @@ import 'package:Trackefi/features/csv_files/presentation/ui/card.dart';
 import 'package:Trackefi/features/csv_files/presentation/viewmodel/csv_files_viewmodel.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -123,12 +122,11 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
   }
 
   void _loadFile() async {
-    FilePickerResult? result;
-    result = await ref.read(csvFilesViewModelProvider.notifier).getFiles();
-    if (result != null) {
+    final files = await ref.read(csvFilesViewModelProvider.notifier).getFiles();
+    if (files.isNotEmpty) {
       List<CsvFileData> csvDataList = [];
-      for (var i = 0; i < result.files.length; i++) {
-        final file = result.files[i];
+      for (var i = 0; i < files.length; i++) {
+        final file = files[i];
         final firstTwoLines =
             await ref.read(getFirstTwoLinesOfFileUseCase).execute(file);
         CsvImportSettings importSettings = CsvImportSettings();

@@ -4,9 +4,8 @@ import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/import_files_usecase.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/update_file_usecase.dart';
-import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
-import 'package:Trackefi/features/reports/domain/usecase/convert_csv_file_usecase.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final csvFilesViewModelProvider =
@@ -26,16 +25,18 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
       this._updateFileUseCase)
       : super(const AsyncValue.data(null));
 
-  Future<FilePickerResult?> getFiles() async {
+  Future<List<XFile>> getFiles() async {
     try {
-      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-      if (result != null) {
-        _checkFileType(result.files);
-      }
-      return result;
+      const XTypeGroup typeGroup = XTypeGroup(
+        label: 'images',
+        extensions: <String>['csv'],
+      );
+      final List<XFile> files =
+          await openFiles(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+      return files;
     } catch (e, s) {
       state = AsyncValue.error(e, s);
-      return null;
+      return [];
     }
   }
 
@@ -49,13 +50,5 @@ class CsvFilesViewModel extends StateNotifier<AsyncValue<void>> {
 
   void updateFile(CsvFileData fileData) async {
     _updateFileUseCase.execute(fileData);
-  }
-
-  void _checkFileType(List<PlatformFile> files) {
-    for (var file in files) {
-      if (file.extension != 'csv') {
-        throw WrongFileTypeException();
-      }
-    }
   }
 }
