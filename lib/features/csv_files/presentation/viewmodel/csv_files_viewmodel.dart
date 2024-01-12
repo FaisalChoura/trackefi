@@ -1,10 +1,8 @@
-import 'package:Trackefi/core/domain/errors/exceptions.dart';
 import 'package:Trackefi/features/csv_files/domain/domain_module.dart';
 import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/import_files_usecase.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/remove_file_usecase.dart';
 import 'package:Trackefi/features/csv_files/domain/usecase/update_file_usecase.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
