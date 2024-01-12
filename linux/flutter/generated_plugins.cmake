@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
   isar_flutter_libs
   screen_retriever
+  sentry_flutter
   window_manager
 )
 
