@@ -38,6 +38,9 @@ class TColors {
 final lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
     primarySwatch: TColors.materialBlue,
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: TColors.materialBlue,
+    ).copyWith(),
     dialogBackgroundColor: Colors.white,
     dividerColor: TColors.grey,
     hoverColor: TColors.hover,
