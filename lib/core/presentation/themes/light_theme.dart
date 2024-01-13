@@ -53,4 +53,5 @@ final lightTheme = ThemeData(
           bottom: Radius.circular(12),
         ),
       ),
-    ));
+    ),
+    textButtonTheme: TextButtonThemeData(style: ButtonStyle()));
