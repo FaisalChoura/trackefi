@@ -23,6 +23,7 @@ dependencies:
   window_manager: ^0.3.7
   file_selector: ^1.0.2
   sentry_flutter: ^7.14.0
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

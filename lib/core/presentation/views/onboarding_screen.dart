@@ -1,15 +1,18 @@
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
+import 'package:Trackefi/features/settings/data/database/application_settings_database.dart';
+import 'package:Trackefi/features/settings/domain/usecase/set_existing_user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final int _numPages = 6;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
@@ -270,6 +273,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       )
                     : TextButton(
                         onPressed: () {
+                          ref.read(setExistingUseCasePovider).execute();
                           Navigator.of(context).pop();
                         },
                         child: const Text(
