@@ -43,7 +43,8 @@ class _LayoutState extends ConsumerState<Layout> {
   }
 
   void _runTimer() async {
-    if (ref.read(checkIfUserIsNewUseCaseProvider).execute()) {
+    final isNewUserUseCase = await ref.read(checkIfUserIsNewUseCaseProvider);
+    if (isNewUserUseCase.execute()) {
       Timer(const Duration(seconds: 2), () async {
         await showTrDialog(context, const OnboardingScreen());
       });

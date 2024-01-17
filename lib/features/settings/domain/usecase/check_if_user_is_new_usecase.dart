@@ -11,5 +11,6 @@ class CheckIfUserIsNewUseCase {
   }
 }
 
-final checkIfUserIsNewUseCaseProvider = Provider((ref) =>
-    CheckIfUserIsNewUseCase(ref.watch(applicationSettingsRepositoryProvider)));
+final checkIfUserIsNewUseCaseProvider = Provider((ref) async =>
+    CheckIfUserIsNewUseCase(
+        await ref.watch(applicationSettingsRepositoryProvider)));

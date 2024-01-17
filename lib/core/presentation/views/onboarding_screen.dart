@@ -273,7 +273,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       )
                     : TextButton(
                         onPressed: () {
-                          ref.read(setExistingUseCasePovider).execute();
+                          _setExistingUser();
                           Navigator.of(context).pop();
                         },
                         child: const Text(
@@ -291,5 +291,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
       ),
     );
+  }
+
+  void _setExistingUser() async {
+    final setExistingUseCase = await ref.read(setExistingUseCasePovider);
+    setExistingUseCase.execute();
   }
 }

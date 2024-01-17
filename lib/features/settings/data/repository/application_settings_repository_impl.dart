@@ -18,7 +18,6 @@ class ApplicationSettingsRepositoryImpl
   }
 }
 
-final applicationSettingsRepositoryProvider =
-    Provider<ApplicationSettingsRepository>((ref) =>
-        ApplicationSettingsRepositoryImpl(
-            ref.watch(applicationSettingsDatabaseProvider)));
+final applicationSettingsRepositoryProvider = Provider((ref) async =>
+    ApplicationSettingsRepositoryImpl(
+        await ref.watch(applicationSettingsDatabaseProvider)));

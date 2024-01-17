@@ -11,5 +11,5 @@ class SetExistingUseCase {
   }
 }
 
-final setExistingUseCasePovider = Provider((ref) =>
-    SetExistingUseCase(ref.watch(applicationSettingsRepositoryProvider)));
+final setExistingUseCasePovider = Provider((ref) async =>
+    SetExistingUseCase(await ref.watch(applicationSettingsRepositoryProvider)));
