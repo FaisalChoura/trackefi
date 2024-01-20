@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:Trackefi/core/presentation/ui/text_field.dart';
@@ -278,7 +279,7 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
                           padding: const EdgeInsets.only(right: 8, bottom: 8),
                           child: Tag(
                               title: keyword,
-                              color: const Color.fromARGB(70, 20, 204, 97),
+                              color: TColors.labelColor,
                               onClose: () {
                                 category.removeKeyword(keyword);
                                 ref

@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -21,6 +22,7 @@ class _TrAccordionState extends ConsumerState<TrAccordion> {
   Widget _buildPanel() {
     final openedIndex = ref.watch(openedPannel);
     return ExpansionPanelList(
+      elevation: 0,
       expansionCallback: (int index, bool isExpanded) {
         final item = widget.items[index];
         if (item.id == ref.read(openedPannel)) {
@@ -31,6 +33,7 @@ class _TrAccordionState extends ConsumerState<TrAccordion> {
       },
       children: widget.items.map<ExpansionPanel>((item) {
         return ExpansionPanel(
+          backgroundColor: Colors.white,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
               title: Row(

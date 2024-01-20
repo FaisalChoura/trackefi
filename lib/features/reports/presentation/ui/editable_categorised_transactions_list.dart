@@ -36,7 +36,6 @@ class _EditableCategorisedTransactionsListState
       height: 900,
       width: 1200,
       child: Container(
-        padding: const EdgeInsets.only(top: 24, bottom: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,7 +43,7 @@ class _EditableCategorisedTransactionsListState
             Wrap(
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 24, right: 24, bottom: 32),
+                  padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
                   child: Text(
                     'Categorised Transactions',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -91,7 +90,7 @@ class _EditableCategorisedTransactionsListState
                       child: Text('${item.categorySnapshot.totalExpenses}')),
                 ),
                 TrLabel(
-                    color: TColors.lightgreen,
+                    color: TColors.lightBlue,
                     child: Text('${item.categorySnapshot.totalIncome}')),
               ],
             ),

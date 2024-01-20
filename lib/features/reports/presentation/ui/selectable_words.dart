@@ -53,7 +53,7 @@ class _SelectableWordsState extends State<SelectableWords> {
                   elevation: 0,
                   hoverElevation: 0,
                   shape: const RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: TColors.mainGreen),
+                    side: BorderSide(width: 1, color: TColors.main),
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(10.0),
                       bottom: Radius.circular(10),
@@ -61,7 +61,7 @@ class _SelectableWordsState extends State<SelectableWords> {
                   ),
                   onPressed: () => _toggleSelectedWordItem(item),
                   color: selectedWordItems[item.id] != null
-                      ? TColors.mainGreen
+                      ? TColors.main
                       : Colors.white,
                   child: Text(item.keyword),
                 ),

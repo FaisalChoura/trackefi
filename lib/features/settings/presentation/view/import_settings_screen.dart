@@ -1,3 +1,4 @@
+import 'package:Trackefi/features/settings/data/store/import_settings_list_store.dart';
 import 'package:Trackefi/features/settings/presentation/ui/import_settings_dialog.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class ImportSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(importSettingsViewModelProvider.notifier);
+    final importSettingsList = ref.watch(importSettingsListProvider);
     return Scaffold(
       body: Container(
         padding:
@@ -28,44 +30,35 @@ class ImportSettingsScreen extends ConsumerWidget {
                 const SizedBox(
                   width: 16,
                 ),
-                Text(
+                const Text(
                   'Import Settings',
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            FutureBuilder(
-                future: viewModel.getImportSettings(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    return Expanded(
-                      child: ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            final importSettings = snapshot.data![index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: ListTile(
-                                title: Text(importSettings.name),
-                                onTap: () => openImportSettingsDialog(
-                                    context, importSettings, false),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () => viewModel
-                                      .deleteImportSettings(importSettings.id),
-                                ),
-                              ),
-                            );
-                          }),
+            Expanded(
+              child: ListView.builder(
+                  itemCount: importSettingsList.length,
+                  itemBuilder: (context, index) {
+                    final importSettings = importSettingsList[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ListTile(
+                        title: Text(importSettings.name),
+                        onTap: () => openImportSettingsDialog(
+                            context, importSettings, false),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () =>
+                              viewModel.deleteImportSettings(importSettings.id),
+                        ),
+                      ),
                     );
-                  } else {
-                    return Container();
-                  }
-                })
+                  }),
+            )
           ],
         ),
       ),

@@ -23,162 +23,163 @@ class ReportBreakdown extends StatelessWidget {
     final dateFrom = report.dateRangeFrom;
     final dateTo = report.dateRangeTo;
     return SizedBox(
-      height: 740,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(46),
-          child: Column(
-            children: [
-              IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TrCard(
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Expenses',
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  report.expenses.toString(),
-                                  style: const TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  report.currencyId,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ],
+      height: MediaQuery.of(context).size.height < 1000
+          ? MediaQuery.of(context).size.height * 0.85
+          : MediaQuery.of(context).size.height * 0.9,
+      child: ListView(
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Expenses',
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 32,
-                    ),
-                    Expanded(
-                      child: TrCard(
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Income',
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  report.income.toString(),
-                                  style: const TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  report.currencyId,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ],
+                        const SizedBox(
+                          height: 8,
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 32,
-                    ),
-                    Expanded(
-                      child: TrCard(
-                        child: Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Created on',
+                            Text(
+                              report.expenses.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(
-                              height: 4,
+                              width: 4,
                             ),
                             Text(
-                              TrHelpers.simpleDateFormatter(report.createdAt),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              report.currencyId,
+                              style: const TextStyle(fontSize: 12),
                             ),
-                            if (dateTo != null && dateFrom != null)
-                              Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  const Text(
-                                    'Date Range',
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              )
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Income',
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              report.income.toString(),
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              report.currencyId,
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: TrCard(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Created on',
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          TrHelpers.simpleDateFormatter(report.createdAt),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (dateTo != null && dateFrom != null)
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              const Text(
+                                'Date Range',
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "${TrHelpers.simpleDateFormatter(dateFrom)} - ${TrHelpers.simpleDateFormatter(dateTo)}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 32,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: CategoriesPieChart(
+                  categories: report.categories,
                 ),
               ),
               const SizedBox(
-                height: 32,
+                width: 16,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CategoriesPieChart(
-                    categories: report.categories,
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  SpendingPerTransactionList(
-                    transactions: report.expenseTransactions,
-                  ),
-                  // CostlyDatesBarChart(
-                  //   dateCount: 5,
-                  //   transactions: report.expenseTransactions,
-                  // )
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  DailySpendLineGraph(
-                    transactions: report.expenseTransactions,
-                  ),
-                ],
+              Expanded(
+                child: SpendingPerTransactionList(
+                  transactions: report.expenseTransactions,
+                ),
               ),
-              GroupedTransactionsByCategory(
-                categorySnapshots: report.categories,
+              // CostlyDatesBarChart(
+              //   dateCount: 5,
+              //   transactions: report.expenseTransactions,
+              // )
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: DailySpendLineGraph(
+                  transactions: report.expenseTransactions,
+                ),
               ),
             ],
           ),
-        ),
+          GroupedTransactionsByCategory(
+            categorySnapshots: report.categories,
+          ),
+        ],
       ),
     );
   }
@@ -217,40 +218,45 @@ class GroupedTransactionsByCategory extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        TrAccordion(
-          // TODO clean up
-          items: generateItems(populatedCategorySnapshots).map((item) {
-            return TrAccordionItem(
-                id: item.categorySnapshot.id,
-                leading: Text(item.categorySnapshot.name),
-                expandableHeight: item.categorySnapshot.transactions.length > 10
-                    ? 300
-                    : (item.categorySnapshot.transactions.length + 1) * 30,
-                trailing: Wrap(
-                  children: [
-                    TrLabel(
-                      color: TColors.lightRed,
-                      child: Text(
-                        '${item.categorySnapshot.totalExpenses * -1}',
-                        style: const TextStyle(fontSize: 14),
+        TrCard(
+          child: TrAccordion(
+            // TODO clean up
+            items: generateItems(populatedCategorySnapshots).map((item) {
+              return TrAccordionItem(
+                  id: item.categorySnapshot.id,
+                  leading: Text(item.categorySnapshot.name),
+                  expandableHeight: item.categorySnapshot.transactions.length >
+                          10
+                      ? 400
+                      : (item.categorySnapshot.transactions.length + 1) * 30,
+                  trailing: Wrap(
+                    children: [
+                      // TODO The more expensses the redded
+                      if (item.categorySnapshot.totalExpenses != 0)
+                        TrLabel(
+                          color: TColors.lightRed,
+                          child: Text(
+                            '${item.categorySnapshot.totalExpenses * -1}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      const SizedBox(
+                        width: 8,
                       ),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    // TODO The more expensses the redded
-                    TrLabel(
-                      color: TColors.lightgreen,
-                      child: Text(
-                        '${item.categorySnapshot.totalIncome * -1}',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-                subItems: _generateCategotySubItems(
-                    item.categorySnapshot.transactions));
-          }).toList(),
+                      if (item.categorySnapshot.totalIncome != 0)
+                        TrLabel(
+                          color: TColors.lightBlue,
+                          child: Text(
+                            '${item.categorySnapshot.totalIncome * -1}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                    ],
+                  ),
+                  subItems: _generateCategotySubItems(
+                      item.categorySnapshot.transactions));
+            }).toList(),
+          ),
         ),
       ],
     );
@@ -267,25 +273,25 @@ class GroupedTransactionsByCategory extends StatelessWidget {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
           child: SizedBox(
-            height: 30,
+            height: 45,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: 150, child: Text(transaction.name.toString())),
+                SizedBox(width: 250, child: Text(transaction.name.toString())),
                 Text(TrHelpers.simpleDateFormatter(transaction.date)),
-                Wrap(
+                Row(
                   children: [
                     Text(transaction.amount.toString()),
-                    PopupMenuButton(
-                      itemBuilder: ((context) => [
-                            PopupMenuItem(
-                              value: 'Remove',
-                              child: Text('Remove'),
-                              onTap: () => print('s'),
-                            ),
-                          ]),
-                    )
+                    // PopupMenuButton(
+                    //   itemBuilder: ((context) => [
+                    //         PopupMenuItem(
+                    //           value: 'Remove',
+                    //           child: Text('Remove'),
+                    //           onTap: () => print('s'),
+                    //         ),
+                    //       ]),
+                    // )
                   ],
                 ),
               ],
@@ -366,7 +372,7 @@ class DailySpendLineGraph extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                  color: TColors.accentGreen,
+                  color: TColors.accent,
                   dotData: FlDotData(
                     show: false,
                   ),
