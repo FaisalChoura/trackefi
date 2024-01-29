@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/layout.dart';
+import 'package:Trackefi/core/presentation/ui/update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -38,7 +39,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: lightTheme,
       debugShowCheckedModeBanner: false,
-      home: const Layout(),
+      home: const UpdateChecker(child: Layout()),
     );
   }
 }
