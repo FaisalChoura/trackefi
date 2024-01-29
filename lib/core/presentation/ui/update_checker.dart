@@ -17,6 +17,7 @@ class UpdateChecker extends ConsumerWidget {
     return child;
   }
 
+  // TODO env var for url
   // TODO extract to DDD pattern
   // TODO create version comaprison
   void _runTimer(BuildContext context) async {
