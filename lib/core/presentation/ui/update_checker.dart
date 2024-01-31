@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class UpdateChecker extends ConsumerWidget {
   final Widget child;
@@ -19,8 +20,9 @@ class UpdateChecker extends ConsumerWidget {
 
   // TODO env var for url
   // TODO extract to DDD pattern
-  // TODO create version comaprison
   void _runTimer(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersion = packageInfo.version;
     final response = await http.get(
         Uri.parse('https://trackefi-api.onrender.com/api/v1/releases/latest'));
     VersionPayload version;
@@ -32,7 +34,7 @@ class UpdateChecker extends ConsumerWidget {
     }
 
     final Uri url = Uri.parse(version.downloadLinks["macos"]);
-    if (true) {
+    if (currentVersion != version.version) {
       Timer(const Duration(seconds: 2), () async {
         await showTrDialog(
             context,
