@@ -67,7 +67,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'Create a category using a unique name and choose a distinctive color.\nYou can input relevant keywords for automatic transaction categorization.',
@@ -75,7 +75,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
@@ -93,7 +93,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'Import your CSV file and then edit the csv import settings to enable trackefi to properly the file',
@@ -101,7 +101,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
@@ -119,7 +119,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'After you have imported your files, make your way to the report generation page and customise the report settings.\nYou can tell trackefi to only look over a certain date period rather the entire files',
@@ -127,7 +127,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
@@ -145,7 +145,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'Once you proceed from the report settings trackefi will identify all transactions that it could not\ncategorise and allow you to select keywords and add them to your categories.',
@@ -153,7 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
@@ -171,7 +171,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'trackefi will then show you the categorisation and give you the ability to\nmove transactions that were wrongly categorised before finally generating the report',
@@ -179,7 +179,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
@@ -197,7 +197,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Text(
                         'A report can now be generated and broken down for you to analyse',
@@ -205,7 +205,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        height: 24,
+                        height: 16,
                       ),
                       Center(
                           child: Image(
