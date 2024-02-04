@@ -36,25 +36,44 @@ class TColors {
 }
 
 final lightTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.white,
-    primarySwatch: TColors.materialBlue,
-    colorScheme: ColorScheme.fromSwatch(
-      primarySwatch: TColors.materialBlue,
-    ).copyWith(),
-    dialogBackgroundColor: Colors.white,
-    dividerColor: TColors.grey,
-    hoverColor: TColors.hover,
-    splashColor: TColors.splash,
-    appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent),
-    listTileTheme: const ListTileThemeData(
-      selectedColor: Color(0xFF3C8DF6),
-      iconColor: TColors.gunmetal,
-      textColor: TColors.gunmetal,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(12),
-          bottom: Radius.circular(12),
-        ),
+  colorScheme: ColorScheme.light(
+    primary: TColors.main, // header background color
+    onSurface: Colors.black, // body text color
+  ),
+  scaffoldBackgroundColor: Colors.white,
+  primarySwatch: TColors.materialBlue,
+  dialogBackgroundColor: Colors.white,
+  dividerColor: TColors.grey,
+  hoverColor: TColors.hover,
+  splashColor: TColors.splash,
+  appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent),
+  listTileTheme: const ListTileThemeData(
+    selectedColor: Color(0xFF3C8DF6),
+    iconColor: TColors.gunmetal,
+    textColor: TColors.gunmetal,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(12),
+        bottom: Radius.circular(12),
       ),
     ),
-    textButtonTheme: TextButtonThemeData(style: ButtonStyle()));
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(),
+  ),
+  datePickerTheme: DatePickerThemeData(
+      backgroundColor: Colors.white, surfaceTintColor: Colors.white),
+  inputDecorationTheme: InputDecorationTheme(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: new BorderRadius.circular(10),
+      borderSide: BorderSide(width: 1, color: Colors.grey),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: new BorderRadius.circular(10),
+      borderSide: BorderSide(
+        width: 1.5,
+        color: TColors.main,
+      ),
+    ),
+  ),
+);
