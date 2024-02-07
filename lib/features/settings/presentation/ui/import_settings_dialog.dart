@@ -91,6 +91,10 @@ class _CsvImportsSettingsDialogState
           .split(importSettings.fieldDelimiter);
       firstDataRow = importSettings.firstTwoLinesOfFile[1]
           .split(importSettings.fieldDelimiter);
+
+      if (headerList.length < firstDataRow.length) {
+        throw ('Corrupt file');
+      }
     } catch (e) {
       Navigator.of(context).pop();
       // TODO throw error here using new approach
