@@ -1,12 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:Trackefi/core/domain/errors/error_object.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:rxdart/rxdart.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+final BehaviorSubject<HandleableUerError> _errorSubject =
+    BehaviorSubject<HandleableUerError>();
+
+void throwUserError(HandleableUerError error) {
+  _errorSubject.add(error);
+}
 
 class UpdateChecker extends ConsumerWidget {
   final Widget child;
@@ -14,6 +23,25 @@ class UpdateChecker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _errorSubject.stream.listen((data) {
+      showTrDialog(
+          context,
+          SizedBox(
+            height: 100,
+            width: 400,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                data.title,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Text(data.message),
+            ]),
+          ));
+    });
     _runTimer(context);
     return child;
   }

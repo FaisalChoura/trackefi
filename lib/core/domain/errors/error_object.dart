@@ -35,3 +35,9 @@ class ErrorObject {
     return ErrorObject(title: title, message: message);
   }
 }
+
+class HandleableUerError {
+  String title;
+  String message;
+  HandleableUerError(this.title, this.message);
+}
