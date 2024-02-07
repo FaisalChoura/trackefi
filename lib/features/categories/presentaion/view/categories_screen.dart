@@ -71,7 +71,7 @@ class NewCategoryDialog extends ConsumerWidget {
             _addCategory(context, ref)
       },
       child: Container(
-        height: 170,
+        height: 185,
         width: 400,
         padding: const EdgeInsets.all(16),
         child: Column(
