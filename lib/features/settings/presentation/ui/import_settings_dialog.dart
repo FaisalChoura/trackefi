@@ -1,3 +1,4 @@
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
@@ -83,11 +84,17 @@ class _CsvImportsSettingsDialogState
     final viewModel = ref.read(importSettingsDialogViewModelProvider.notifier);
 
     final currencyList = viewModel.getCurrencies();
-
-    final headerList = importSettings.firstTwoLinesOfFile[0]
-        .split(importSettings.fieldDelimiter);
-    final firstDataRow = importSettings.firstTwoLinesOfFile[1]
-        .split(importSettings.fieldDelimiter);
+    List<String> headerList = [];
+    List<String> firstDataRow = [];
+    try {
+      headerList = importSettings.firstTwoLinesOfFile[0]
+          .split(importSettings.fieldDelimiter);
+      firstDataRow = importSettings.firstTwoLinesOfFile[1]
+          .split(importSettings.fieldDelimiter);
+    } catch (e) {
+      Navigator.of(context).pop();
+      // TODO throw error here using new approach
+    }
 
     return SizedBox(
       height: 500,
