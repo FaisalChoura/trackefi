@@ -1,14 +1,18 @@
+import 'package:Trackefi/core/domain/errors/error_object.dart';
+import 'package:Trackefi/core/domain/errors/exceptions.dart';
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:Trackefi/core/presentation/ui/select_field.dart';
 import 'package:Trackefi/core/presentation/ui/text_field.dart';
+import 'package:Trackefi/core/presentation/ui/update_checker.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/date_format.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/horizontal_list_mapper.dart';
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import 'package:Trackefi/features/settings/presentation/viewmodel/import_settings_dialog_viewmodel.dart';
+import 'package:Trackefi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -83,11 +87,22 @@ class _CsvImportsSettingsDialogState
     final viewModel = ref.read(importSettingsDialogViewModelProvider.notifier);
 
     final currencyList = viewModel.getCurrencies();
+    List<String> headerList = [];
+    List<String> firstDataRow = [];
+    try {
+      headerList = importSettings.firstTwoLinesOfFile[0]
+          .split(importSettings.fieldDelimiter);
+      firstDataRow = importSettings.firstTwoLinesOfFile[1]
+          .split(importSettings.fieldDelimiter);
 
-    final headerList = importSettings.firstTwoLinesOfFile[0]
-        .split(importSettings.fieldDelimiter);
-    final firstDataRow = importSettings.firstTwoLinesOfFile[1]
-        .split(importSettings.fieldDelimiter);
+      if (headerList.length < firstDataRow.length) {
+        throw ('Corrupt file');
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      throwUserError(HandleableUerError('File cannot be read',
+          'The file might be corrupt, this could be because your field separator appears in one or more fields'));
+    }
 
     return SizedBox(
       height: 500,
