@@ -31,11 +31,18 @@ class CurrencyDataRepositoryImpl implements CurrencyDataRepository {
     }
 
     final response = await http.get(Uri.parse(
-        "https://free.currconv.com/api/v7/convert?q=${fromId}_$id&apiKey=$apiKey"));
+        "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${fromId.toLowerCase()}/${id.toLowerCase()}.json"));
 
     if (response.statusCode == 200) {
-      final conversion = CurrencyConversion.fromJson(
-          jsonDecode(response.body)['results']["${fromId}_$id"]);
+      dynamic decodedRepose = jsonDecode(response.body);
+      num value = decodedRepose[id.toLowerCase()];
+      final conversion = CurrencyConversion(
+        id: idPair,
+        to: id,
+        fr: fromId,
+        dateTime: DateTime.now(),
+        val: value,
+      );
       _store.putConversion(conversion);
       return conversion;
     } else {
