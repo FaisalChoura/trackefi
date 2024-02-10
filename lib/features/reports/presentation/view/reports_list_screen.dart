@@ -11,6 +11,7 @@ import 'package:Trackefi/features/csv_files/domain/model/csv_file_data.dart';
 import 'package:Trackefi/features/reports/data/data_module.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/domain/model/report_settings.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:Trackefi/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:Trackefi/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
 import 'package:Trackefi/features/reports/presentation/ui/uncategorised_item_row.dart';

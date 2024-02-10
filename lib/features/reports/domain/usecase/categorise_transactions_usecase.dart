@@ -4,6 +4,7 @@ import 'package:Trackefi/features/categories/domain/repository/categories_reposi
 import 'package:Trackefi/features/csv_files/domain/enum/expense_sign.dart';
 import 'package:Trackefi/features/csv_files/domain/enum/numbering_style.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 
 import 'package:Trackefi/features/settings/domain/model/import_settings.dart';
 import '../../../categories/domain/model/category.dart';

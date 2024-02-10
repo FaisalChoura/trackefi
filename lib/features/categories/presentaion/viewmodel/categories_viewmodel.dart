@@ -1,6 +1,5 @@
 import 'package:Trackefi/features/categories/domain/domain_module.dart';
 import 'package:Trackefi/features/categories/domain/usecase/return_preselected_color_usecase.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/category.dart';

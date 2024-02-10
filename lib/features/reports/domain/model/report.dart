@@ -1,5 +1,6 @@
 import 'package:Trackefi/features/categories/domain/model/category.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:isar/isar.dart';
 
 part 'report.g.dart';

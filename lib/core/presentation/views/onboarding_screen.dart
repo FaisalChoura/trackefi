@@ -1,5 +1,4 @@
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
-import 'package:Trackefi/features/settings/data/database/application_settings_database.dart';
 import 'package:Trackefi/features/settings/domain/usecase/set_existing_user_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

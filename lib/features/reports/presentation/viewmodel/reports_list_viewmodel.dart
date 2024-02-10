@@ -8,6 +8,7 @@ import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/domain/model/report_settings.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:Trackefi/features/reports/domain/model/uncategories_row_data.dart';
 import 'package:Trackefi/features/reports/domain/usecase/build_report_usecase.dart';
 import 'package:Trackefi/features/reports/domain/usecase/categorise_transactions_usecase.dart';
@@ -86,7 +87,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   Future<List<ReportCategorySnapshot>> unifyTransactionCurrencies(
       List<ReportCategorySnapshot> categorisedTransactions,
       String toCurrencyId) async {
-    // TODO optimise
+    // TODO optimise and remove from viewmodel
     for (var snapshot in categorisedTransactions) {
       for (var i = 0; i < snapshot.expensesTransactions.length; i++) {
         final transaction = snapshot.expensesTransactions[i];

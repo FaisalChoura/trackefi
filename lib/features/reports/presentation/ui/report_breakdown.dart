@@ -8,6 +8,7 @@ import 'package:Trackefi/core/presentation/ui/label.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:Trackefi/features/reports/presentation/ui/category_pie_chart.dart';
 import 'package:Trackefi/features/reports/presentation/ui/editable_categorised_transactions_list.dart';
 import 'package:Trackefi/features/reports/presentation/ui/spending_per_transaction.dart';

@@ -1,4 +1,4 @@
-import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 
 class TransactionEvent {
   TransactionEventType type;

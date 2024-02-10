@@ -1,9 +1,9 @@
 import 'package:Trackefi/core/presentation/ui/select_field.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:Trackefi/features/reports/presentation/ui/selectable_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/model/report_category_snapshot.dart';
 import '../../domain/model/uncategories_row_data.dart';
 import '../../domain/model/selectable_word_item.dart';
 import '../../../categories/domain/model/category.dart';

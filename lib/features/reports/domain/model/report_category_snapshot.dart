@@ -1,5 +1,6 @@
 import 'package:Trackefi/core/domain/helpers/helpers.dart';
 import 'package:Trackefi/features/categories/domain/model/category.dart';
+import 'package:Trackefi/features/reports/domain/model/transaction.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -79,27 +80,5 @@ class ReportCategorySnapshot {
 
     totalIncome = TrHelpers.round(totalIncome, 2);
     totalExpenses = TrHelpers.round(totalExpenses, 2);
-  }
-}
-
-@embedded
-class Transaction {
-  late String id;
-  String categorySnapshotId;
-  String name;
-  late DateTime date;
-  double amount;
-  bool isIncome;
-  String currencyId;
-  Transaction({
-    this.name = '',
-    this.amount = 0,
-    String dateString = '1995-01-01',
-    this.isIncome = false,
-    this.currencyId = '',
-    this.categorySnapshotId = '',
-  }) {
-    id = const Uuid().v4();
-    date = DateTime.parse(dateString);
   }
 }

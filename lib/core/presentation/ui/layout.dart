@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:Trackefi/core/constants.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
 import 'package:Trackefi/core/presentation/views/onboarding_screen.dart';
-import 'package:Trackefi/features/settings/data/database/application_settings_database.dart';
 import 'package:Trackefi/features/settings/domain/usecase/check_if_user_is_new_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
