@@ -246,7 +246,7 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                       ),
                       if (item.categorySnapshot.totalIncome != 0)
                         TrLabel(
-                          color: TColors.lightBlue,
+                          color: TColors.lightGreen,
                           child: Text(
                             '${item.categorySnapshot.totalIncome * -1}',
                             style: const TextStyle(fontSize: 14),
@@ -281,9 +281,11 @@ class GroupedTransactionsByCategory extends StatelessWidget {
               children: [
                 SizedBox(width: 250, child: Text(transaction.name.toString())),
                 Text(TrHelpers.simpleDateFormatter(transaction.date)),
+                Text(
+                    "${transaction.originalAmount} ${transaction.originalCurrencyId}"),
                 Row(
                   children: [
-                    Text(transaction.amount.toString()),
+                    Text("${transaction.amount} ${transaction.currencyId}"),
                     // PopupMenuButton(
                     //   itemBuilder: ((context) => [
                     //         PopupMenuItem(

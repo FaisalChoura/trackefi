@@ -16,6 +16,7 @@ class TColors {
 
   static const lightBlue = Color(0x482981F5);
   static const lightRed = Color(0x48E14414);
+  static const lightGreen = Color(0x4850C878);
   static const red = Color(0xFFC1292E);
   static const red2 = Color(0xFFD62839);
 

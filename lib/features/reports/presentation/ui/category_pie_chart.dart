@@ -38,7 +38,7 @@ class CategoriesPieChart extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (var i = 0; i < 5; i++)
+              for (var i = 0; i < sortedCategories.length; i++)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Indicator(

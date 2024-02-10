@@ -92,9 +92,10 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       for (var i = 0; i < snapshot.expensesTransactions.length; i++) {
         final transaction = snapshot.expensesTransactions[i];
         if (transaction.currencyId != toCurrencyId) {
-          // TODO add currency to income
           final conversion = await _convertCurrencyUseCase.execute(
               transaction.currencyId, toCurrencyId);
+          transaction.originalAmount = transaction.amount;
+          transaction.originalCurrencyId = conversion.fr;
           transaction.amount = double.parse(
               (transaction.amount * conversion.val).toStringAsFixed(2));
           transaction.currencyId = toCurrencyId;
