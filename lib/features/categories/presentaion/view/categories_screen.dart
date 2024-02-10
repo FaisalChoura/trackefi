@@ -18,8 +18,6 @@ class CategoriesScreen extends ConsumerWidget {
   final TextEditingController categoryNameController = TextEditingController();
   CategoriesScreen({super.key});
 
-  void changeColor(Color color) {}
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -102,9 +100,10 @@ class NewCategoryDialog extends ConsumerWidget {
   }
 
   void _addCategory(BuildContext context, WidgetRef ref) {
+    final category = Category(categoryNameController.text, []);
     ref
         .read(categoriesViewModelStateNotifierProvider.notifier)
-        .addCategory(Category(categoryNameController.text, []));
+        .addCategory(category);
     categoryNameController.clear();
     Navigator.of(context).pop();
   }
@@ -164,7 +163,7 @@ class CategoryDetails extends ConsumerStatefulWidget {
 }
 
 class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
-  Color currentColor = const Color(0xff443a49);
+  Color currentColor = Colors.red;
   final categoryKeywordController = TextEditingController();
 
   @override

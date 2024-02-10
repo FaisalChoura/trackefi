@@ -1,4 +1,6 @@
 import 'package:Trackefi/features/categories/domain/domain_module.dart';
+import 'package:Trackefi/features/categories/domain/usecase/return_preselected_color_usecase.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/model/category.dart';
@@ -10,11 +12,11 @@ import '../../domain/usecase/put_category_usecase.dart';
 final categoriesViewModelStateNotifierProvider = StateNotifierProvider
     .autoDispose<CategoriesViewModel, AsyncValue<List<Category>>>((ref) {
   return CategoriesViewModel(
-    ref.watch(getCategoriesUseCaseProvider),
-    ref.watch(deleteCategoriesUseCaseProvider),
-    ref.watch(putCategoriesUseCaseProvider),
-    ref.watch(getAllCategoriesUseCaseProvider),
-  );
+      ref.watch(getCategoriesUseCaseProvider),
+      ref.watch(deleteCategoriesUseCaseProvider),
+      ref.watch(putCategoriesUseCaseProvider),
+      ref.watch(getAllCategoriesUseCaseProvider),
+      ref.watch(returnPreselectedColorUseCase));
 });
 
 class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
@@ -22,13 +24,17 @@ class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
   final PutCategoryUseCase _putCategoryUseCase;
   final DeleteCategoryUseCase _deleteCategoryUseCase;
   final GetAllCategoriesUseCase _getAllCategoriesUseCase;
+  final ReturnPreselectedColorUseCase _returnPreselectedColorUseCase;
+
+  int _categoriesCounter = 0;
 
   CategoriesViewModel(
-    this._getCategoryUseCase,
-    this._deleteCategoryUseCase,
-    this._putCategoryUseCase,
-    this._getAllCategoriesUseCase,
-  ) : super(const AsyncValue.data([])) {
+      this._getCategoryUseCase,
+      this._deleteCategoryUseCase,
+      this._putCategoryUseCase,
+      this._getAllCategoriesUseCase,
+      this._returnPreselectedColorUseCase)
+      : super(const AsyncValue.data([])) {
     _getCategoriesList();
   }
 
@@ -40,6 +46,7 @@ class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
     try {
       state = const AsyncValue.loading();
       final categoriesList = await _getAllCategoriesUseCase.execute();
+      _categoriesCounter = categoriesList.length;
       state = AsyncValue.data(categoriesList);
     } on Exception catch (e, s) {
       state = AsyncValue.error(e, s);
@@ -47,7 +54,10 @@ class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
   }
 
   void addCategory(Category category) async {
+    category.colorValues =
+        _returnPreselectedColorUseCase.execute(_categoriesCounter);
     await _putCategoryUseCase.execute(category);
+    _categoriesCounter += 1;
     state = AsyncValue.data([..._currentStateValue, category]);
   }
 
@@ -65,6 +75,7 @@ class CategoriesViewModel extends StateNotifier<AsyncValue<List<Category>>> {
 
     if (deleted) {
       final newList = _currentStateValue.where((cat) => cat.id != id).toList();
+      _categoriesCounter -= 1;
       state = AsyncValue.data(newList);
     }
   }
