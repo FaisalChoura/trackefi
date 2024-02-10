@@ -68,6 +68,8 @@ class CategoriseTransactionsUseCase {
           isIncome: isIncome,
           currencyId: importSettings.currencyId);
 
+      transaction.originFileName = importSettings.fileName;
+
       Category? category =
           _findCategory(row[importSettings.fieldIndexes.descriptionField]);
 

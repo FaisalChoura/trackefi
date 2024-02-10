@@ -134,6 +134,7 @@ class _CsvImportScreenState extends ConsumerState<CsvImportScreen> {
 
         importSettings =
             await openImportSettingsDialog(context, importSettings);
+        importSettings.fileName = file.name;
 
         csvDataList.add(CsvFileData(file, importSettings));
       }

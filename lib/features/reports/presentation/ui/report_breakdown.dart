@@ -279,7 +279,10 @@ class GroupedTransactionsByCategory extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: 250, child: Text(transaction.name.toString())),
+                Tooltip(
+                    message: "File: ${transaction.originFileName}",
+                    child: SizedBox(
+                        width: 250, child: Text(transaction.name.toString()))),
                 Text(TrHelpers.simpleDateFormatter(transaction.date)),
                 Text(
                     "${transaction.originalAmount} ${transaction.originalCurrencyId}"),

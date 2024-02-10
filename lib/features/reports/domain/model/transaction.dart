@@ -12,6 +12,7 @@ class Transaction {
   bool isIncome;
   String currencyId;
   String? originalCurrencyId;
+  String? originFileName;
   Transaction({
     this.name = '',
     this.amount = 0,

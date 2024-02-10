@@ -25,6 +25,7 @@ class CsvImportSettings {
 
   @ignore // is not stored in db
   bool shouldSaveSettings = false;
+  String fileName = '';
 
   CsvImportSettings();
 
