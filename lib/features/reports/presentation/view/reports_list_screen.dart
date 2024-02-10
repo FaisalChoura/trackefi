@@ -137,24 +137,34 @@ class ReportsListScreen extends ConsumerWidget {
       List<UncategorisedRowData>? updatedCategoryData = [];
 
       final dataToBeUnique = <Transaction>[];
-      var enteredMap = <String, bool?>{};
+      var enteredMap = <String, List<Transaction>>{};
 
       for (var transaction in categorisedTransactions[0].expensesTransactions) {
         if (enteredMap[transaction.name] == null) {
           dataToBeUnique.add(transaction);
-          enteredMap.putIfAbsent(transaction.name, () => true);
+          enteredMap.putIfAbsent(transaction.name, () => [transaction]);
+        } else {
+          enteredMap[transaction.name] = [
+            ...enteredMap[transaction.name]!,
+            transaction
+          ];
         }
       }
 
       for (var transaction in categorisedTransactions[0].incomeTransactions) {
         if (enteredMap[transaction.name] == null) {
           dataToBeUnique.add(transaction);
-          enteredMap.putIfAbsent(transaction.name, () => true);
+          enteredMap.putIfAbsent(transaction.name, () => [transaction]);
+        } else {
+          enteredMap[transaction.name] = [
+            ...enteredMap[transaction.name]!,
+            transaction
+          ];
         }
       }
 
-      updatedCategoryData =
-          await _handleUncategorisedTransactions(dataToBeUnique, context);
+      updatedCategoryData = await _handleUncategorisedTransactions(
+          dataToBeUnique, enteredMap, context);
 
       if (updatedCategoryData.isNotEmpty) {
         await ref
@@ -189,11 +199,14 @@ class ReportsListScreen extends ConsumerWidget {
   }
 
   Future<List<UncategorisedRowData>> _handleUncategorisedTransactions(
-      List<Transaction> uncategorisedTransactions, BuildContext context) async {
+      List<Transaction> uncategorisedTransactions,
+      Map<String, List<Transaction>> map,
+      BuildContext context) async {
     return await showTrDialog<List<UncategorisedRowData>>(
           context,
           UncategorisedItemsDialog(
-              uncategorisedTransactions: uncategorisedTransactions),
+              uncategorisedTransactions: uncategorisedTransactions,
+              nonUniqueTransactionsMap: map),
         ) ??
         [];
   }
@@ -288,12 +301,13 @@ class _ReportSettingsDialogState extends ConsumerState<ReportSettingsDialog> {
 }
 
 class UncategorisedItemsDialog extends ConsumerStatefulWidget {
-  const UncategorisedItemsDialog({
-    super.key,
-    required this.uncategorisedTransactions,
-  });
+  const UncategorisedItemsDialog(
+      {super.key,
+      required this.uncategorisedTransactions,
+      this.nonUniqueTransactionsMap});
 
-  final List<Transaction>? uncategorisedTransactions;
+  final List<Transaction> uncategorisedTransactions;
+  final Map<String, List<Transaction>>? nonUniqueTransactionsMap;
 
   @override
   ConsumerState<UncategorisedItemsDialog> createState() =>
@@ -332,12 +346,74 @@ class _UncategorisedItemsDialogState
                       child: Column(
                         children: [
                           for (var i = 0; i < transactions.length; i++)
-                            UncategorisedItemRow(
-                              transaction: transactions[i],
-                              categories: categories,
-                              onChanged: (categoryData) {
-                                updatedRowCategoryData[i] = categoryData;
-                              },
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Tooltip(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: const Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    richMessage: WidgetSpan(child: Builder(
+                                      builder: (context) {
+                                        if (widget.nonUniqueTransactionsMap ==
+                                            null) {
+                                          return const SizedBox();
+                                        }
+                                        final transactionList =
+                                            widget.nonUniqueTransactionsMap![
+                                                transactions[i].name];
+                                        if (transactionList == null) {
+                                          return const SizedBox();
+                                        }
+                                        return SizedBox(
+                                          width: 400,
+                                          child: Column(
+                                            children: [
+                                              for (var transaction
+                                                  in transactionList)
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(transaction.name),
+                                                    Text(TrHelpers.dateString(
+                                                        transaction.date)),
+                                                    Text(transaction
+                                                        .originalAmount
+                                                        .toString())
+                                                  ],
+                                                )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    )),
+                                    child: const Icon(
+                                      Icons.info_outline,
+                                      size: 18,
+                                    )),
+                                Flexible(
+                                  flex: 1,
+                                  child: UncategorisedItemRow(
+                                    transaction: transactions[i],
+                                    categories: categories,
+                                    onChanged: (categoryData) {
+                                      updatedRowCategoryData[i] = categoryData;
+                                    },
+                                  ),
+                                ),
+                              ],
                             )
                         ],
                       ),

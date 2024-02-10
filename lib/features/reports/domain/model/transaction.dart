@@ -23,5 +23,6 @@ class Transaction {
   }) {
     id = const Uuid().v4();
     date = DateTime.parse(dateString);
+    originalAmount = amount;
   }
 }
