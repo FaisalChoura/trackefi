@@ -68,11 +68,14 @@ class ReportsListScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(10),
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ReportBreakdownScreen(
-                                              report: report))),
+                              onTap: () {
+                                ref
+                                    .read(reportsListViewModel.notifier)
+                                    .setSelectedReport(report);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ReportBreakdownScreen()));
+                              },
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 width: 200,
@@ -189,8 +192,9 @@ class ReportsListScreen extends ConsumerWidget {
         .read(reportsListViewModel.notifier)
         .buildReport(unifiedCurrencyTransaction, reportSettings);
 
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ReportBreakdownScreen(report: report)));
+    ref.read(reportsListViewModel.notifier).setSelectedReport(report);
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ReportBreakdownScreen()));
   }
 
   Future<ReportSettings> _getReportSettings(

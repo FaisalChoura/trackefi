@@ -289,15 +289,15 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                 Row(
                   children: [
                     Text("${transaction.amount} ${transaction.currencyId}"),
-                    // PopupMenuButton(
-                    //   itemBuilder: ((context) => [
-                    //         PopupMenuItem(
-                    //           value: 'Remove',
-                    //           child: Text('Remove'),
-                    //           onTap: () => print('s'),
-                    //         ),
-                    //       ]),
-                    // )
+                    PopupMenuButton(
+                      itemBuilder: ((context) => [
+                            PopupMenuItem(
+                              value: 'Remove',
+                              child: Text('Remove'),
+                              onTap: () => print('s'),
+                            ),
+                          ]),
+                    )
                   ],
                 ),
               ],

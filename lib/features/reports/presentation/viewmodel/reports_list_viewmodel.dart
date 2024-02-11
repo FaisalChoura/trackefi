@@ -19,6 +19,7 @@ import 'package:Trackefi/features/reports/domain/usecase/get_all_reports_usecase
 import 'package:Trackefi/features/reports/domain/usecase/move_transaction_between_category_snapshots.dart';
 import 'package:Trackefi/features/reports/domain/usecase/put_report_usecase.dart';
 import 'package:Trackefi/features/reports/domain/usecase/remove_report_usecase.dart';
+import 'package:Trackefi/features/reports/domain/usecase/set_selected_report_usecase.dart';
 import 'package:Trackefi/features/reports/domain/usecase/update_categories_from_data_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +38,8 @@ final reportsListViewModel =
             ref.watch(moveTransactionBetweenCategorySnapshots),
             ref.watch(getCurrenciesUseCaseProvider),
             ref.watch(convertCurrencyUseCaseProvider),
-            ref.watch(filterCsvDataByDate)));
+            ref.watch(filterCsvDataByDate),
+            ref.watch(setSelectedReportUseCaseProvider)));
 
 class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   ReportsListViewModel(
@@ -51,7 +53,8 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       this._moveTransactionBetweenCategorySnapshots,
       this._getCurrenciesUseCase,
       this._convertCurrencyUseCase,
-      this._filterCsvDataByDateUseCase)
+      this._filterCsvDataByDateUseCase,
+      this._selectedReportUseCase)
       : super(const AsyncValue.data([])) {
     getList();
   }
@@ -68,6 +71,7 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
   final GetCurrenciesUseCase _getCurrenciesUseCase;
   final ConvertCurrencyUseCase _convertCurrencyUseCase;
   final FilterCsvDataByDateUseCase _filterCsvDataByDateUseCase;
+  final SetSelectedReportUseCase _selectedReportUseCase;
 
   void getList() async {
     state = const AsyncValue.loading();
@@ -117,6 +121,10 @@ class ReportsListViewModel extends StateNotifier<AsyncValue<List<Report>>> {
       snapshot.recalculate();
     }
     return categorisedTransactions;
+  }
+
+  void setSelectedReport(Report report) {
+    _selectedReportUseCase.execute(report);
   }
 
   Future<List<ReportCategorySnapshot>> categoriseTransactions(

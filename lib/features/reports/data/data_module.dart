@@ -28,7 +28,7 @@ final reportsListStoreRepositoryProvider = Provider<ReportsListStoreRepository>(
         ref.watch(reportsListStoreProvider.notifier)));
 
 final selectedReportStoreProvider =
-    NotifierProvider<SelectedReportStore, Report?>(() {
+    NotifierProvider<SelectedReportStore, Report>(() {
   return SelectedReportStore();
 });
 

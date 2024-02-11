@@ -1,4 +1,5 @@
 import 'package:Trackefi/core/presentation/ui/button.dart';
+import 'package:Trackefi/features/reports/data/data_module.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/presentation/ui/report_breakdown.dart';
 import 'package:Trackefi/features/reports/presentation/viewmodel/reports_list_viewmodel.dart';
@@ -6,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ReportBreakdownScreen extends ConsumerStatefulWidget {
-  const ReportBreakdownScreen({super.key, required this.report});
-  final Report report;
+  const ReportBreakdownScreen({super.key});
 
   @override
   ConsumerState<ReportBreakdownScreen> createState() =>
@@ -19,7 +19,7 @@ class _ReportBreakdownScreenState extends ConsumerState<ReportBreakdownScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final report = widget.report;
+    final report = ref.watch(selectedReportStoreProvider);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24),
