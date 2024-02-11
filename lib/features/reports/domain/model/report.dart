@@ -18,19 +18,14 @@ class Report {
   // TODO remove income and expenses from inputs
   Report(this.income, this.expenses, this.categories) {
     createdAt = DateTime.now();
-    if (categories.isNotEmpty) {
-      final totalExpenses = categories
-          .map((category) => category.totalExpenses)
-          .reduce((value, element) => value + element);
-      // TODO create function for rounding
-      expenses = double.parse(totalExpenses.toStringAsFixed(2));
+    calculate();
+  }
 
-      final totalIncome = categories
-          .map((category) => category.totalIncome)
-          .reduce((value, element) => value + element);
-      // TODO create function for rounding
-      income = double.parse(totalIncome.toStringAsFixed(2));
-    }
+  factory Report.clone(Report report) {
+    final clonedReport =
+        Report(report.income, report.expenses, report.categories);
+    clonedReport.id = report.id;
+    return clonedReport;
   }
 
   List<Transaction> get expenseTransactions {
@@ -47,5 +42,21 @@ class Report {
       transactions = [...transactions, ...category.incomeTransactions];
     }
     return transactions;
+  }
+
+  calculate() {
+    if (categories.isNotEmpty) {
+      final totalExpenses = categories
+          .map((category) => category.totalExpenses)
+          .reduce((value, element) => value + element);
+      // TODO create function for rounding
+      expenses = double.parse(totalExpenses.toStringAsFixed(2));
+
+      final totalIncome = categories
+          .map((category) => category.totalIncome)
+          .reduce((value, element) => value + element);
+      // TODO create function for rounding
+      income = double.parse(totalIncome.toStringAsFixed(2));
+    }
   }
 }

@@ -10,19 +10,13 @@ class CsvFilesStore extends StateNotifier<List<CsvFileData>> {
 
   void removeFile(CsvFileData fileData) {
     state = state.where((f) {
-      if (f.file == null) {
-        return false;
-      }
-      return f.file!.path != fileData.file!.path;
+      return f.file.path != fileData.file.path;
     }).toList();
   }
 
   void updateFile(CsvFileData fileData) {
     CsvFileData fileToBeReplaced = state.firstWhere((f) {
-      if (f.file == null) {
-        return false;
-      }
-      return f.file!.path == fileData.file!.path;
+      return f.file.path == fileData.file.path;
     });
     int index = state.indexOf(fileToBeReplaced);
 

@@ -42,12 +42,16 @@ class ReportCategorySnapshot {
 
   void removeTransaction(Transaction transaction) {
     if (transaction.isIncome) {
-      incomeTransactions.remove(transaction);
+      incomeTransactions = incomeTransactions
+          .where((listTransaction) => transaction.id != listTransaction.id)
+          .toList();
       totalIncome = TrHelpers.round(totalIncome - transaction.amount, 2);
       return;
     }
 
-    expensesTransactions.remove(transaction);
+    expensesTransactions = expensesTransactions
+        .where((listTransaction) => transaction.id != listTransaction.id)
+        .toList();
     totalExpenses = TrHelpers.round(totalExpenses - transaction.amount, 2);
   }
 

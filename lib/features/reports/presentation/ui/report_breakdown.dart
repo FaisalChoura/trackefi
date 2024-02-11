@@ -6,6 +6,7 @@ import 'package:Trackefi/core/presentation/ui/accordion.dart';
 import 'package:Trackefi/core/presentation/ui/card.dart';
 import 'package:Trackefi/core/presentation/ui/label.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/extra_info_card.dart';
+import 'package:Trackefi/features/reports/data/data_module.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/domain/model/transaction.dart';
@@ -14,6 +15,8 @@ import 'package:Trackefi/features/reports/presentation/ui/editable_categorised_t
 import 'package:Trackefi/features/reports/presentation/ui/spending_per_transaction.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 
 class ReportBreakdown extends StatelessWidget {
   const ReportBreakdown({super.key, required this.report});
@@ -197,14 +200,21 @@ class ReportBreakdown extends StatelessWidget {
   }
 }
 
-class GroupedTransactionsByCategory extends StatelessWidget {
+class GroupedTransactionsByCategory extends ConsumerStatefulWidget {
   final List<ReportCategorySnapshot> categorySnapshots;
   const GroupedTransactionsByCategory(
       {super.key, required this.categorySnapshots});
 
   @override
+  ConsumerState<GroupedTransactionsByCategory> createState() =>
+      _GroupedTransactionsByCategoryState();
+}
+
+class _GroupedTransactionsByCategoryState
+    extends ConsumerState<GroupedTransactionsByCategory> {
+  @override
   Widget build(BuildContext context) {
-    final populatedCategorySnapshots = categorySnapshots
+    final populatedCategorySnapshots = widget.categorySnapshots
         .where(
           (snapshot) => snapshot.transactions.isNotEmpty,
         )
@@ -254,8 +264,7 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                         ),
                     ],
                   ),
-                  subItems: _generateCategotySubItems(
-                      item.categorySnapshot.transactions));
+                  subItems: _generateCategotySubItems(item.categorySnapshot));
             }).toList(),
           ),
         ),
@@ -263,7 +272,8 @@ class GroupedTransactionsByCategory extends StatelessWidget {
     );
   }
 
-  List<Widget> _generateCategotySubItems(List<Transaction> transactions) {
+  List<Widget> _generateCategotySubItems(ReportCategorySnapshot category) {
+    final transactions = category.transactions;
     final subItemList = <Widget>[];
     for (var i = 0; i < transactions.length; i++) {
       final transaction = transactions[i];
@@ -293,8 +303,22 @@ class GroupedTransactionsByCategory extends StatelessWidget {
                       itemBuilder: ((context) => [
                             PopupMenuItem(
                               value: 'Remove',
-                              child: Text('Remove'),
-                              onTap: () => print('s'),
+                              child: const Text('Remove'),
+                              onTap: () {
+                                // TODO move to viewModel
+                                final report =
+                                    ref.read(selectedReportStoreProvider);
+                                final reportCategory = report.categories
+                                    .where((reportCategory) =>
+                                        reportCategory.id == category.id)
+                                    .first;
+                                reportCategory.removeTransaction(transaction);
+                                reportCategory.recalculate();
+                                report.calculate();
+                                ref
+                                    .read(selectedReportStoreRepositoryProvider)
+                                    .updateReport(Report.clone(report));
+                              },
                             ),
                           ]),
                     )
