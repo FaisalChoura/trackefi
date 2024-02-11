@@ -9,6 +9,10 @@ class ReportsListStore extends StateNotifier<List<Report>> {
   }
 
   void addReport(Report report) {
+    final reportExists = state.where((rep) => rep.id == report.id).isNotEmpty;
+    if (reportExists) {
+      return;
+    }
     state = [...state, report];
   }
 

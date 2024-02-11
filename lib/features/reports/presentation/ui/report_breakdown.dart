@@ -7,6 +7,7 @@ import 'package:Trackefi/core/presentation/ui/card.dart';
 import 'package:Trackefi/core/presentation/ui/label.dart';
 import 'package:Trackefi/features/csv_files/presentation/ui/extra_info_card.dart';
 import 'package:Trackefi/features/reports/data/data_module.dart';
+import 'package:Trackefi/features/reports/domain/domain_modulde.dart';
 import 'package:Trackefi/features/reports/domain/model/report.dart';
 import 'package:Trackefi/features/reports/domain/model/report_category_snapshot.dart';
 import 'package:Trackefi/features/reports/domain/model/transaction.dart';
@@ -315,9 +316,15 @@ class _GroupedTransactionsByCategoryState
                                 reportCategory.removeTransaction(transaction);
                                 reportCategory.recalculate();
                                 report.calculate();
+                                final clonedReport = Report.clone(report);
                                 ref
                                     .read(selectedReportStoreRepositoryProvider)
-                                    .updateReport(Report.clone(report));
+                                    .updateReport(Report.clone(clonedReport));
+                                if (report.id > 0) {
+                                  ref
+                                      .read(putReportUseCaseProvider)
+                                      .execute(clonedReport);
+                                }
                               },
                             ),
                           ]),
