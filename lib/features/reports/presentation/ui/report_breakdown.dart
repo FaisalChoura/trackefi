@@ -374,6 +374,11 @@ class DailySpendLineGraph extends StatelessWidget {
                   }).toList();
                 },
               ),
+              // touchCallback: (event, tapResponse) {
+              //   if (event is FlTapUpEvent) {
+              //     // print(tapResponse!.lineBarSpots![0].bar.);
+              //   }
+              // },
             ),
             gridData: FlGridData(show: false),
             titlesData: FlTitlesData(
