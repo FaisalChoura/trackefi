@@ -42,7 +42,7 @@ class UpdateChecker extends ConsumerWidget {
             ]),
           ));
     });
-    _runTimer(context);
+    // _runTimer(context);
     return child;
   }
 
