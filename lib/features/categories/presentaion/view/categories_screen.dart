@@ -1,6 +1,7 @@
 import 'package:Trackefi/core/presentation/themes/light_theme.dart';
 import 'package:Trackefi/core/presentation/ui/button.dart';
 import 'package:Trackefi/core/presentation/ui/dialog.dart';
+import 'package:Trackefi/core/presentation/ui/editable_text.dart';
 import 'package:Trackefi/core/presentation/ui/text_field.dart';
 import 'package:Trackefi/features/categories/presentaion/ui/tag.dart';
 import 'package:flutter/material.dart';
@@ -167,12 +168,6 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
   final categoryKeywordController = TextEditingController();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final id = ref.watch(selectedCategoryId);
     ref.watch(categoriesViewModelStateNotifierProvider);
@@ -197,11 +192,16 @@ class _CategoryDetailsState extends ConsumerState<CategoryDetails> {
                     children: [
                       Wrap(
                         children: [
-                          Text(
-                            category.name,
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
+                          TrEditableText(
+                              text: category.name,
+                              onChanged: (updatedText) {
+                                category.name = updatedText;
+                                ref
+                                    .read(
+                                        categoriesViewModelStateNotifierProvider
+                                            .notifier)
+                                    .updateCategory(category);
+                              }),
                           const SizedBox(
                             width: 16,
                           ),
